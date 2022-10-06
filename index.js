@@ -12,7 +12,9 @@ export const convertHTMLToPDF = (html, callback, pdfOptions, puppeteerArguments,
     if (typeof html !== "string") {
         throw new TypeError("Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.");
     }
-    const browser = yield (puppeteerArguments ? puppeteer.launch(puppeteerArguments) : puppeteer.launch());
+    const browser = yield (puppeteerArguments
+        ? puppeteer.launch(puppeteerArguments)
+        : puppeteer.launch());
     const page = yield browser.newPage();
     if (!pdfOptions) {
         pdfOptions = { format: "Letter" };

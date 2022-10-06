@@ -12,7 +12,9 @@ export const convertHTMLToPDF = async (
             "Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers."
         );
     }
-    const browser = await (puppeteerArguments ? puppeteer.launch(puppeteerArguments) : puppeteer.launch());
+    const browser = await (puppeteerArguments
+        ? puppeteer.launch(puppeteerArguments)
+        : puppeteer.launch());
 
     const page = await browser.newPage();
     if (!pdfOptions) {
@@ -25,7 +27,7 @@ export const convertHTMLToPDF = async (
             waitUntil: "networkidle0"
         });
     } else {
-        //page.setContent will be faster than page.goto if html is a static
+        // page.setContent will be faster than page.goto if html is a static
         await page.setContent(html);
     }
 
