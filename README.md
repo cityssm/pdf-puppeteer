@@ -1,4 +1,4 @@
-# PDF-Puppeteer  
+# PDF-Puppeteer
 
 [![npm (scoped)](https://img.shields.io/npm/v/@cityssm/pdf-puppeteer)](https://www.npmjs.com/package/@cityssm/pdf-puppeteer)
 [![Codacy grade](https://img.shields.io/codacy/grade/a078dd3403c646399c257ce81359df36)](https://app.codacy.com/gh/cityssm/pdf-puppeteer/dashboard?branch=master)
@@ -11,15 +11,15 @@ A simple npm package to convert HTML to PDF for Node.js applications by using Pu
 **Based on the work in [westmonroe/pdf-puppeteer](https://github.com/westmonroe/pdf-puppeteer).**
 Forked to manage dependencies and switch to ESM.
 
-## Getting Started  
+## Getting Started
 
-### Installation  
- 
+### Installation
+
 ```sh
-npm install @cityssm/pdf-puppeteer   
-```  
+npm install @cityssm/pdf-puppeteer
+```
 
-### Usage  
+### Usage
 
 ```js
 import { convertHTMLToPDF } from "@cityssm/pdf-puppeteer";
@@ -31,13 +31,13 @@ const callback = (pdf) => {
 };
 
 /**
-*    Usage
-*    @param html - This is the HTML to be converted to a PDF.
-*    @param callback - Do something with the PDF.
-*    @param [pdfOptions] - Optional parameter to pass in Puppeteer PDF options.
-*    @param [puppeteerArguments] - Optional parameter to pass in Puppeteer arguments.
-*    @param [remoteContent] - Default true. Optional parameter to specify if there is no remote content. Performance will be optimized for no remote content.
-*/
+ *    Usage
+ *    @param html - This is the HTML to be converted to a PDF.
+ *    @param callback - Do something with the PDF.
+ *    @param [pdfOptions] - Optional parameter to pass in Puppeteer PDF options.
+ *    @param [puppeteerArguments] - Optional parameter to pass in Puppeteer arguments.
+ *    @param [remoteContent] - Default true. Optional parameter to specify if there is no remote content. Performance will be optimized for no remote content.
+ */
 convertHTMLToPDF(html, callback, pdfOptions, puppeteerArguments, remoteContent);
 ```
 
