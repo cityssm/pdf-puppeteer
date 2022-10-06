@@ -1,1 +1,10 @@
-example/
+.github/
+coverage/
+test/
+
+.eslintignore
+.eslintrc.json
+.gitignore
+.prettierignore
+.prettierrc.json
+tsconfig.json

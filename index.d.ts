@@ -1,13 +1,3 @@
-declare module 'pdf-puppeteer' {
-    import { PDFOptions, LaunchOptions } from 'puppeteer';
-
-    function convertHTMLToPDF(
-      html: string,
-      callback: (data: Buffer) => void,
-      options?: PDFOptions,
-      puppeteerArgs?: LaunchOptions,
-      remoteContent?: boolean,
-    ): Promise<void>;
-
-    export = convertHTMLToPDF;
-  }
+import * as puppeteer from "puppeteer";
+export declare const convertHTMLToPDF: (html: string, callback: (pdf: Buffer) => void, pdfOptions: puppeteer.PDFOptions, puppeteerArguments: puppeteer.PuppeteerLaunchOptions, remoteContent?: boolean) => Promise<void>;
+export default convertHTMLToPDF;

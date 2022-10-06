@@ -1,22 +1,33 @@
-# Contibuting to PDF-Puppeteer
+### Thank you for your interest in making the Lot Occupancy System better
 
-## Howdy 🤠
+Together, we can build high quality software that meets the needs of municipalities,
+while remaining open and budget conscious.
 
-Welcome to PDF-Puppeteer, we're open to pull requests, issues, and feature requests.
+**Thank you for taking the time to read the contributing guidelines.**
 
-### How to report a bug:
+### All contributions are welcome
 
-* Template: 
-  * Include Node Version, Package Version
-  * Repro Steps 
-  * Additional Details
+Being a very small team, contributions are greatly appreciated. How can you contribute?
 
+-   **Promote this project!**
+-   Documentation and tutorials
+-   Submit bug reports (or fix them!)
+-   Request new features (or build them!)
 
+### Please Read the Code of Conduct
 
-### New Feature Requests
+The [Code of Conduct](CODE_OF_CONDUCT.md) document describes how we should act when working together.
+Be nice! :smile:
 
-* Submit an issue or a Pull Request
+### How to report a bug or suggest an enhancement
 
-### Style Guide / Coding conventions
+**If you find a security vulnerability, do NOT open an issue. Email
+corporateapps@cityssm.on.ca instead.**
 
-* We use the "Prettier" plugin for VSCode
+For all other bug reports, feature requests, or enhancements,
+open an issue and use the closest template.
+
+### Thanks Again
+
+We are a very small team with big aspirations and limited resources.
+Thank you for helping with this project in any way you can!

@@ -1,15 +1,20 @@
 {
-    "name": "pdf-puppeteer",
-    "version": "1.1.10",
+    "name": "@cityssm/pdf-puppeteer",
+    "version": "2.0.0-beta",
     "description": "A simple NPM package to convert html to pdf for Node applications by using Puppeteer",
-    "main": "index.js",
+    "type": "module",
+    "exports": "./index.js",
     "types": "index.d.ts",
+    "engines": {
+        "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    },
     "scripts": {
-        "test": "jest"
+        "test": "mocha",
+        "coverage": "c8 mocha"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/westmonroe/pdf-puppeteer.git"
+        "url": "git+https://github.com/cityssm/pdf-puppeteer.git"
     },
     "keywords": [
         "pdf",
@@ -27,32 +32,48 @@
         "pdf-puppeteer",
         "puppeteer-pdf"
     ],
-    "author": "Joe Higgs",
-    "license": "BSD-3-Clause",
+    "contributors": [
+        {
+            "name": "Joe Higgs",
+            "url": "https://github.com/joehiggs"
+        },
+        {
+            "name": "Christopher Miller",
+            "url": "https://github.com/christophermllr"
+        },
+        {
+            "name": "Max",
+            "url": "https://github.com/MaxGuitet"
+        },
+        {
+            "name": "Chris Kacerguis",
+            "url": "https://github.com/chriskacerguis"
+        },
+        {
+            "name": "Van Huong",
+            "url": "https://github.com/vnnvanhuong"
+        },
+        {
+            "name": "Tran Chuong",
+            "url": "https://github.com/chuongtrh"
+        }
+    ],
+    "author": "The Corporation of the City of Sault Ste. Marie",
+    "license": "MIT",
     "bugs": {
-        "url": "https://github.com/westmonroe/pdf-puppeteer/issues"
+        "url": "https://github.com/cityssm/pdf-puppeteer/issues"
     },
-    "homepage": "https://github.com/westmonroe/pdf-puppeteer#readme",
+    "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
     "dependencies": {
-        "puppeteer": "^1.20.0"
+        "puppeteer": "^18.2.0"
     },
     "devDependencies": {
-        "@babel/preset-env": "^7.5.4",
-        "babel-core": "^6.26.3",
-        "babel-jest": "^22.4.3",
-        "babel-preset-env": "^1.7.0",
-        "jest": "^24.9.0"
-    },
-    "prettier": {
-        "tabWidth": 4,
-        "singleQuote": true
-    },
-    "engines": {
-        "node": ">=7.6"
-    },
-    "engineStrict": true,
-    "jest": {
-        "verbose": true,
-        "testURL": "http://localhost/"
+        "@types/mocha": "^10.0.0",
+        "@typescript-eslint/eslint-plugin": "^5.39.0",
+        "@typescript-eslint/parser": "^5.39.0",
+        "eslint": "^8.24.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-node": "^11.1.0",
+        "eslint-plugin-unicorn": "^44.0.1"
     }
 }
