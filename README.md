@@ -44,4 +44,4 @@ convertHTMLToPDF(html, callback, pdfOptions, puppeteerArguments, remoteContent);
 The `convertHTMLToPDF()` function takes the four parameters detailed above.
 
 For more information on the available Puppeteer options for PDFs,
-take a look at [Puppeteer's Page PDF Options](https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagepdfoptions).
+take a look at [Puppeteer's Page PDF Options](https://pptr.dev/api/puppeteer.pdfoptions).
