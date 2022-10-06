@@ -1,5 +1,6 @@
 # PDF-Puppeteer  
 
+[![npm (scoped)](https://img.shields.io/npm/v/@cityssm/pdf-puppeteer)](https://www.npmjs.com/package/@cityssm/pdf-puppeteer)
 [![Codacy grade](https://img.shields.io/codacy/grade/a078dd3403c646399c257ce81359df36)](https://app.codacy.com/gh/cityssm/pdf-puppeteer/dashboard?branch=master)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/cityssm/pdf-puppeteer)](https://codeclimate.com/github/cityssm/pdf-puppeteer)
 [![Code Climate coverage](https://img.shields.io/codeclimate/coverage/cityssm/pdf-puppeteer)](https://codeclimate.com/github/cityssm/pdf-puppeteer)
@@ -14,7 +15,7 @@ Forked to manage dependencies and switch to ESM.
 
 ### Installation  
  
-```bash
+```sh
 npm install @cityssm/pdf-puppeteer   
 ```  
 

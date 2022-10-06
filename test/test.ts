@@ -1,4 +1,5 @@
 import * as assert from "assert";
+
 import { convertHTMLToPDF } from "../index.js";
 
 const html = `<html>
