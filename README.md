@@ -35,13 +35,21 @@ const callback = (pdf) => {
  *    @param html - This is the HTML to be converted to a PDF.
  *    @param callback - Do something with the PDF.
  *    @param [pdfOptions] - Optional parameter to pass in Puppeteer PDF options.
- *    @param [puppeteerArguments] - Optional parameter to pass in Puppeteer arguments.
- *    @param [remoteContent] - Default true. Optional parameter to specify if there is no remote content. Performance will be optimized for no remote content.
+ *    @param [puppeteerOptions] - Optional parameter to pass in Puppeteer launch options.
+ *    @param [pdfPuppeteerOptions] - Default true. Optional parameter to pass in PDF Puppeteer options.
  */
-convertHTMLToPDF(html, callback, pdfOptions, puppeteerArguments, remoteContent);
+convertHTMLToPDF(html, callback, pdfOptions, puppeteerOptions, pdfPuppeteerOptions);
 ```
 
 The `convertHTMLToPDF()` function takes the four parameters detailed above.
 
 For more information on the available Puppeteer options for PDFs,
 take a look at [Puppeteer's Page PDF Options](https://pptr.dev/api/puppeteer.pdfoptions).
+
+### PDF Puppeteer Options
+
+| Option          | Description                                                                        | Default Value |
+| --------------- | ---------------------------------------------------------------------------------- | ------------- |
+| `cacheBrowser`  | Whether or not the Puppeter browser instance should be saved between PDFs.         | `false`       |
+| `remoteContent` | Whether or not the HTML contains remote content.                                   | `true`        |
+| `htmlIsUrl`     | Whether or not the `html` parameter is actually a URL that should be navigated to. | `false`       |

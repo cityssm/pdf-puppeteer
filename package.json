@@ -1,6 +1,6 @@
 {
     "name": "@cityssm/pdf-puppeteer",
-    "version": "2.0.0-beta",
+    "version": "2.0.0-beta.1",
     "description": "A simple NPM package to convert html to pdf for Node applications by using Puppeteer",
     "type": "module",
     "exports": "./index.js",
@@ -9,8 +9,8 @@
         "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
     },
     "scripts": {
-        "test": "mocha",
-        "coverage": "c8 mocha"
+        "test": "cross-env DEBUG=pdf-puppeteer mocha --timeout 30000 --exit",
+        "coverage": "cross-env DEBUG=pdf-puppeteer c8 mocha --timeout 30000 --exit"
     },
     "repository": {
         "type": "git",
@@ -65,15 +65,18 @@
     },
     "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
     "dependencies": {
+        "debug": "^4.3.4",
+        "exit-hook": "^3.1.0",
         "puppeteer": "^18.2.1"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.0",
-        "@typescript-eslint/eslint-plugin": "^5.39.0",
-        "@typescript-eslint/parser": "^5.39.0",
-        "eslint": "^8.24.0",
+        "@typescript-eslint/eslint-plugin": "^5.40.0",
+        "@typescript-eslint/parser": "^5.40.0",
+        "cross-env": "^7.0.3",
+        "eslint": "^8.25.0",
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-node": "^11.1.0",
-        "eslint-plugin-unicorn": "^44.0.1"
+        "eslint-plugin-unicorn": "^44.0.2"
     }
 }
