@@ -84,6 +84,6 @@ describe("pdf-puppeteer", () => {
         if (pdfPuppeteer.hasCachedBrowser) {
             yield pdfPuppeteer.closeCachedBrowser();
         }
-        assert.ok(!pdfPuppeteer.hasCachedBrowser);
+        assert.strictEqual(pdfPuppeteer.hasCachedBrowser, false);
     }));
 });

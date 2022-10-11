@@ -116,6 +116,6 @@ describe("pdf-puppeteer", () => {
             await pdfPuppeteer.closeCachedBrowser();
         }
 
-        assert.ok(!pdfPuppeteer.hasCachedBrowser);
+        assert.strictEqual(pdfPuppeteer.hasCachedBrowser, false);
     });
 });
