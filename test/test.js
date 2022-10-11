@@ -81,9 +81,9 @@ describe("pdf-puppeteer", () => {
         }
     }));
     it("Closes cached browsers", () => __awaiter(void 0, void 0, void 0, function* () {
-        if (pdfPuppeteer.hasCachedBrowser) {
+        if (pdfPuppeteer.hasCachedBrowser()) {
             yield pdfPuppeteer.closeCachedBrowser();
         }
-        assert.strictEqual(pdfPuppeteer.hasCachedBrowser, false);
+        assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false);
     }));
 });

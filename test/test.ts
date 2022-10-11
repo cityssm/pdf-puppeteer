@@ -112,10 +112,10 @@ describe("pdf-puppeteer", () => {
     });
 
     it("Closes cached browsers", async () => {
-        if (pdfPuppeteer.hasCachedBrowser) {
+        if (pdfPuppeteer.hasCachedBrowser()) {
             await pdfPuppeteer.closeCachedBrowser();
         }
 
-        assert.strictEqual(pdfPuppeteer.hasCachedBrowser, false);
+        assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false);
     });
 });
