@@ -1,4 +1,4 @@
-### Thank you for your interest in making the Lot Occupancy System better
+### Thank you for your interest in making this project better!
 
 Together, we can build high quality software that meets the needs of municipalities,
 while remaining open and budget conscious.
@@ -9,10 +9,10 @@ while remaining open and budget conscious.
 
 Being a very small team, contributions are greatly appreciated. How can you contribute?
 
--   **Promote this project!**
--   Documentation and tutorials
--   Submit bug reports (or fix them!)
--   Request new features (or build them!)
+- **Promote this project!**
+- Documentation and tutorials
+- Submit bug reports (or fix them!)
+- Request new features (or build them!)
 
 ### Please Read the Code of Conduct
 

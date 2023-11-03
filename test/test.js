@@ -1,89 +1,70 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-import * as assert from "assert";
-import * as pdfPuppeteer from "../index.js";
+import assert from 'node:assert';
+import * as pdfPuppeteer from '../index.js';
 const html = `<html>
-<head><title>Test</title></head>
-<body><h1>Hello World</h1></body>
-</html>`;
-describe("pdf-puppeteer", () => {
-    it("Converts HTML to PDF with a new browser", (done) => {
-        pdfPuppeteer.convertHTMLToPDF(html, (pdf) => {
-            assert.strictEqual(Object.prototype.toString.call(pdf), "[object Uint8Array]");
-            done();
-        }, undefined, undefined, {
+  <head><title>Test</title></head>
+  <body><h1>Hello World</h1></body>
+  </html>`;
+const toStringResult = '[object Uint8Array]';
+describe('pdf-puppeteer', () => {
+    it('Converts HTML to PDF with a new browser', async () => {
+        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, undefined, {
             cacheBrowser: false,
             remoteContent: false
         });
+        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
-    it("Converts HTML to PDF with a cached browser", (done) => {
-        pdfPuppeteer.convertHTMLToPDF(html, (pdf) => {
-            assert.strictEqual(Object.prototype.toString.call(pdf), "[object Uint8Array]");
-            done();
-        }, undefined, {
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    it('Converts HTML to PDF with a cached browser', async () => {
+        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         }, {
             cacheBrowser: true,
             remoteContent: false
         });
+        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
-    it("Converts remote HTML to PDF with Puppeteer options", (done) => {
-        pdfPuppeteer.convertHTMLToPDF(html, (pdf) => {
-            assert.strictEqual(Object.prototype.toString.call(pdf), "[object Uint8Array]");
-            done();
-        }, { format: "Letter" }, {
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    it('Converts remote HTML to PDF with Puppeteer options', async () => {
+        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'Letter' }, {
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         }, {
             cacheBrowser: true,
             remoteContent: true
         });
+        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
-    it("Converts HTML to PDF with Puppeteer options", (done) => {
-        pdfPuppeteer.convertHTMLToPDF(html, (pdf) => {
-            assert.strictEqual(Object.prototype.toString.call(pdf), "[object Uint8Array]");
-            done();
-        }, { format: "A4" }, {
-            args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    it('Converts HTML to PDF with Puppeteer options', async () => {
+        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'A4' }, {
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
         }, {
             cacheBrowser: true
         });
+        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
-    it("Converts a website to PDF with different Puppeteer options", (done) => {
-        pdfPuppeteer.convertHTMLToPDF("https://cityssm.github.io/", (pdf) => {
-            assert.strictEqual(Object.prototype.toString.call(pdf), "[object Uint8Array]");
-            done();
-        }, undefined, {
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    it('Converts a website to PDF with different Puppeteer options', async () => {
+        const pdf = await pdfPuppeteer.convertHTMLToPDF('https://cityssm.github.io/', undefined, {
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
             env: {
-                environment: "pdf-puppeteer"
+                environment: 'pdf-puppeteer'
             }
         }, {
             cacheBrowser: true,
             remoteContent: false,
             htmlIsUrl: true
         });
+        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
-    it("Throws an error if the html parameter is not a string", () => __awaiter(void 0, void 0, void 0, function* () {
+    it('Throws an error if the html parameter is not a string', async () => {
         try {
-            yield pdfPuppeteer.convertHTMLToPDF(123456789, () => {
-                assert.fail("No error thrown.");
-            });
+            await pdfPuppeteer.convertHTMLToPDF(123456789);
+            assert.fail('No error thrown.');
         }
-        catch (_error) {
-            assert.ok("Error thrown");
+        catch {
+            assert.ok('Error thrown');
         }
-    }));
-    it("Closes cached browsers", () => __awaiter(void 0, void 0, void 0, function* () {
+    });
+    it('Closes cached browsers', async () => {
         if (pdfPuppeteer.hasCachedBrowser()) {
-            yield pdfPuppeteer.closeCachedBrowser();
+            await pdfPuppeteer.closeCachedBrowser();
         }
         assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false);
-    }));
+    });
 });

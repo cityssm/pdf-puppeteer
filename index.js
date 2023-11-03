@@ -1,18 +1,10 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-import * as puppeteer from "puppeteer";
-import exitHook from "exit-hook";
-import Debug from "debug";
-const debug = Debug("pdf-puppeteer");
+import Debug from 'debug';
+import exitHook from 'exit-hook';
+import * as puppeteer from 'puppeteer';
+const debug = Debug('pdf-puppeteer');
 export const defaultPuppeteerOptions = {
-    args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    headless: 'new'
 };
 export const defaultPdfOptions = {};
 export const defaultPdfPuppeteerOptions = {
@@ -22,69 +14,68 @@ export const defaultPdfPuppeteerOptions = {
 };
 let cachedBrowser;
 let cachedBrowserOptions;
-export const convertHTMLToPDF = (html, callback, instancePdfOptions, instancePuppeteerOptions, instancePdfPuppeteerOptions) => __awaiter(void 0, void 0, void 0, function* () {
-    if (typeof html !== "string") {
-        throw new TypeError("Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.");
+export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppeteerOptions, instancePdfPuppeteerOptions) {
+    if (typeof html !== 'string') {
+        throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
     }
     const puppeteerOptions = Object.assign({}, defaultPuppeteerOptions, instancePuppeteerOptions);
     const pdfPuppeteerOptions = Object.assign({}, defaultPdfPuppeteerOptions, instancePdfPuppeteerOptions);
     let browser;
-    if (pdfPuppeteerOptions.cacheBrowser) {
-        const currentPuppeteerOptions = JSON.stringify(instancePuppeteerOptions);
-        if (!cachedBrowserOptions ||
-            !cachedBrowser ||
+    if (pdfPuppeteerOptions.cacheBrowser ?? false) {
+        const currentPuppeteerOptions = JSON.stringify(puppeteerOptions);
+        if (cachedBrowserOptions === undefined ||
+            cachedBrowser === undefined ||
             currentPuppeteerOptions !== cachedBrowserOptions) {
-            debug("Initialize new cached browser.");
-            if (cachedBrowser) {
-                debug("Kill current cached browser.");
+            debug('Initialize new cached browser.');
+            if (cachedBrowser !== undefined) {
+                debug('Kill current cached browser.');
                 if (cachedBrowser.pages.length === 0) {
-                    debug("All pages closed, kill browser.");
-                    yield cachedBrowser.close();
+                    debug('All pages closed, kill browser.');
+                    await cachedBrowser.close();
                     cachedBrowser = undefined;
                 }
             }
-            cachedBrowser = yield puppeteer.launch(puppeteerOptions);
+            cachedBrowser = await puppeteer.launch(puppeteerOptions);
             cachedBrowserOptions = currentPuppeteerOptions;
         }
         browser = cachedBrowser;
     }
     else {
-        browser = yield puppeteer.launch(puppeteerOptions);
+        browser = await puppeteer.launch(puppeteerOptions);
     }
-    const page = yield browser.newPage();
-    if (pdfPuppeteerOptions.htmlIsUrl) {
-        yield page.goto(html, {
-            waitUntil: "networkidle0"
+    const page = await browser.newPage();
+    if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
+        await page.goto(html, {
+            waitUntil: 'networkidle0'
         });
     }
-    else if (pdfPuppeteerOptions.remoteContent) {
-        yield page.goto(`data:text/html;base64,${Buffer.from(html).toString("base64")}`, {
-            waitUntil: "networkidle0"
+    else if (pdfPuppeteerOptions.remoteContent ?? true) {
+        await page.goto(`data:text/html;base64,${Buffer.from(html).toString('base64')}`, {
+            waitUntil: 'networkidle0'
         });
     }
     else {
-        yield page.setContent(html);
+        await page.setContent(html);
     }
     const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions);
-    yield page.pdf(pdfOptions).then(callback, (error) => {
-        debug(error);
-    });
-    yield page.close();
+    const pdfBuffer = await page.pdf(pdfOptions);
+    await page.close();
     if (!pdfPuppeteerOptions.cacheBrowser || cachedBrowser !== browser) {
-        yield browser.close();
+        await browser.close();
     }
-});
+    return pdfBuffer;
+}
 export default convertHTMLToPDF;
-export const closeCachedBrowser = () => __awaiter(void 0, void 0, void 0, function* () {
-    if (cachedBrowser) {
-        yield cachedBrowser.close();
+export async function closeCachedBrowser() {
+    if (cachedBrowser !== undefined) {
+        await cachedBrowser.close();
         cachedBrowser = undefined;
     }
+}
+export function hasCachedBrowser() {
+    return cachedBrowser !== undefined;
+}
+exitHook(() => {
+    debug('Running exit hook.');
+    void closeCachedBrowser();
 });
-export const hasCachedBrowser = () => {
-    return !!cachedBrowser;
-};
-exitHook(() => __awaiter(void 0, void 0, void 0, function* () {
-    debug("Running exit hook.");
-    closeCachedBrowser();
-}));
