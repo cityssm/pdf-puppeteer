@@ -17,7 +17,9 @@ export const defaultPuppeteerOptions: puppeteer.PuppeteerLaunchOptions = {
  * PDF Options
  */
 
-export const defaultPdfOptions: puppeteer.PDFOptions = {}
+export const defaultPdfOptions: puppeteer.PDFOptions = {
+  format: 'Letter'
+}
 
 /*
  * PDF Puppeteer Options

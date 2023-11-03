@@ -6,7 +6,9 @@ export const defaultPuppeteerOptions = {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
     headless: 'new'
 };
-export const defaultPdfOptions = {};
+export const defaultPdfOptions = {
+    format: 'Letter'
+};
 export const defaultPdfPuppeteerOptions = {
     cacheBrowser: false,
     remoteContent: true,
