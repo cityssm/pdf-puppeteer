@@ -2,7 +2,8 @@
 
 [![npm (scoped)](https://img.shields.io/npm/v/@cityssm/pdf-puppeteer)](https://www.npmjs.com/package/@cityssm/pdf-puppeteer)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/cityssm/pdf-puppeteer)](https://codeclimate.com/github/cityssm/pdf-puppeteer)
-[![Code Climate coverage](https://img.shields.io/codeclimate/coverage/cityssm/pdf-puppeteer)](https://codeclimate.com/github/cityssm/pdf-puppeteer)
+[![codecov](https://codecov.io/gh/cityssm/pdf-puppeteer/graph/badge.svg?token=306EDSL6BF)](https://codecov.io/gh/cityssm/pdf-puppeteer)
+[![DeepSource](https://app.deepsource.com/gh/cityssm/pdf-puppeteer.svg/?label=active+issues&show_trend=true&token=8YWipc8F8ZoQEwCuWK4duIuj)](https://app.deepsource.com/gh/cityssm/pdf-puppeteer/)
 
 A simple npm package to convert HTML to PDF for Node.js applications by using Puppeteer.
 
@@ -23,13 +24,13 @@ npm install @cityssm/pdf-puppeteer
 import { convertHTMLToPDF } from "@cityssm/pdf-puppeteer";
 
 /**
- *    Usage
- *    @param html - This is the HTML to be converted to a PDF.
- *    @param [pdfOptions] - Optional parameter to pass in Puppeteer PDF options.
- *    @param [puppeteerOptions] - Optional parameter to pass in Puppeteer launch options.
- *    @param [pdfPuppeteerOptions] - Optional parameter to pass in PDF Puppeteer options.
+ * Usage
+ * @param html - This is the HTML to be converted to a PDF.
+ * @param [pdfOptions] - Optional parameter to pass in Puppeteer PDF options.
+ * @param [puppeteerOptions] - Optional parameter to pass in Puppeteer launch options.
+ * @param [pdfPuppeteerOptions] - Optional parameter to pass in PDF Puppeteer options.
  */
-const pdfBuffer = await convertHTMLToPDF(html, callback, pdfOptions, puppeteerOptions, pdfPuppeteerOptions);
+const pdfBuffer = await convertHTMLToPDF(html, pdfOptions, puppeteerOptions, pdfPuppeteerOptions);
 
 // Do something with the PDF, like send it as the response.
 res.setHeader("Content-Type", "application/pdf");
