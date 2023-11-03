@@ -31,6 +31,7 @@ interface PDFPuppeteerOptions {
   cacheBrowser: boolean
 
   /**
+   * Whether or not the given HTML references remote content, like images and stylesheets.
    * Speed can be increased when set to false.
    * Default: true
    */
