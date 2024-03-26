@@ -13,8 +13,8 @@ jobs:
       DEEPSOURCE_DSN: ${{ secrets.DEEPSOURCE_DSN }}
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
@@ -53,8 +53,8 @@ jobs:
   Testing-on-Windows:
     runs-on: windows-2019
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
