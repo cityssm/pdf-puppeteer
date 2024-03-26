@@ -54,7 +54,7 @@ describe('pdf-puppeteer', () => {
     });
     it('Throws an error if the html parameter is not a string', async () => {
         try {
-            await pdfPuppeteer.convertHTMLToPDF(123456789);
+            await pdfPuppeteer.convertHTMLToPDF(123_456_789);
             assert.fail('No error thrown.');
         }
         catch {
