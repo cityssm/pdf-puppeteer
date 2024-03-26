@@ -10,7 +10,7 @@ const debug = Debug('pdf-puppeteer')
 
 export const defaultPuppeteerOptions: puppeteer.PuppeteerLaunchOptions = {
   args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  headless: 'new'
+  headless: true
 }
 
 /*

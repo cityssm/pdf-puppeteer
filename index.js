@@ -4,7 +4,7 @@ import * as puppeteer from 'puppeteer';
 const debug = Debug('pdf-puppeteer');
 export const defaultPuppeteerOptions = {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    headless: 'new'
+    headless: true
 };
 export const defaultPdfOptions = {
     format: 'Letter'
