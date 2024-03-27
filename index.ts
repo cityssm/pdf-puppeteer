@@ -67,15 +67,17 @@ async function launchBrowserWithFallback(
 
       debug(`Switching to fallback: ${fallback}`)
 
-      return await launchBrowser(
-        Object.assign(
-          {
-            product: fallback,
-            executablePath: undefined
-          },
-          puppeteerOptions
-        )
+      const fallbackPuppeteerOptions = Object.assign(
+        {
+          product: fallback,
+          executablePath: undefined
+        },
+        puppeteerOptions
       )
+
+      debug(fallbackPuppeteerOptions)
+
+      return await launchBrowser(fallbackPuppeteerOptions)
     } else {
       throw error
     }

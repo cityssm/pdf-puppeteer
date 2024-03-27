@@ -42,10 +42,12 @@ async function launchBrowserWithFallback(puppeteerOptions, switchBrowserIfFail =
         if (switchBrowserIfFail) {
             const fallback = puppeteerOptions.product === 'chrome' ? 'firefox' : 'chrome';
             debug(`Switching to fallback: ${fallback}`);
-            return await launchBrowser(Object.assign({
+            const fallbackPuppeteerOptions = Object.assign({
                 product: fallback,
                 executablePath: undefined
-            }, puppeteerOptions));
+            }, puppeteerOptions);
+            debug(fallbackPuppeteerOptions);
+            return await launchBrowser(fallbackPuppeteerOptions);
         }
         else {
             throw error;
