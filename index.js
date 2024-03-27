@@ -34,6 +34,8 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppete
     else {
         browser = await launchBrowserWithFallback(puppeteerOptions, pdfPuppeteerOptions.switchBrowserIfFail);
     }
+    const browserVersion = await browser.version();
+    const browserIsFirefox = browserVersion.toLowerCase().includes('firefox');
     const page = await browser.newPage();
     if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
         await page.goto(html, {
@@ -41,7 +43,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppete
             timeout: pageNavigationTimeoutMillis
         });
     }
-    else if (pdfPuppeteerOptions.remoteContent ?? true) {
+    else if (!browserIsFirefox && (pdfPuppeteerOptions.remoteContent ?? true)) {
         await page.goto(`data:text/html;base64,${Buffer.from(html).toString('base64')}`, {
             waitUntil: 'networkidle0',
             timeout: pageNavigationTimeoutMillis

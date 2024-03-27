@@ -131,6 +131,22 @@ describe('pdf-puppeteer - firefox', () => {
 
     assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult)
   })
+
+  it('Converts remote HTML to PDF with firefox', async () => {
+    const pdf = await pdfPuppeteer.convertHTMLToPDF(
+      html,
+      { format: 'Letter' },
+      {
+        product: 'firefox'
+      },
+      {
+        cacheBrowser: true,
+        remoteContent: true
+      }
+    )
+
+    assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult)
+  })
 })
 
 describe('pdf-puppeteer - system chrome', () => {
