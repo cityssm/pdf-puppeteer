@@ -10,5 +10,6 @@ export const defaultPdfOptions = Object.freeze({
 export const defaultPdfPuppeteerOptions = Object.freeze({
     cacheBrowser: false,
     remoteContent: true,
-    htmlIsUrl: false
+    htmlIsUrl: false,
+    switchBrowserIfFail: true
 });

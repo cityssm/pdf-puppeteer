@@ -55,6 +55,30 @@ async function launchBrowser(
   }
 }
 
+async function launchBrowserWithFallback(
+  puppeteerOptions: puppeteer.PuppeteerLaunchOptions,
+  switchBrowserIfFail = true
+): Promise<puppeteer.Browser> {
+  try {
+    return await launchBrowser(puppeteerOptions)
+  } catch (error) {
+    if (switchBrowserIfFail) {
+      const fallback =
+        puppeteerOptions.product === 'chrome' ? 'firefox' : 'chrome'
+
+      debug(`Switching to fallback: ${fallback}`)
+
+      return await launchBrowser(
+        Object.assign({}, puppeteerOptions, {
+          product: fallback
+        })
+      )
+    } else {
+      throw error
+    }
+  }
+}
+
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
  * @param {string} html - An HTML string, or a URL.
@@ -112,13 +136,20 @@ export async function convertHTMLToPDF(
         }
       }
 
-      cachedBrowser = await launchBrowser(puppeteerOptions)
+      cachedBrowser = await launchBrowserWithFallback(
+        puppeteerOptions,
+        pdfPuppeteerOptions.switchBrowserIfFail
+      )
+
       cachedBrowserOptions = currentPuppeteerOptions
     }
 
     browser = cachedBrowser
   } else {
-    browser = await launchBrowser(puppeteerOptions)
+    browser = await launchBrowserWithFallback(
+      puppeteerOptions,
+      pdfPuppeteerOptions.switchBrowserIfFail
+    )
   }
 
   /*

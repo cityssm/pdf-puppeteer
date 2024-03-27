@@ -34,6 +34,23 @@ async function launchBrowser(puppeteerOptions) {
         });
     }
 }
+async function launchBrowserWithFallback(puppeteerOptions, switchBrowserIfFail = true) {
+    try {
+        return await launchBrowser(puppeteerOptions);
+    }
+    catch (error) {
+        if (switchBrowserIfFail) {
+            const fallback = puppeteerOptions.product === 'chrome' ? 'firefox' : 'chrome';
+            debug(`Switching to fallback: ${fallback}`);
+            return await launchBrowser(Object.assign({}, puppeteerOptions, {
+                product: fallback
+            }));
+        }
+        else {
+            throw error;
+        }
+    }
+}
 export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppeteerOptions, instancePdfPuppeteerOptions) {
     if (typeof html !== 'string') {
         throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
@@ -55,13 +72,13 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppete
                     cachedBrowser = undefined;
                 }
             }
-            cachedBrowser = await launchBrowser(puppeteerOptions);
+            cachedBrowser = await launchBrowserWithFallback(puppeteerOptions, pdfPuppeteerOptions.switchBrowserIfFail);
             cachedBrowserOptions = currentPuppeteerOptions;
         }
         browser = cachedBrowser;
     }
     else {
-        browser = await launchBrowser(puppeteerOptions);
+        browser = await launchBrowserWithFallback(puppeteerOptions, pdfPuppeteerOptions.switchBrowserIfFail);
     }
     const page = await browser.newPage();
     if (pdfPuppeteerOptions.htmlIsUrl ?? false) {

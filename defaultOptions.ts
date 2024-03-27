@@ -42,10 +42,16 @@ export interface PDFPuppeteerOptions {
    * Default: false
    */
   htmlIsUrl: boolean
+
+  /**
+   * Switch from 'chrome' to 'firefox', or vice versa, if unable to launch the browser.
+   */
+  switchBrowserIfFail: boolean
 }
 
 export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = Object.freeze({
   cacheBrowser: false,
   remoteContent: true,
-  htmlIsUrl: false
+  htmlIsUrl: false,
+  switchBrowserIfFail: true
 })
