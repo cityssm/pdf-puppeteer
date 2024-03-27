@@ -70,7 +70,8 @@ async function launchBrowserWithFallback(
 
       return await launchBrowser(
         Object.assign({}, puppeteerOptions, {
-          product: fallback
+          product: fallback,
+          executablePath: undefined
         })
       )
     } else {

@@ -43,7 +43,8 @@ async function launchBrowserWithFallback(puppeteerOptions, switchBrowserIfFail =
             const fallback = puppeteerOptions.product === 'chrome' ? 'firefox' : 'chrome';
             debug(`Switching to fallback: ${fallback}`);
             return await launchBrowser(Object.assign({}, puppeteerOptions, {
-                product: fallback
+                product: fallback,
+                executablePath: undefined
             }));
         }
         else {
