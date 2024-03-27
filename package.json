@@ -67,6 +67,7 @@
   "dependencies": {
     "debug": "^4.3.4",
     "exit-hook": "^4.0.0",
+    "get-browser-path": "^1.1.0",
     "puppeteer": "^22.6.1"
   },
   "devDependencies": {

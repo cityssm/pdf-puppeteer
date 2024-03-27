@@ -10,6 +10,10 @@ const html = `<html>
 const toStringResult = '[object Uint8Array]'
 
 describe('pdf-puppeteer', () => {
+  after(async () => {
+    await pdfPuppeteer.closeCachedBrowser()
+  })
+
   // Loose check that this is not erroring, basically
   // TODO find way to compare values of PDF's generated with returned array buffer
   it('Converts HTML to PDF with a new browser', async () => {
@@ -67,6 +71,23 @@ describe('pdf-puppeteer', () => {
       },
       {
         cacheBrowser: true
+      }
+    )
+
+    assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult)
+  })
+
+  it('Converts HTML to PDF with the system browser', async () => {
+    const pdf = await pdfPuppeteer.convertHTMLToPDF(
+      html,
+      undefined,
+      {
+        product: 'chrome',
+        executablePath: 'INVALID_PATH'
+      },
+      {
+        cacheBrowser: false,
+        remoteContent: false
       }
     )
 

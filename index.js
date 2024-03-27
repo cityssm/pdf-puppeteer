@@ -1,21 +1,26 @@
 import Debug from 'debug';
 import exitHook from 'exit-hook';
+import getBrowserPath from 'get-browser-path';
 import * as puppeteer from 'puppeteer';
+import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions } from './defaultOptions.js';
 const debug = Debug('pdf-puppeteer');
-export const defaultPuppeteerOptions = {
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    headless: true
-};
-export const defaultPdfOptions = {
-    format: 'Letter'
-};
-export const defaultPdfPuppeteerOptions = {
-    cacheBrowser: false,
-    remoteContent: true,
-    htmlIsUrl: false
-};
 let cachedBrowser;
 let cachedBrowserOptions;
+async function launchBrowser(puppeteerOptions) {
+    try {
+        return await puppeteer.launch(puppeteerOptions);
+    }
+    catch (error) {
+        if ((puppeteerOptions.product ?? 'chrome') === 'chrome') {
+            const chromePath = getBrowserPath('Chrome') ?? '';
+            debug(chromePath);
+            if (chromePath !== '') {
+                return await puppeteer.launch(Object.assign({}, puppeteerOptions, { executablePath: chromePath }));
+            }
+        }
+        throw error;
+    }
+}
 export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppeteerOptions, instancePdfPuppeteerOptions) {
     if (typeof html !== 'string') {
         throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
@@ -37,13 +42,13 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppete
                     cachedBrowser = undefined;
                 }
             }
-            cachedBrowser = await puppeteer.launch(puppeteerOptions);
+            cachedBrowser = await launchBrowser(puppeteerOptions);
             cachedBrowserOptions = currentPuppeteerOptions;
         }
         browser = cachedBrowser;
     }
     else {
-        browser = await puppeteer.launch(puppeteerOptions);
+        browser = await launchBrowser(puppeteerOptions);
     }
     const page = await browser.newPage();
     if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
@@ -70,13 +75,17 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppete
 export default convertHTMLToPDF;
 export async function closeCachedBrowser() {
     if (cachedBrowser !== undefined) {
-        await cachedBrowser.close();
+        try {
+            await cachedBrowser.close();
+        }
+        catch { }
         cachedBrowser = undefined;
     }
 }
 export function hasCachedBrowser() {
     return cachedBrowser !== undefined;
 }
+export { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions } from './defaultOptions.js';
 exitHook(() => {
     debug('Running exit hook.');
     void closeCachedBrowser();

@@ -6,6 +6,9 @@ const html = `<html>
   </html>`;
 const toStringResult = '[object Uint8Array]';
 describe('pdf-puppeteer', () => {
+    after(async () => {
+        await pdfPuppeteer.closeCachedBrowser();
+    });
     it('Converts HTML to PDF with a new browser', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, undefined, {
             cacheBrowser: false,
@@ -36,6 +39,16 @@ describe('pdf-puppeteer', () => {
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         }, {
             cacheBrowser: true
+        });
+        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
+    });
+    it('Converts HTML to PDF with the system browser', async () => {
+        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+            product: 'chrome',
+            executablePath: 'INVALID_PATH'
+        }, {
+            cacheBrowser: false,
+            remoteContent: false
         });
         assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });

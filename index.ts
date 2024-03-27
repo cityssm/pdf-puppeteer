@@ -1,60 +1,50 @@
 import Debug from 'debug'
 import exitHook from 'exit-hook'
+import getBrowserPath from 'get-browser-path'
 import * as puppeteer from 'puppeteer'
 
+import {
+  type PDFPuppeteerOptions,
+  defaultPdfOptions,
+  defaultPdfPuppeteerOptions,
+  defaultPuppeteerOptions
+} from './defaultOptions.js'
+
 const debug = Debug('pdf-puppeteer')
-
-/*
- * Puppeteer Options
- */
-
-export const defaultPuppeteerOptions: puppeteer.PuppeteerLaunchOptions = {
-  args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  headless: true
-}
-
-/*
- * PDF Options
- */
-
-export const defaultPdfOptions: puppeteer.PDFOptions = {
-  format: 'Letter'
-}
-
-/*
- * PDF Puppeteer Options
- */
-
-interface PDFPuppeteerOptions {
-  /**
-   * Whether or not the Puppeteer browser instance should be saved between calls.
-   * Default: false
-   */
-  cacheBrowser: boolean
-
-  /**
-   * Whether or not the given HTML references remote content, like images and stylesheets.
-   * Speed can be increased when set to false.
-   * Default: true
-   */
-  remoteContent: boolean
-
-  /**
-   * Whether or not the HTML parameter is actually a URL.
-   * Default: false
-   */
-  htmlIsUrl: boolean
-}
-
-export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
-  cacheBrowser: false,
-  remoteContent: true,
-  htmlIsUrl: false
-}
 
 let cachedBrowser: puppeteer.Browser | undefined
 let cachedBrowserOptions: string
 
+async function launchBrowser(
+  puppeteerOptions: puppeteer.PuppeteerLaunchOptions
+): Promise<puppeteer.Browser> {
+  try {
+    return await puppeteer.launch(puppeteerOptions)
+  } catch (error) {
+    if ((puppeteerOptions.product ?? 'chrome') === 'chrome') {
+      const chromePath = getBrowserPath('Chrome') ?? ''
+
+      debug(chromePath)
+
+      if (chromePath !== '') {
+        return await puppeteer.launch(
+          Object.assign({}, puppeteerOptions, { executablePath: chromePath })
+        )
+      }
+    }
+
+    throw error
+  }
+}
+
+/**
+ * Converts HTML or a webpage into HTML using Puppeteer.
+ * @param {string} html - An HTML string, or a URL.
+ * @param {puppeteer.PDFOptions} instancePdfOptions - PDF options for Puppeteer.
+ * @param {puppeteer.PuppeteerLaunchOptions} instancePuppeteerOptions - Puppeteer browser options.
+ * @param {Partial<PDFPuppeteerOptions>} instancePdfPuppeteerOptions - pdf-puppeteer options.
+ * @returns {Promise<Buffer>} - A Buffer of PDF data.
+ */
 export async function convertHTMLToPDF(
   html: string,
   instancePdfOptions?: puppeteer.PDFOptions,
@@ -104,13 +94,13 @@ export async function convertHTMLToPDF(
         }
       }
 
-      cachedBrowser = await puppeteer.launch(puppeteerOptions)
+      cachedBrowser = await launchBrowser(puppeteerOptions)
       cachedBrowserOptions = currentPuppeteerOptions
     }
 
     browser = cachedBrowser
   } else {
-    browser = await puppeteer.launch(puppeteerOptions)
+    browser = await launchBrowser(puppeteerOptions)
   }
 
   /*
@@ -148,16 +138,32 @@ export async function convertHTMLToPDF(
 
 export default convertHTMLToPDF
 
+/**
+ * Closes any cached browser instances.
+ */
 export async function closeCachedBrowser(): Promise<void> {
   if (cachedBrowser !== undefined) {
-    await cachedBrowser.close()
+    try {
+      await cachedBrowser.close()
+    } catch {}
     cachedBrowser = undefined
   }
 }
 
+/**
+ * Checks for any cached browser instances.
+ * @returns {boolean} - True is a cached browser instance exists.
+ */
 export function hasCachedBrowser(): boolean {
   return cachedBrowser !== undefined
 }
+
+export {
+  type PDFPuppeteerOptions,
+  defaultPdfOptions,
+  defaultPdfPuppeteerOptions,
+  defaultPuppeteerOptions
+} from './defaultOptions.js'
 
 exitHook(() => {
   debug('Running exit hook.')
