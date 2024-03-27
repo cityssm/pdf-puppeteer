@@ -9,7 +9,7 @@ const html = `<html>
 
 const toStringResult = '[object Uint8Array]'
 
-describe('pdf-puppeteer', () => {
+describe('pdf-puppeteer - cached browser', () => {
   after(async () => {
     await pdfPuppeteer.closeCachedBrowser()
   })
@@ -115,7 +115,7 @@ describe('pdf-puppeteer', () => {
   })
 })
 
-describe('TESTING - pdf-puppeteer - firefox', () => {
+describe('pdf-puppeteer - firefox', () => {
   it('Converts HTML to PDF with firefox', async () => {
     const pdf = await pdfPuppeteer.convertHTMLToPDF(
       html,
@@ -133,7 +133,7 @@ describe('TESTING - pdf-puppeteer - firefox', () => {
   })
 })
 
-describe('TESTING - pdf-puppeteer - system chrome', () => {
+describe('pdf-puppeteer - system chrome', () => {
   it('Converts HTML to PDF with the system browser', async () => {
     const pdf = await pdfPuppeteer.convertHTMLToPDF(
       html,

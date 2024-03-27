@@ -5,7 +5,7 @@ const html = `<html>
   <body><h1>Hello World</h1></body>
   </html>`;
 const toStringResult = '[object Uint8Array]';
-describe('pdf-puppeteer', () => {
+describe('pdf-puppeteer - cached browser', () => {
     after(async () => {
         await pdfPuppeteer.closeCachedBrowser();
     });
@@ -71,7 +71,7 @@ describe('pdf-puppeteer', () => {
         assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false);
     });
 });
-describe('TESTING - pdf-puppeteer - firefox', () => {
+describe('pdf-puppeteer - firefox', () => {
     it('Converts HTML to PDF with firefox', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             product: 'firefox'
@@ -82,7 +82,7 @@ describe('TESTING - pdf-puppeteer - firefox', () => {
         assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
 });
-describe('TESTING - pdf-puppeteer - system chrome', () => {
+describe('pdf-puppeteer - system chrome', () => {
     it('Converts HTML to PDF with the system browser', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             product: 'chrome',
