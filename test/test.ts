@@ -115,7 +115,7 @@ describe('pdf-puppeteer', () => {
   })
 })
 
-describe('pdf-puppeteer - with system browser', () => {
+describe('pdf-puppeteer - system chrome browser', () => {
   it('Converts HTML to PDF with the system browser', async () => {
     try {
       const pdf = await pdfPuppeteer.convertHTMLToPDF(
