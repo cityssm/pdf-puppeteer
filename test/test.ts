@@ -157,8 +157,7 @@ describe('pdf-puppeteer - firefox', () => {
       'https://cityssm.github.io/',
       undefined,
       {
-        product: 'firefox',
-        headless: false
+        product: 'firefox'
       },
       {
         htmlIsUrl: true

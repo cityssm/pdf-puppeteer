@@ -95,8 +95,7 @@ describe('pdf-puppeteer - firefox', () => {
     });
     it('Converts a website to PDF with firefox', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF('https://cityssm.github.io/', undefined, {
-            product: 'firefox',
-            headless: false
+            product: 'firefox'
         }, {
             htmlIsUrl: true
         });
