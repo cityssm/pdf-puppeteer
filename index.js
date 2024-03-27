@@ -1,6 +1,6 @@
+import browserLauncher from '@httptoolkit/browser-launcher';
 import Debug from 'debug';
 import exitHook from 'exit-hook';
-import getBrowserPath from 'get-browser-path';
 import * as puppeteer from 'puppeteer';
 import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions } from './defaultOptions.js';
 const debug = Debug('pdf-puppeteer');
@@ -11,14 +11,21 @@ async function launchBrowser(puppeteerOptions) {
         return await puppeteer.launch(puppeteerOptions);
     }
     catch (error) {
-        if ((puppeteerOptions.product ?? 'chrome') === 'chrome') {
-            const chromePath = getBrowserPath('Chrome') ?? '';
-            debug(chromePath);
-            if (chromePath !== '') {
-                return await puppeteer.launch(Object.assign({}, puppeteerOptions, { executablePath: chromePath }));
-            }
-        }
-        throw error;
+        return await new Promise((resolve) => {
+            browserLauncher.detect((browsers) => {
+                const browser = browsers.find((possibleBrowser) => {
+                    return possibleBrowser.name === puppeteerOptions.product;
+                });
+                if (browser === undefined) {
+                    throw error;
+                }
+                else {
+                    resolve(puppeteer.launch(Object.assign({}, {
+                        executablePath: browser.command
+                    }, puppeteerOptions)));
+                }
+            });
+        });
     }
 }
 export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppeteerOptions, instancePdfPuppeteerOptions) {

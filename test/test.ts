@@ -116,14 +116,13 @@ describe('pdf-puppeteer', () => {
 })
 
 describe('TESTING - pdf-puppeteer - firefox', () => {
-  it.skip('Converts HTML to PDF with firefox', async () => {
+  it('Converts HTML to PDF with firefox', async () => {
     try {
       const pdf = await pdfPuppeteer.convertHTMLToPDF(
         html,
         undefined,
         {
-          product: 'firefox',
-          executablePath: 'C:\\Program Files\\Mozilla Firefox\\firefox.exe'
+          product: 'firefox'
         },
         {
           cacheBrowser: false,
