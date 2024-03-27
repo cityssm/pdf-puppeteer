@@ -151,6 +151,22 @@ describe('pdf-puppeteer - firefox', () => {
 
     assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult)
   })
+
+  it('Converts a website to PDF with firefox', async () => {
+    const pdf = await pdfPuppeteer.convertHTMLToPDF(
+      'https://cityssm.github.io/',
+      undefined,
+      {
+        product: 'firefox',
+        headless: false
+      },
+      {
+        htmlIsUrl: true
+      }
+    )
+
+    assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult)
+  })
 })
 
 describe('pdf-puppeteer - system chrome', () => {

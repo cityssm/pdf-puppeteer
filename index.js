@@ -40,13 +40,13 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppete
     const remoteContent = pdfPuppeteerOptions.remoteContent ?? true;
     if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
         await page.goto(html, {
-            waitUntil: 'networkidle0',
+            waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
             timeout: urlNavigationTimeoutMillis
         });
     }
-    else if (!browserIsFirefox && remoteContent) {
+    else if (remoteContent) {
         await page.goto(`data:text/html;base64,${Buffer.from(html).toString('base64')}`, {
-            waitUntil: 'networkidle0',
+            waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
             timeout: urlNavigationTimeoutMillis
         });
     }
