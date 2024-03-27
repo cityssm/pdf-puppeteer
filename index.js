@@ -26,9 +26,9 @@ async function launchBrowser(puppeteerOptions) {
                 else {
                     debug('Using system browser:');
                     debug(browser);
-                    resolve(puppeteer.launch(Object.assign({
+                    resolve(puppeteer.launch(Object.assign({}, puppeteerOptions, {
                         executablePath: browser.command
-                    }, puppeteerOptions)));
+                    })));
                 }
             });
         });
@@ -42,10 +42,10 @@ async function launchBrowserWithFallback(puppeteerOptions, switchBrowserIfFail =
         if (switchBrowserIfFail) {
             const fallback = puppeteerOptions.product === 'chrome' ? 'firefox' : 'chrome';
             debug(`Switching to fallback: ${fallback}`);
-            const fallbackPuppeteerOptions = Object.assign({
+            const fallbackPuppeteerOptions = Object.assign({}, puppeteerOptions, {
                 product: fallback,
                 executablePath: undefined
-            }, puppeteerOptions);
+            });
             debug(fallbackPuppeteerOptions);
             return await launchBrowser(fallbackPuppeteerOptions);
         }

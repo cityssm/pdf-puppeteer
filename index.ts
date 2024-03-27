@@ -40,12 +40,9 @@ async function launchBrowser(
           debug(browser)
           resolve(
             puppeteer.launch(
-              Object.assign(
-                {
-                  executablePath: browser.command
-                },
-                puppeteerOptions
-              )
+              Object.assign({}, puppeteerOptions, {
+                executablePath: browser.command
+              })
             )
           )
         }
@@ -67,13 +64,10 @@ async function launchBrowserWithFallback(
 
       debug(`Switching to fallback: ${fallback}`)
 
-      const fallbackPuppeteerOptions = Object.assign(
-        {
-          product: fallback,
-          executablePath: undefined
-        },
-        puppeteerOptions
-      )
+      const fallbackPuppeteerOptions = Object.assign({}, puppeteerOptions, {
+        product: fallback,
+        executablePath: undefined
+      })
 
       debug(fallbackPuppeteerOptions)
 
