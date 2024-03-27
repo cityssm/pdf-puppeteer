@@ -12,7 +12,7 @@ import {
   urlNavigationTimeoutMillis
 } from './defaultOptions.js'
 
-const debug = Debug('pdf-puppeteer')
+const debug = Debug('pdf-puppeteer:index')
 
 let cachedBrowser: puppeteer.Browser | undefined
 let cachedBrowserOptions: string

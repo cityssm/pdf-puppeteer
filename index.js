@@ -2,7 +2,7 @@ import Debug from 'debug';
 import exitHook from 'exit-hook';
 import { launchBrowserWithFallback } from './browser.js';
 import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
-const debug = Debug('pdf-puppeteer');
+const debug = Debug('pdf-puppeteer:index');
 let cachedBrowser;
 let cachedBrowserOptions;
 export async function convertHTMLToPDF(html, instancePdfOptions, instancePuppeteerOptions, instancePdfPuppeteerOptions) {
