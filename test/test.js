@@ -72,6 +72,9 @@ describe('pdf-puppeteer - cached browser', () => {
     });
 });
 describe('pdf-puppeteer - firefox', () => {
+    after(async () => {
+        await pdfPuppeteer.closeCachedBrowser();
+    });
     it('Converts HTML to PDF with firefox', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             product: 'firefox'
@@ -92,6 +95,9 @@ describe('pdf-puppeteer - firefox', () => {
     });
 });
 describe('pdf-puppeteer - system chrome', () => {
+    after(async () => {
+        await pdfPuppeteer.closeCachedBrowser();
+    });
     it('Converts HTML to PDF with the system browser', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             product: 'chrome',
