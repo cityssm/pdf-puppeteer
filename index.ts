@@ -32,11 +32,11 @@ async function launchBrowser(
         })
 
         if (browser === undefined) {
-          debug('Available browsers:')
+          debug(`No available browsers for ${puppeteerOptions.product}:`)
           debug(browsers)
           throw error
         } else {
-          debug('Using browser:')
+          debug('Using system browser:')
           debug(browser)
           resolve(
             puppeteer.launch(
