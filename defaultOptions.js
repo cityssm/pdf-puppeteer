@@ -1,7 +1,8 @@
 export const defaultPuppeteerOptions = Object.freeze({
     product: 'chrome',
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    headless: true
+    headless: true,
+    timeout: 60_000
 });
 export const defaultPdfOptions = Object.freeze({
     format: 'Letter'

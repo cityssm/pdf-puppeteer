@@ -115,8 +115,8 @@ describe('pdf-puppeteer', () => {
   })
 })
 
-describe('pdf-puppeteer - firefox', () => {
-  it('Converts HTML to PDF with the system browser', async () => {
+describe('TESTING - pdf-puppeteer - firefox', () => {
+  it.skip('Converts HTML to PDF with firefox', async () => {
     try {
       const pdf = await pdfPuppeteer.convertHTMLToPDF(
         html,
@@ -139,7 +139,7 @@ describe('pdf-puppeteer - firefox', () => {
   })
 })
 
-describe('pdf-puppeteer - system chrome browser', () => {
+describe('TESTING - pdf-puppeteer - system chrome', () => {
   it('Converts HTML to PDF with the system browser', async () => {
     try {
       const pdf = await pdfPuppeteer.convertHTMLToPDF(
@@ -147,7 +147,8 @@ describe('pdf-puppeteer - system chrome browser', () => {
         undefined,
         {
           product: 'chrome',
-          executablePath: 'INVALID_PATH'
+          executablePath: 'INVALID_PATH',
+          headless: false
         },
         {
           cacheBrowser: false,

@@ -7,7 +7,8 @@ import type { PDFOptions, PuppeteerLaunchOptions } from 'puppeteer'
 export const defaultPuppeteerOptions: PuppeteerLaunchOptions = Object.freeze({
   product: 'chrome',
   args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  headless: true
+  headless: true,
+  timeout: 60_000
 })
 
 /*
