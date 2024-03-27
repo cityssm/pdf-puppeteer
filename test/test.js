@@ -84,19 +84,13 @@ describe('TESTING - pdf-puppeteer - firefox', () => {
 });
 describe('TESTING - pdf-puppeteer - system chrome', () => {
     it('Converts HTML to PDF with the system browser', async () => {
-        try {
-            const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-                product: 'chrome',
-                executablePath: 'INVALID_PATH'
-            }, {
-                cacheBrowser: false,
-                remoteContent: false
-            });
-            assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
-        }
-        catch {
-            console.log('System browser not found.');
-            assert.ok(true);
-        }
+        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+            product: 'chrome',
+            executablePath: 'INVALID_PATH'
+        }, {
+            cacheBrowser: false,
+            remoteContent: false
+        });
+        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
 });
