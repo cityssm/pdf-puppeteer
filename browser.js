@@ -1,14 +1,11 @@
-import os from 'node:os';
-import process from 'node:process';
 import browserLauncher from '@httptoolkit/browser-launcher';
 import Debug from 'debug';
 import * as puppeteer from 'puppeteer';
+import { isUnsupportedChrome } from './defaultOptions.js';
 const debug = Debug('pdf-puppeteer:browser');
-const isUnsupportedChrome = process.platform === 'win32' &&
-    Number.parseInt(os.release().split('.')[0]) < 10;
 async function launchBrowser(puppeteerOptions) {
     if (isUnsupportedChrome && puppeteerOptions.product === 'chrome') {
-        throw new Error(`Puppeteer does not support Chrome on ${process.platform} ${os.release()}`);
+        throw new Error('Puppeteer does not support Chrome on this OS.');
     }
     try {
         return await puppeteer.launch(puppeteerOptions);
