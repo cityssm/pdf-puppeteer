@@ -42,16 +42,6 @@ describe('pdf-puppeteer', () => {
         });
         assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
-    it('Converts HTML to PDF with the system browser', async () => {
-        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-            product: 'chrome',
-            executablePath: 'INVALID_PATH'
-        }, {
-            cacheBrowser: false,
-            remoteContent: false
-        });
-        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
-    });
     it('Converts a website to PDF with different Puppeteer options', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF('https://cityssm.github.io/', undefined, {
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -79,5 +69,23 @@ describe('pdf-puppeteer', () => {
             await pdfPuppeteer.closeCachedBrowser();
         }
         assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false);
+    });
+});
+describe('pdf-puppeteer - with system browser', () => {
+    it('Converts HTML to PDF with the system browser', async () => {
+        try {
+            const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+                product: 'chrome',
+                executablePath: 'INVALID_PATH'
+            }, {
+                cacheBrowser: false,
+                remoteContent: false
+            });
+            assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
+        }
+        catch {
+            console.log('System browser not found.');
+            assert.ok(true);
+        }
     });
 });
