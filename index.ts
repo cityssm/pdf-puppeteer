@@ -24,7 +24,11 @@ async function launchBrowser(
     return await new Promise((resolve) => {
       browserLauncher.detect((browsers) => {
         const browser = browsers.find((possibleBrowser) => {
-          return possibleBrowser.name === puppeteerOptions.product || (puppeteerOptions.product === 'chrome' && possibleBrowser.name === 'chromium')
+          return (
+            possibleBrowser.type === puppeteerOptions.product ||
+            (puppeteerOptions.product === 'chrome' &&
+              possibleBrowser.name === 'chromium')
+          )
         })
 
         if (browser === undefined) {
@@ -32,6 +36,8 @@ async function launchBrowser(
           debug(browsers)
           throw error
         } else {
+          debug('Using browser:')
+          debug(browser)
           resolve(
             puppeteer.launch(
               Object.assign(
