@@ -1,11 +1,18 @@
+import os from 'node:os'
+import process from 'node:process'
+
 import type { PDFOptions, PuppeteerLaunchOptions } from 'puppeteer'
+
+export const isUnsupportedChrome =
+  process.platform === 'win32' &&
+  Number.parseInt(os.release().split('.')[0]) < 10
 
 /*
  * Puppeteer Options
  */
 
 export const defaultPuppeteerOptions: PuppeteerLaunchOptions = Object.freeze({
-  product: 'chrome',
+  product: isUnsupportedChrome ? 'firefox' : 'chrome',
   args: ['--no-sandbox', '--disable-setuid-sandbox'],
   headless: true,
   timeout: 60_000
