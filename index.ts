@@ -8,7 +8,8 @@ import {
   defaultPdfOptions,
   defaultPdfPuppeteerOptions,
   defaultPuppeteerOptions,
-  pageNavigationTimeoutMillis
+  htmlNavigationTimeoutMillis,
+  urlNavigationTimeoutMillis
 } from './defaultOptions.js'
 
 const debug = Debug('pdf-puppeteer')
@@ -98,22 +99,26 @@ export async function convertHTMLToPDF(
 
   const page = await browser.newPage()
 
+  const remoteContent = pdfPuppeteerOptions.remoteContent ?? true
+
   if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
     await page.goto(html, {
       waitUntil: 'networkidle0',
-      timeout: pageNavigationTimeoutMillis
+      timeout: urlNavigationTimeoutMillis
     })
-  } else if (!browserIsFirefox && (pdfPuppeteerOptions.remoteContent ?? true)) {
+  } else if (!browserIsFirefox && remoteContent) {
     await page.goto(
       `data:text/html;base64,${Buffer.from(html).toString('base64')}`,
       {
         waitUntil: 'networkidle0',
-        timeout: pageNavigationTimeoutMillis
+        timeout: urlNavigationTimeoutMillis
       }
     )
   } else {
     await page.setContent(html, {
-      timeout: pageNavigationTimeoutMillis
+      timeout: remoteContent
+        ? urlNavigationTimeoutMillis
+        : htmlNavigationTimeoutMillis
     })
   }
 
