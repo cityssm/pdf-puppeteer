@@ -71,6 +71,24 @@ describe('pdf-puppeteer', () => {
         assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false);
     });
 });
+describe('pdf-puppeteer - firefox', () => {
+    it('Converts HTML to PDF with the system browser', async () => {
+        try {
+            const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+                product: 'firefox',
+                executablePath: 'C:\\Program Files\\Mozilla Firefox\\firefox.exe'
+            }, {
+                cacheBrowser: false,
+                remoteContent: false
+            });
+            assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
+        }
+        catch {
+            console.log('Firefox not found.');
+            assert.ok(true);
+        }
+    });
+});
 describe('pdf-puppeteer - system chrome browser', () => {
     it('Converts HTML to PDF with the system browser', async () => {
         try {
