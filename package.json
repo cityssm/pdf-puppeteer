@@ -10,7 +10,7 @@
   },
   "scripts": {
     "test": "cross-env DEBUG=pdf-puppeteer mocha --timeout 30000 --exit",
-    "coverage": "cross-env DEBUG=pdf-puppeteer c8 mocha --timeout 30000 --exit"
+    "coverage": "cross-env DEBUG=pdf-puppeteer c8 --reporter=lcov --reporter=text --reporter=text-summary mocha --timeout 30000 --exit"
   },
   "repository": {
     "type": "git",
