@@ -117,24 +117,19 @@ describe('pdf-puppeteer', () => {
 
 describe('TESTING - pdf-puppeteer - firefox', () => {
   it('Converts HTML to PDF with firefox', async () => {
-    try {
-      const pdf = await pdfPuppeteer.convertHTMLToPDF(
-        html,
-        undefined,
-        {
-          product: 'firefox'
-        },
-        {
-          cacheBrowser: false,
-          remoteContent: false
-        }
-      )
+    const pdf = await pdfPuppeteer.convertHTMLToPDF(
+      html,
+      undefined,
+      {
+        product: 'firefox'
+      },
+      {
+        cacheBrowser: false,
+        remoteContent: false
+      }
+    )
 
-      assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult)
-    } catch {
-      console.log('Firefox not found.')
-      assert.ok(true)
-    }
+    assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult)
   })
 })
 
@@ -146,8 +141,7 @@ describe('TESTING - pdf-puppeteer - system chrome', () => {
         undefined,
         {
           product: 'chrome',
-          executablePath: 'INVALID_PATH',
-          headless: false
+          executablePath: 'INVALID_PATH'
         },
         {
           cacheBrowser: false,
