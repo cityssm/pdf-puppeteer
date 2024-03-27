@@ -8,3 +8,4 @@ export interface PDFPuppeteerOptions {
     switchBrowserIfFail: boolean;
 }
 export declare const defaultPdfPuppeteerOptions: PDFPuppeteerOptions;
+export declare const pageNavigationTimeoutMillis = 60000;

@@ -13,3 +13,4 @@ export const defaultPdfPuppeteerOptions = Object.freeze({
     htmlIsUrl: false,
     switchBrowserIfFail: true
 });
+export const pageNavigationTimeoutMillis = 60_000;

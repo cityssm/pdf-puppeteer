@@ -1,96 +1,20 @@
-import os from 'node:os'
-import process from 'node:process'
-
-import browserLauncher from '@httptoolkit/browser-launcher'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
-import * as puppeteer from 'puppeteer'
+import type * as puppeteer from 'puppeteer'
 
+import { launchBrowserWithFallback } from './browser.js'
 import {
   type PDFPuppeteerOptions,
   defaultPdfOptions,
   defaultPdfPuppeteerOptions,
-  defaultPuppeteerOptions
+  defaultPuppeteerOptions,
+  pageNavigationTimeoutMillis
 } from './defaultOptions.js'
 
 const debug = Debug('pdf-puppeteer')
 
 let cachedBrowser: puppeteer.Browser | undefined
 let cachedBrowserOptions: string
-
-const isUnsupportedChrome =
-  process.platform === 'win32' &&
-  Number.parseInt(os.release().split('.')[0]) < 10
-
-async function launchBrowser(
-  puppeteerOptions: puppeteer.PuppeteerLaunchOptions
-): Promise<puppeteer.Browser> {
-  if (isUnsupportedChrome && puppeteerOptions.product === 'chrome') {
-    throw new Error(
-      `Puppeteer does not support Chrome on ${process.platform} ${os.release()}`
-    )
-  }
-
-  try {
-    return await puppeteer.launch(puppeteerOptions)
-  } catch (error) {
-    return await new Promise((resolve) => {
-      browserLauncher.detect((browsers) => {
-        const browser = browsers.find((possibleBrowser) => {
-          return (
-            possibleBrowser.type === puppeteerOptions.product ||
-            (puppeteerOptions.product === 'chrome' &&
-              possibleBrowser.name === 'chromium')
-          )
-        })
-
-        if (browser === undefined) {
-          debug(`No available browsers for ${puppeteerOptions.product}:`)
-          debug(browsers)
-          throw error
-        } else {
-          debug('Using system browser:')
-          debug(browser)
-          resolve(
-            puppeteer.launch(
-              Object.assign({}, puppeteerOptions, {
-                executablePath: browser.command
-              })
-            )
-          )
-        }
-      })
-    })
-  }
-}
-
-async function launchBrowserWithFallback(
-  puppeteerOptions: puppeteer.PuppeteerLaunchOptions,
-  switchBrowserIfFail = true
-): Promise<puppeteer.Browser> {
-  try {
-    return await launchBrowser(puppeteerOptions)
-  } catch (error) {
-    if (switchBrowserIfFail) {
-      const fallback =
-        puppeteerOptions.product === 'chrome' ? 'firefox' : 'chrome'
-
-      debug(`Switching to fallback: ${fallback}`)
-
-      const fallbackPuppeteerOptions = Object.assign({}, puppeteerOptions, {
-        product: fallback
-      })
-
-      delete fallbackPuppeteerOptions.executablePath
-
-      debug(fallbackPuppeteerOptions)
-
-      return await launchBrowser(fallbackPuppeteerOptions)
-    } else {
-      throw error
-    }
-  }
-}
 
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
@@ -172,17 +96,21 @@ export async function convertHTMLToPDF(
 
   if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
     await page.goto(html, {
-      waitUntil: 'networkidle0'
+      waitUntil: 'networkidle0',
+      timeout: pageNavigationTimeoutMillis
     })
   } else if (pdfPuppeteerOptions.remoteContent ?? true) {
     await page.goto(
       `data:text/html;base64,${Buffer.from(html).toString('base64')}`,
       {
-        waitUntil: 'networkidle0'
+        waitUntil: 'networkidle0',
+        timeout: pageNavigationTimeoutMillis
       }
     )
   } else {
-    await page.setContent(html)
+    await page.setContent(html, {
+      timeout: pageNavigationTimeoutMillis
+    })
   }
 
   const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions)
