@@ -1,2 +1,2 @@
 import * as puppeteer from 'puppeteer';
-export declare function launchBrowserWithFallback(puppeteerOptions: puppeteer.PuppeteerLaunchOptions, switchBrowserIfFail?: boolean): Promise<puppeteer.Browser>;
+export declare function launchBrowser(forceUseSystemBrowser?: boolean): Promise<puppeteer.Browser>;

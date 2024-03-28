@@ -1,81 +1,73 @@
-import browserLauncher from '@httptoolkit/browser-launcher'
-import Debug from 'debug'
+import {
+  chromeWebBrowserTypes,
+  getInstalledWebBrowsers
+} from '@cityssm/web-browser-info'
 import * as puppeteer from 'puppeteer'
 
-import { isUnsupportedChrome } from './defaultOptions.js'
-
-const debug = Debug('pdf-puppeteer:browser')
-
-async function launchBrowser(
-  puppeteerOptions: puppeteer.PuppeteerLaunchOptions
-): Promise<puppeteer.Browser> {
-  if (isUnsupportedChrome && puppeteerOptions.product === 'chrome') {
-    throw new Error('Puppeteer does not support Chrome on this OS.')
-  }
-
-  try {
-    return await puppeteer.launch(puppeteerOptions)
-  } catch (error) {
-    return await new Promise((resolve) => {
-      browserLauncher.detect((browsers) => {
-        const browser = browsers.find((possibleBrowser) => {
-          return (
-            possibleBrowser.type === puppeteerOptions.product ||
-            (puppeteerOptions.product === 'chrome' &&
-              possibleBrowser.name === 'chromium')
-          )
-        })
-
-        if (browser === undefined) {
-          debug(`No available browsers for ${puppeteerOptions.product}:`)
-          debug(browsers)
-          throw error
-        } else {
-          debug('Using system browser:')
-          debug(browser)
-          resolve(
-            puppeteer.launch(
-              Object.assign({}, puppeteerOptions, {
-                executablePath: browser.command
-              })
-            )
-          )
-        }
-      })
-    })
-  }
+const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
+  timeout: 60_000
 }
 
-/**
- * Opens a new Puppeteer browser instance.
- * @param {puppeteer.PuppeteerLaunchOptions} puppeteerOptions - Puppeteer options.
- * @param {boolean} switchBrowserIfFail - When true, try another browser before failing.
- * @returns {puppeteer.Browser} - A Puppeteer browser instance.
- */
-export async function launchBrowserWithFallback(
-  puppeteerOptions: puppeteer.PuppeteerLaunchOptions,
-  switchBrowserIfFail: boolean = true
+let fallbackPuppeteerLaunchOptions: puppeteer.LaunchOptions[] = []
+let selectedFallbackIndex = -1
+
+async function loadFallbackBrowsers(): Promise<puppeteer.LaunchOptions[]> {
+  if (fallbackPuppeteerLaunchOptions.length === 0) {
+    const tempFallbackPuppeteerLaunchOptions: puppeteer.LaunchOptions[] = []
+
+    const fallbackChromeBrowsers = await getInstalledWebBrowsers(
+      chromeWebBrowserTypes,
+      110
+    )
+
+    for (const chromeBrowser of fallbackChromeBrowsers) {
+      tempFallbackPuppeteerLaunchOptions.push({
+        product: 'chrome',
+        executablePath: chromeBrowser.command,
+        timeout: defaultPuppeteerOptions.timeout
+      })
+    }
+
+    const fallbackFirefoxBrowsers = await getInstalledWebBrowsers('firefox')
+
+    for (const firefoxBrowser of fallbackFirefoxBrowsers) {
+      tempFallbackPuppeteerLaunchOptions.push({
+        product: 'firefox',
+        executablePath: firefoxBrowser.command,
+        timeout: defaultPuppeteerOptions.timeout
+      })
+    }
+
+    fallbackPuppeteerLaunchOptions = tempFallbackPuppeteerLaunchOptions
+  }
+
+  return fallbackPuppeteerLaunchOptions
+}
+
+export async function launchBrowser(
+  forceUseSystemBrowser: boolean = false
 ): Promise<puppeteer.Browser> {
   try {
-    return await launchBrowser(puppeteerOptions)
-  } catch (error) {
-    if (switchBrowserIfFail) {
-      const fallback =
-        puppeteerOptions.product === 'chrome' ? 'firefox' : 'chrome'
-
-      debug(`Switching to fallback: ${fallback}`)
-
-      const fallbackPuppeteerOptions = Object.assign({}, puppeteerOptions, {
-        product: fallback
-      })
-
-      delete fallbackPuppeteerOptions.executablePath
-
-      debug(fallbackPuppeteerOptions)
-
-      return await launchBrowser(fallbackPuppeteerOptions)
-    } else {
-      throw error
+    if (forceUseSystemBrowser && selectedFallbackIndex === -1) {
+      throw new Error('Fallback browser required.')
     }
+
+    return await puppeteer.launch(
+      selectedFallbackIndex === -1
+        ? defaultPuppeteerOptions
+        : fallbackPuppeteerLaunchOptions[selectedFallbackIndex]
+    )
+  } catch (error) {
+    const fallbackOptions = await loadFallbackBrowsers()
+
+    for (const [index, fallback] of fallbackOptions.entries()) {
+      try {
+        const browser = await puppeteer.launch(fallback)
+        selectedFallbackIndex = index
+        return browser
+      } catch {}
+    }
+
+    throw error
   }
 }

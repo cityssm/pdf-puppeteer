@@ -27,7 +27,6 @@ import { convertHTMLToPDF } from "@cityssm/pdf-puppeteer";
  * Usage
  * @param html - This is the HTML to be converted to a PDF.
  * @param [pdfOptions] - Optional parameter to pass in Puppeteer PDF options.
- * @param [puppeteerOptions] - Optional parameter to pass in Puppeteer launch options.
  * @param [pdfPuppeteerOptions] - Optional parameter to pass in PDF Puppeteer options.
  */
 const pdfBuffer = await convertHTMLToPDF(html, pdfOptions, puppeteerOptions, pdfPuppeteerOptions);
@@ -37,7 +36,7 @@ res.setHeader("Content-Type", "application/pdf");
 res.send(pdfBuffer);
 ```
 
-The `convertHTMLToPDF()` function takes the four parameters detailed above.
+The `convertHTMLToPDF()` function takes the three parameters detailed above.
 
 For more information on the available Puppeteer options for PDFs,
 take a look at [Puppeteer's Page PDF Options](https://pptr.dev/api/puppeteer.pdfoptions).

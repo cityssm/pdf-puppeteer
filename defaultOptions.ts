@@ -1,30 +1,12 @@
-import os from 'node:os'
-import process from 'node:process'
-
-import type { PDFOptions, PuppeteerLaunchOptions } from 'puppeteer'
-
-export const isUnsupportedChrome =
-  process.platform === 'win32' &&
-  Number.parseInt(os.release().split('.')[0]) < 10
-
-/*
- * Puppeteer Options
- */
-
-export const defaultPuppeteerOptions: PuppeteerLaunchOptions = Object.freeze({
-  product: isUnsupportedChrome ? 'firefox' : 'chrome',
-  args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  headless: true,
-  timeout: 60_000
-})
+import type { PDFOptions } from 'puppeteer'
 
 /*
  * PDF Options
  */
 
-export const defaultPdfOptions: PDFOptions = Object.freeze({
+export const defaultPdfOptions: PDFOptions = {
   format: 'Letter'
-})
+} as const
 
 /*
  * PDF Puppeteer Options
@@ -49,19 +31,13 @@ export interface PDFPuppeteerOptions {
    * Default: false
    */
   htmlIsUrl: boolean
-
-  /**
-   * Switch from 'chrome' to 'firefox', or vice versa, if unable to launch the browser.
-   */
-  switchBrowserIfFail: boolean
 }
 
-export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = Object.freeze({
+export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
   cacheBrowser: false,
   remoteContent: true,
-  htmlIsUrl: false,
-  switchBrowserIfFail: true
-})
+  htmlIsUrl: false
+} as const
 
 export const htmlNavigationTimeoutMillis = 60_000
 export const urlNavigationTimeoutMillis = htmlNavigationTimeoutMillis * 2
