@@ -8,17 +8,15 @@
 A simple npm package to convert HTML to PDF for Node.js applications by using Puppeteer.
 
 **Based on the work in [westmonroe/pdf-puppeteer](https://github.com/westmonroe/pdf-puppeteer).**
-Forked to manage dependencies, switch to ESM, and eliminate callback function.
+Forked to manage dependencies, switch to ESM, and eliminate the callback function.
 
-## Getting Started
-
-### Installation
+## Installation
 
 ```sh
 npm install @cityssm/pdf-puppeteer
 ```
 
-### Usage
+## Usage
 
 ```js
 import { convertHTMLToPDF } from "@cityssm/pdf-puppeteer";
@@ -29,7 +27,7 @@ import { convertHTMLToPDF } from "@cityssm/pdf-puppeteer";
  * @param [pdfOptions] - Optional parameter to pass in Puppeteer PDF options.
  * @param [pdfPuppeteerOptions] - Optional parameter to pass in PDF Puppeteer options.
  */
-const pdfBuffer = await convertHTMLToPDF(html, pdfOptions, puppeteerOptions, pdfPuppeteerOptions);
+const pdfBuffer = await convertHTMLToPDF(html, pdfOptions, pdfPuppeteerOptions);
 
 // Do something with the PDF, like send it as the response.
 res.setHeader("Content-Type", "application/pdf");
