@@ -5,7 +5,10 @@ import {
   chromeWebBrowserTypes,
   getInstalledWebBrowsers
 } from '@cityssm/web-browser-info'
+import Debug from 'debug'
 import * as puppeteer from 'puppeteer'
+
+const debug = Debug('pdf-puppeteer:browser')
 
 const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
   timeout: 60_000
@@ -42,6 +45,9 @@ async function loadFallbackBrowsers(): Promise<puppeteer.LaunchOptions[]> {
     }
 
     fallbackPuppeteerLaunchOptions = tempFallbackPuppeteerLaunchOptions
+
+    debug('Available fallback browsers:')
+    debug(fallbackPuppeteerLaunchOptions)
   }
 
   return fallbackPuppeteerLaunchOptions

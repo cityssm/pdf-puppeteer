@@ -1,5 +1,7 @@
 import { chromeWebBrowserTypes, getInstalledWebBrowsers } from '@cityssm/web-browser-info';
+import Debug from 'debug';
 import * as puppeteer from 'puppeteer';
+const debug = Debug('pdf-puppeteer:browser');
 const defaultPuppeteerOptions = {
     timeout: 60_000
 };
@@ -25,6 +27,8 @@ async function loadFallbackBrowsers() {
             });
         }
         fallbackPuppeteerLaunchOptions = tempFallbackPuppeteerLaunchOptions;
+        debug('Available fallback browsers:');
+        debug(fallbackPuppeteerLaunchOptions);
     }
     return fallbackPuppeteerLaunchOptions;
 }
