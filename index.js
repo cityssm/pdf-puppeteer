@@ -20,6 +20,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePdfPupp
         browser = await launchBrowser();
     }
     const browserVersion = await browser.version();
+    debug(`Browser: ${browserVersion}`);
     const browserIsFirefox = browserVersion.toLowerCase().includes('firefox');
     const page = await browser.newPage();
     const remoteContent = pdfPuppeteerOptions.remoteContent ?? true;

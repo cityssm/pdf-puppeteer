@@ -55,6 +55,9 @@ export async function convertHTMLToPDF(
   }
 
   const browserVersion = await browser.version()
+
+  debug(`Browser: ${browserVersion}`)
+
   const browserIsFirefox = browserVersion.toLowerCase().includes('firefox')
 
   /*
