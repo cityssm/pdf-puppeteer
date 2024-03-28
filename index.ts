@@ -105,7 +105,7 @@ export async function convertHTMLToPDF(
 export default convertHTMLToPDF
 
 /**
- * Closes any cached browser instances.
+ * Closes the cached browser instance.
  */
 export async function closeCachedBrowser(): Promise<void> {
   if (cachedBrowser !== undefined) {
@@ -117,7 +117,7 @@ export async function closeCachedBrowser(): Promise<void> {
 }
 
 /**
- * Checks for any cached browser instances.
+ * Checks for any cached browser instance.
  * @returns {boolean} - True is a cached browser instance exists.
  */
 export function hasCachedBrowser(): boolean {
