@@ -1,3 +1,6 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable security/detect-object-injection */
+
 import {
   chromeWebBrowserTypes,
   getInstalledWebBrowsers
@@ -44,6 +47,12 @@ async function loadFallbackBrowsers(): Promise<puppeteer.LaunchOptions[]> {
   return fallbackPuppeteerLaunchOptions
 }
 
+/**
+ * Launches a Puppeteer browser instance.
+ * Automatically falls back to a system browser if no browser is available in the Puppeteer cache.
+ * @param {boolean} forceUseSystemBrowser - Optionally use a system browser.
+ * @returns {Promise<puppeteer.Browser>} - A Puppeteer browser instance.
+ */
 export async function launchBrowser(
   forceUseSystemBrowser: boolean = false
 ): Promise<puppeteer.Browser> {
