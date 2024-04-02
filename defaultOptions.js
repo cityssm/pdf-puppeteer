@@ -1,5 +1,6 @@
 export const defaultPdfOptions = {
-    format: 'Letter'
+    format: 'Letter',
+    printBackground: true
 };
 export const defaultPdfPuppeteerOptions = {
     cacheBrowser: false,

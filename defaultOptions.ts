@@ -5,7 +5,8 @@ import type { PDFOptions } from 'puppeteer'
  */
 
 export const defaultPdfOptions: PDFOptions = {
-  format: 'Letter'
+  format: 'Letter',
+  printBackground: true
 } as const
 
 /*
