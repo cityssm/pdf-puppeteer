@@ -1,7 +1,7 @@
 /// <reference types="node" />
-import type * as puppeteer from 'puppeteer';
+import type { PDFOptions } from 'puppeteer';
 import { type PDFPuppeteerOptions } from './defaultOptions.js';
-export declare function convertHTMLToPDF(html: string, instancePdfOptions?: puppeteer.PDFOptions, instancePdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>): Promise<Buffer>;
+export declare function convertHTMLToPDF(html: string, instancePdfOptions?: PDFOptions, instancePdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>): Promise<Buffer>;
 export default convertHTMLToPDF;
 export declare function closeCachedBrowser(): Promise<void>;
 export declare function hasCachedBrowser(): boolean;

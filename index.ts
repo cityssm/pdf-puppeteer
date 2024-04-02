@@ -1,6 +1,6 @@
 import Debug from 'debug'
 import exitHook from 'exit-hook'
-import type * as puppeteer from 'puppeteer'
+import type { Browser, PDFOptions } from 'puppeteer'
 
 import { launchBrowser } from './browser.js'
 import {
@@ -13,7 +13,7 @@ import {
 
 const debug = Debug('pdf-puppeteer:index')
 
-let cachedBrowser: puppeteer.Browser | undefined
+let cachedBrowser: Browser | undefined
 
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
@@ -24,7 +24,7 @@ let cachedBrowser: puppeteer.Browser | undefined
  */
 export async function convertHTMLToPDF(
   html: string,
-  instancePdfOptions?: puppeteer.PDFOptions,
+  instancePdfOptions?: PDFOptions,
   instancePdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>
 ): Promise<Buffer> {
   if (typeof html !== 'string') {
@@ -42,7 +42,7 @@ export async function convertHTMLToPDF(
   /*
    * Initialize browser
    */
-  let browser: puppeteer.Browser
+  let browser: Browser
 
   if (pdfPuppeteerOptions.cacheBrowser ?? false) {
     if (cachedBrowser === undefined) {
