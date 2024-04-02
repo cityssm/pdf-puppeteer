@@ -68,7 +68,7 @@
     "@cityssm/web-browser-info": "^0.1.0",
     "debug": "^4.3.4",
     "exit-hook": "^4.0.0",
-    "puppeteer": "^22.6.1"
+    "puppeteer": "^22.6.2"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
