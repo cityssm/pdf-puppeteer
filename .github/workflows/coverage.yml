@@ -53,7 +53,7 @@ jobs:
       - name: Archive PDF output
         uses: actions/upload-artifact@v4
         with:
-          name: pdf-output
+          name: pdf-output-ubuntu
           path: |
             test/output/*.pdf
 
@@ -72,3 +72,10 @@ jobs:
 
       - name: Run Coverage Testing
         run: npm run coverage
+
+      - name: Archive PDF output
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-output-windows
+          path: |
+            test/output/*.pdf
