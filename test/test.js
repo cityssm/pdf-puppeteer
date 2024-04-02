@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import fs from 'node:fs/promises';
 import { launchBrowser } from '../browser.js';
 import * as pdfPuppeteer from '../index.js';
 const html = `<html>
@@ -29,6 +30,7 @@ describe('pdf-puppeteer', () => {
             cacheBrowser: true,
             remoteContent: true
         });
+        await fs.writeFile('./test/output/html.pdf', pdf);
         assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
     it('Converts HTML to PDF with Puppeteer options', async () => {
@@ -37,12 +39,13 @@ describe('pdf-puppeteer', () => {
         });
         assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
-    it('Converts a website to PDF with different Puppeteer options', async () => {
+    it('Converts a website to PDF', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF('https://cityssm.github.io/', undefined, {
             cacheBrowser: true,
             remoteContent: false,
             htmlIsUrl: true
         });
+        await fs.writeFile('./test/output/url.pdf', pdf);
         assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
     });
     it('Throws an error if the html parameter is not a string', async () => {
