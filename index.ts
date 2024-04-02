@@ -1,8 +1,8 @@
+import launchPuppeteer from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
 import type { Browser, PDFOptions } from 'puppeteer'
 
-import { launchBrowser } from './browser.js'
 import {
   type PDFPuppeteerOptions,
   defaultPdfOptions,
@@ -46,12 +46,12 @@ export async function convertHTMLToPDF(
 
   if (pdfPuppeteerOptions.cacheBrowser ?? false) {
     if (cachedBrowser === undefined) {
-      cachedBrowser = await launchBrowser()
+      cachedBrowser = await launchPuppeteer()
     }
 
     browser = cachedBrowser
   } else {
-    browser = await launchBrowser()
+    browser = await launchPuppeteer()
   }
 
   const browserVersion = await browser.version()

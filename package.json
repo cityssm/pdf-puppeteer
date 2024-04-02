@@ -65,7 +65,7 @@
   },
   "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
   "dependencies": {
-    "@cityssm/web-browser-info": "^0.1.0",
+    "@cityssm/puppeteer-launch": "^0.1.0",
     "debug": "^4.3.4",
     "exit-hook": "^4.0.0",
     "puppeteer": "^22.6.2"

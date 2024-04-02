@@ -1,6 +1,5 @@
 import assert from 'node:assert';
 import fs from 'node:fs/promises';
-import { launchBrowser } from '../browser.js';
 import * as pdfPuppeteer from '../index.js';
 const html = `<html>
   <head><title>Test</title></head>
@@ -62,14 +61,5 @@ describe('pdf-puppeteer', () => {
             await pdfPuppeteer.closeCachedBrowser();
         }
         assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false);
-    });
-});
-describe('pdf-puppeteer/browser', () => {
-    it('Opens a system browser', async () => {
-        const browser = await launchBrowser(true);
-        const browserVersion = await browser.version();
-        console.log(`Opened ${browserVersion}`);
-        await browser.close();
-        assert.ok(browserVersion !== '');
     });
 });
