@@ -57,6 +57,36 @@ jobs:
           path: |
             test/output/*.pdf
 
+  Testing-Firefox-on-Ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Application
+        run: |
+          npm ci
+          npm install -g mocha c8
+
+      - name: Switch Browser to Firefox
+        run: |
+          npx @puppeteer/browsers clear
+          npx @puppeteer/browsers install firefox
+
+      - name: Run Coverage Testing
+        run: npm run coverage
+
+      - name: Archive PDF output
+        uses: actions/upload-artifact@v4
+        with:
+          name: pdf-output-ubuntu-firefox
+          path: |
+            test/output/*.pdf
+          
+
   Testing-on-Windows:
     runs-on: windows-2019
     steps:
