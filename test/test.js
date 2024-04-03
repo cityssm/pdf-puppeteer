@@ -1,11 +1,11 @@
 import assert from 'node:assert';
 import fs from 'node:fs/promises';
+import isPdf from 'is-pdf';
 import * as pdfPuppeteer from '../index.js';
 const html = `<html>
   <head><title>Test</title></head>
   <body><h1>Hello World</h1></body>
   </html>`;
-const toStringResult = '[object Uint8Array]';
 describe('pdf-puppeteer', () => {
     after(async () => {
         await pdfPuppeteer.closeCachedBrowser();
@@ -15,14 +15,14 @@ describe('pdf-puppeteer', () => {
             cacheBrowser: false,
             remoteContent: false
         });
-        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
+        assert.ok(isPdf(pdf));
     });
     it('Converts HTML to PDF with a cached browser', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             cacheBrowser: true,
             remoteContent: false
         });
-        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
+        assert.ok(isPdf(pdf));
     });
     it('Converts remote HTML to PDF with Puppeteer options', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'Legal' }, {
@@ -30,13 +30,13 @@ describe('pdf-puppeteer', () => {
             remoteContent: true
         });
         await fs.writeFile('./test/output/html.pdf', pdf);
-        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
+        assert.ok(isPdf(pdf));
     });
     it('Converts HTML to PDF with Puppeteer options', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'A4' }, {
             cacheBrowser: true
         });
-        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
+        assert.ok(isPdf(pdf));
     });
     it('Converts a website to PDF', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF('https://cityssm.github.io/', undefined, {
@@ -45,7 +45,7 @@ describe('pdf-puppeteer', () => {
             htmlIsUrl: true
         });
         await fs.writeFile('./test/output/url.pdf', pdf);
-        assert.strictEqual(Object.prototype.toString.call(pdf), toStringResult);
+        assert.ok(isPdf(pdf));
     });
     it('Throws an error if the html parameter is not a string', async () => {
         try {
