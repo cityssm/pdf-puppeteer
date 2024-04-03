@@ -1,10 +1,10 @@
-import type { PDFOptions } from 'puppeteer'
+import { type puppeteer } from '@cityssm/puppeteer-launch'
 
 /*
  * PDF Options
  */
 
-export const defaultPdfOptions: PDFOptions = {
+export const defaultPdfOptions: puppeteer.PDFOptions = {
   format: 'Letter',
   printBackground: true
 } as const

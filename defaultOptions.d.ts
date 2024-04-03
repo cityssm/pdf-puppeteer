@@ -1,5 +1,5 @@
-import type { PDFOptions } from 'puppeteer';
-export declare const defaultPdfOptions: PDFOptions;
+import { type puppeteer } from '@cityssm/puppeteer-launch';
+export declare const defaultPdfOptions: puppeteer.PDFOptions;
 export interface PDFPuppeteerOptions {
     cacheBrowser: boolean;
     remoteContent: boolean;

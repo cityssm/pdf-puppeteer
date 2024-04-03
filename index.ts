@@ -1,7 +1,6 @@
-import launchPuppeteer from '@cityssm/puppeteer-launch'
+import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
-import type { Browser, PDFOptions } from 'puppeteer'
 
 import {
   type PDFPuppeteerOptions,
@@ -13,7 +12,7 @@ import {
 
 const debug = Debug('pdf-puppeteer:index')
 
-let cachedBrowser: Browser | undefined
+let cachedBrowser: puppeteer.Browser | undefined
 
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
@@ -24,7 +23,7 @@ let cachedBrowser: Browser | undefined
  */
 export async function convertHTMLToPDF(
   html: string,
-  instancePdfOptions?: PDFOptions,
+  instancePdfOptions?: puppeteer.PDFOptions,
   instancePdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>
 ): Promise<Buffer> {
   if (typeof html !== 'string') {
@@ -42,7 +41,7 @@ export async function convertHTMLToPDF(
   /*
    * Initialize browser
    */
-  let browser: Browser
+  let browser: puppeteer.Browser
 
   if (pdfPuppeteerOptions.cacheBrowser ?? false) {
     if (cachedBrowser === undefined) {
