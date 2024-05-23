@@ -7,5 +7,6 @@ export const defaultPdfPuppeteerOptions = {
     remoteContent: true,
     htmlIsUrl: false
 };
+export const puppeteerLaunchTimeoutMillis = 60_000;
 export const htmlNavigationTimeoutMillis = 60_000;
 export const urlNavigationTimeoutMillis = htmlNavigationTimeoutMillis * 2;

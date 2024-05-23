@@ -1,7 +1,7 @@
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
 import exitHook from 'exit-hook';
-import { defaultPdfOptions, defaultPdfPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
+import { defaultPdfOptions, defaultPdfPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis, puppeteerLaunchTimeoutMillis } from './defaultOptions.js';
 const debug = Debug('pdf-puppeteer:index');
 let cachedBrowser;
 export async function convertHTMLToPDF(html, instancePdfOptions, instancePdfPuppeteerOptions) {
@@ -12,12 +12,16 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePdfPupp
     let browser;
     if (pdfPuppeteerOptions.cacheBrowser ?? false) {
         if (cachedBrowser === undefined) {
-            cachedBrowser = await launchPuppeteer();
+            cachedBrowser = await launchPuppeteer({
+                timeout: puppeteerLaunchTimeoutMillis
+            });
         }
         browser = cachedBrowser;
     }
     else {
-        browser = await launchPuppeteer();
+        browser = await launchPuppeteer({
+            timeout: puppeteerLaunchTimeoutMillis
+        });
     }
     const browserVersion = await browser.version();
     debug(`Browser: ${browserVersion}`);

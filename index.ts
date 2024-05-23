@@ -7,7 +7,8 @@ import {
   defaultPdfOptions,
   defaultPdfPuppeteerOptions,
   htmlNavigationTimeoutMillis,
-  urlNavigationTimeoutMillis
+  urlNavigationTimeoutMillis,
+  puppeteerLaunchTimeoutMillis
 } from './defaultOptions.js'
 
 const debug = Debug('pdf-puppeteer:index')
@@ -45,12 +46,16 @@ export async function convertHTMLToPDF(
 
   if (pdfPuppeteerOptions.cacheBrowser ?? false) {
     if (cachedBrowser === undefined) {
-      cachedBrowser = await launchPuppeteer()
+      cachedBrowser = await launchPuppeteer({
+        timeout: puppeteerLaunchTimeoutMillis
+      })
     }
 
     browser = cachedBrowser
   } else {
-    browser = await launchPuppeteer()
+    browser = await launchPuppeteer({
+      timeout: puppeteerLaunchTimeoutMillis
+    })
   }
 
   const browserVersion = await browser.version()
