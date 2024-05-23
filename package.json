@@ -9,8 +9,8 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "test": "cross-env DEBUG=pdf-puppeteer:* mocha --timeout 120000 --exit",
-    "coverage": "cross-env DEBUG=pdf-puppeteer:* c8 --reporter=lcov --reporter=text --reporter=text-summary mocha --timeout 120000 --exit"
+    "test": "cross-env DEBUG=pdf-puppeteer:* node --test",
+    "coverage": "cross-env DEBUG=pdf-puppeteer:* c8 --reporter=lcov --reporter=text --reporter=text-summary node --test"
   },
   "repository": {
     "type": "git",
@@ -71,9 +71,8 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
-    "@types/mocha": "^10.0.6",
     "cross-env": "^7.0.3",
-    "eslint-config-cityssm": "^2.0.1",
+    "eslint-config-cityssm": "^2.1.0",
     "is-pdf": "^1.0.0"
   }
 }

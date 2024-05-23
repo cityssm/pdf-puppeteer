@@ -1,30 +1,31 @@
 import assert from 'node:assert';
 import fs from 'node:fs/promises';
+import { after, describe, it } from 'node:test';
 import isPdf from 'is-pdf';
 import * as pdfPuppeteer from '../index.js';
 const html = `<html>
   <head><title>Test</title></head>
   <body><h1>Hello World</h1></body>
   </html>`;
-describe('pdf-puppeteer', () => {
+await describe('pdf-puppeteer', async () => {
     after(async () => {
         await pdfPuppeteer.closeCachedBrowser();
     });
-    it('Converts HTML to PDF with a new browser', async () => {
+    await it('Converts HTML to PDF with a new browser', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             cacheBrowser: false,
             remoteContent: false
         });
         assert.ok(isPdf(pdf));
     });
-    it('Converts HTML to PDF with a cached browser', async () => {
+    await it('Converts HTML to PDF with a cached browser', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             cacheBrowser: true,
             remoteContent: false
         });
         assert.ok(isPdf(pdf));
     });
-    it('Converts remote HTML to PDF with Puppeteer options', async () => {
+    await it('Converts remote HTML to PDF with Puppeteer options', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'Legal' }, {
             cacheBrowser: true,
             remoteContent: true
@@ -32,13 +33,13 @@ describe('pdf-puppeteer', () => {
         await fs.writeFile('./test/output/html.pdf', pdf);
         assert.ok(isPdf(pdf));
     });
-    it('Converts HTML to PDF with Puppeteer options', async () => {
+    await it('Converts HTML to PDF with Puppeteer options', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'A4' }, {
             cacheBrowser: true
         });
         assert.ok(isPdf(pdf));
     });
-    it('Converts a website to PDF', async () => {
+    await it('Converts a website to PDF', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF('https://cityssm.github.io/', undefined, {
             cacheBrowser: true,
             remoteContent: false,
@@ -47,7 +48,7 @@ describe('pdf-puppeteer', () => {
         await fs.writeFile('./test/output/url.pdf', pdf);
         assert.ok(isPdf(pdf));
     });
-    it('Throws an error if the html parameter is not a string', async () => {
+    await it('Throws an error if the html parameter is not a string', async () => {
         try {
             await pdfPuppeteer.convertHTMLToPDF(123_456_789);
             assert.fail('No error thrown.');
@@ -56,7 +57,7 @@ describe('pdf-puppeteer', () => {
             assert.ok('Error thrown');
         }
     });
-    it('Closes cached browsers', async () => {
+    await it('Closes cached browsers', async () => {
         if (pdfPuppeteer.hasCachedBrowser()) {
             await pdfPuppeteer.closeCachedBrowser();
         }
