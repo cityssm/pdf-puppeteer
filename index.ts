@@ -6,9 +6,9 @@ import {
   type PDFPuppeteerOptions,
   defaultPdfOptions,
   defaultPdfPuppeteerOptions,
+  defaultPuppeteerOptions,
   htmlNavigationTimeoutMillis,
-  urlNavigationTimeoutMillis,
-  puppeteerLaunchTimeoutMillis
+  urlNavigationTimeoutMillis
 } from './defaultOptions.js'
 
 const debug = Debug('pdf-puppeteer:index')
@@ -42,68 +42,112 @@ export async function convertHTMLToPDF(
   /*
    * Initialize browser
    */
-  let browser: puppeteer.Browser
 
-  if (pdfPuppeteerOptions.cacheBrowser ?? false) {
-    if (cachedBrowser === undefined) {
-      cachedBrowser = await launchPuppeteer({
-        timeout: puppeteerLaunchTimeoutMillis
+  let browser: puppeteer.Browser | undefined
+  let doCloseBrowser = false
+  let isRunningPdfGeneration = false
+
+  try {
+    if (pdfPuppeteerOptions.cacheBrowser ?? false) {
+      if (cachedBrowser === undefined) {
+        cachedBrowser = await launchPuppeteer(defaultPuppeteerOptions)
+      }
+
+      browser = cachedBrowser
+    } else {
+      doCloseBrowser = true
+      browser = await launchPuppeteer(defaultPuppeteerOptions)
+    }
+
+    const browserVersion = await browser.version()
+
+    debug(`Browser: ${browserVersion}`)
+
+    const browserIsFirefox = browserVersion.toLowerCase().includes('firefox')
+
+    /*
+     * Initialize page
+     */
+
+    const page = await browser.newPage()
+
+    const remoteContent = pdfPuppeteerOptions.remoteContent ?? true
+
+    if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
+      debug('Loading URL...')
+      await page.goto(html, {
+        waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
+        timeout: urlNavigationTimeoutMillis
+      })
+    } else if (remoteContent) {
+      debug('Loading HTML with remote content...')
+      await page.goto(
+        `data:text/html;base64,${Buffer.from(html).toString('base64')}`,
+        {
+          waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
+          timeout: urlNavigationTimeoutMillis
+        }
+      )
+    } else {
+      debug('Loading HTML...')
+      await page.setContent(html, {
+        timeout: remoteContent
+          ? urlNavigationTimeoutMillis
+          : htmlNavigationTimeoutMillis
       })
     }
 
-    browser = cachedBrowser
-  } else {
-    browser = await launchPuppeteer({
-      timeout: puppeteerLaunchTimeoutMillis
-    })
-  }
+    debug('Content loaded.')
 
-  const browserVersion = await browser.version()
+    const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions)
 
-  debug(`Browser: ${browserVersion}`)
+    debug('Converting to PDF...')
+    isRunningPdfGeneration = true
 
-  const browserIsFirefox = browserVersion.toLowerCase().includes('firefox')
+    const pdfBuffer = await page.pdf(pdfOptions)
 
-  /*
-   * Initialize page
-   */
+    isRunningPdfGeneration = false
+    debug('PDF conversion done.')
 
-  const page = await browser.newPage()
+    await page.close()
 
-  const remoteContent = pdfPuppeteerOptions.remoteContent ?? true
+    if (!pdfPuppeteerOptions.cacheBrowser || cachedBrowser !== browser) {
+      await browser.close()
+    }
 
-  if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
-    await page.goto(html, {
-      waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
-      timeout: urlNavigationTimeoutMillis
-    })
-  } else if (remoteContent) {
-    await page.goto(
-      `data:text/html;base64,${Buffer.from(html).toString('base64')}`,
-      {
-        waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
-        timeout: urlNavigationTimeoutMillis
+    return pdfBuffer
+  } catch (error) {
+    if (
+      isRunningPdfGeneration &&
+      defaultPuppeteerOptions.product === 'chrome'
+    ) {
+      if (!doCloseBrowser) {
+        await closeCachedBrowser()
       }
-    )
-  } else {
-    await page.setContent(html, {
-      timeout: remoteContent
-        ? urlNavigationTimeoutMillis
-        : htmlNavigationTimeoutMillis
-    })
+
+      defaultPuppeteerOptions.product = 'firefox'
+
+      debug('Trying again with Firefox.')
+
+      return await convertHTMLToPDF(
+        html,
+        instancePdfOptions,
+        instancePdfPuppeteerOptions
+      )
+    } else {
+      throw error
+    }
+  } finally {
+    try {
+      if (doCloseBrowser && browser !== undefined) {
+        debug('Closing browser...')
+        await browser.close()
+        debug('Browser closed.')
+      }
+    } catch {
+      // ignore
+    }
   }
-
-  const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions)
-
-  const pdfBuffer = await page.pdf(pdfOptions)
-
-  await page.close()
-
-  if (!pdfPuppeteerOptions.cacheBrowser || cachedBrowser !== browser) {
-    await browser.close()
-  }
-
-  return pdfBuffer
 }
 
 export default convertHTMLToPDF

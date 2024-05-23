@@ -1,7 +1,7 @@
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
 import exitHook from 'exit-hook';
-import { defaultPdfOptions, defaultPdfPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis, puppeteerLaunchTimeoutMillis } from './defaultOptions.js';
+import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
 const debug = Debug('pdf-puppeteer:index');
 let cachedBrowser;
 export async function convertHTMLToPDF(html, instancePdfOptions, instancePdfPuppeteerOptions) {
@@ -10,50 +10,84 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePdfPupp
     }
     const pdfPuppeteerOptions = Object.assign({}, defaultPdfPuppeteerOptions, instancePdfPuppeteerOptions);
     let browser;
-    if (pdfPuppeteerOptions.cacheBrowser ?? false) {
-        if (cachedBrowser === undefined) {
-            cachedBrowser = await launchPuppeteer({
-                timeout: puppeteerLaunchTimeoutMillis
+    let doCloseBrowser = false;
+    let isRunningPdfGeneration = false;
+    try {
+        if (pdfPuppeteerOptions.cacheBrowser ?? false) {
+            if (cachedBrowser === undefined) {
+                cachedBrowser = await launchPuppeteer(defaultPuppeteerOptions);
+            }
+            browser = cachedBrowser;
+        }
+        else {
+            doCloseBrowser = true;
+            browser = await launchPuppeteer(defaultPuppeteerOptions);
+        }
+        const browserVersion = await browser.version();
+        debug(`Browser: ${browserVersion}`);
+        const browserIsFirefox = browserVersion.toLowerCase().includes('firefox');
+        const page = await browser.newPage();
+        const remoteContent = pdfPuppeteerOptions.remoteContent ?? true;
+        if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
+            debug('Loading URL...');
+            await page.goto(html, {
+                waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
+                timeout: urlNavigationTimeoutMillis
             });
         }
-        browser = cachedBrowser;
+        else if (remoteContent) {
+            debug('Loading HTML with remote content...');
+            await page.goto(`data:text/html;base64,${Buffer.from(html).toString('base64')}`, {
+                waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
+                timeout: urlNavigationTimeoutMillis
+            });
+        }
+        else {
+            debug('Loading HTML...');
+            await page.setContent(html, {
+                timeout: remoteContent
+                    ? urlNavigationTimeoutMillis
+                    : htmlNavigationTimeoutMillis
+            });
+        }
+        debug('Content loaded.');
+        const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions);
+        debug('Converting to PDF...');
+        isRunningPdfGeneration = true;
+        const pdfBuffer = await page.pdf(pdfOptions);
+        isRunningPdfGeneration = false;
+        debug('PDF conversion done.');
+        await page.close();
+        if (!pdfPuppeteerOptions.cacheBrowser || cachedBrowser !== browser) {
+            await browser.close();
+        }
+        return pdfBuffer;
     }
-    else {
-        browser = await launchPuppeteer({
-            timeout: puppeteerLaunchTimeoutMillis
-        });
+    catch (error) {
+        if (isRunningPdfGeneration &&
+            defaultPuppeteerOptions.product === 'chrome') {
+            if (!doCloseBrowser) {
+                await closeCachedBrowser();
+            }
+            defaultPuppeteerOptions.product = 'firefox';
+            debug('Trying again with Firefox.');
+            return await convertHTMLToPDF(html, instancePdfOptions, instancePdfPuppeteerOptions);
+        }
+        else {
+            throw error;
+        }
     }
-    const browserVersion = await browser.version();
-    debug(`Browser: ${browserVersion}`);
-    const browserIsFirefox = browserVersion.toLowerCase().includes('firefox');
-    const page = await browser.newPage();
-    const remoteContent = pdfPuppeteerOptions.remoteContent ?? true;
-    if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
-        await page.goto(html, {
-            waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
-            timeout: urlNavigationTimeoutMillis
-        });
+    finally {
+        try {
+            if (doCloseBrowser && browser !== undefined) {
+                debug('Closing browser...');
+                await browser.close();
+                debug('Browser closed.');
+            }
+        }
+        catch {
+        }
     }
-    else if (remoteContent) {
-        await page.goto(`data:text/html;base64,${Buffer.from(html).toString('base64')}`, {
-            waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
-            timeout: urlNavigationTimeoutMillis
-        });
-    }
-    else {
-        await page.setContent(html, {
-            timeout: remoteContent
-                ? urlNavigationTimeoutMillis
-                : htmlNavigationTimeoutMillis
-        });
-    }
-    const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions);
-    const pdfBuffer = await page.pdf(pdfOptions);
-    await page.close();
-    if (!pdfPuppeteerOptions.cacheBrowser || cachedBrowser !== browser) {
-        await browser.close();
-    }
-    return pdfBuffer;
 }
 export default convertHTMLToPDF;
 export async function closeCachedBrowser() {

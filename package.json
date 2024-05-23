@@ -9,8 +9,8 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "test": "cross-env DEBUG=pdf-puppeteer:* node --test",
-    "coverage": "cross-env DEBUG=pdf-puppeteer:* c8 --reporter=lcov --reporter=text --reporter=text-summary node --test"
+    "test": "cross-env DEBUG=pdf-puppeteer:*,puppeteer-launch:* node --test",
+    "coverage": "cross-env DEBUG=pdf-puppeteer:*,puppeteer-launch:* c8 --reporter=lcov --reporter=text --reporter=text-summary node --test"
   },
   "repository": {
     "type": "git",
@@ -65,7 +65,7 @@
   },
   "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
   "dependencies": {
-    "@cityssm/puppeteer-launch": "^1.0.0",
+    "@cityssm/puppeteer-launch": "^2.0.1",
     "debug": "^4.3.4",
     "exit-hook": "^4.0.0"
   },

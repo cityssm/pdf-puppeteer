@@ -6,6 +6,6 @@ export interface PDFPuppeteerOptions {
     htmlIsUrl: boolean;
 }
 export declare const defaultPdfPuppeteerOptions: PDFPuppeteerOptions;
-export declare const puppeteerLaunchTimeoutMillis = 60000;
+export declare const defaultPuppeteerOptions: puppeteer.LaunchOptions;
 export declare const htmlNavigationTimeoutMillis = 60000;
 export declare const urlNavigationTimeoutMillis: number;
