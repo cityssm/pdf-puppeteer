@@ -67,7 +67,8 @@
   "dependencies": {
     "@cityssm/puppeteer-launch": "^2.1.0",
     "debug": "^4.3.4",
-    "exit-hook": "^4.0.0"
+    "exit-hook": "^4.0.0",
+    "paper-size": "^1.1.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",

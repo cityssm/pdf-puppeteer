@@ -1,10 +1,11 @@
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
 import exitHook from 'exit-hook';
+import paperSize from 'paper-size';
 import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
 const debug = Debug('pdf-puppeteer:index');
 let cachedBrowser;
-export async function convertHTMLToPDF(html, instancePdfOptions, instancePdfPuppeteerOptions) {
+export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePdfPuppeteerOptions = {}) {
     if (typeof html !== 'string') {
         throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
     }
@@ -52,6 +53,14 @@ export async function convertHTMLToPDF(html, instancePdfOptions, instancePdfPupp
         }
         debug('Content loaded.');
         const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions);
+        if (pdfOptions.format !== undefined) {
+            const sizeInMM = paperSize.getSize(pdfOptions.format);
+            if (sizeInMM !== undefined) {
+                delete pdfOptions.format;
+                pdfOptions.width = `${sizeInMM[0]}mm`;
+                pdfOptions.height = `${sizeInMM[1]}mm`;
+            }
+        }
         debug('Converting to PDF...');
         isRunningPdfGeneration = true;
         const pdfBuffer = await page.pdf(pdfOptions);

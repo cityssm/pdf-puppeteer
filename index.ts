@@ -1,6 +1,7 @@
 import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
+import paperSize from 'paper-size'
 
 import {
   type PDFPuppeteerOptions,
@@ -24,8 +25,8 @@ let cachedBrowser: puppeteer.Browser | undefined
  */
 export async function convertHTMLToPDF(
   html: string,
-  instancePdfOptions?: puppeteer.PDFOptions,
-  instancePdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>
+  instancePdfOptions: puppeteer.PDFOptions = {},
+  instancePdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {}
 ): Promise<Buffer> {
   if (typeof html !== 'string') {
     throw new TypeError(
@@ -100,6 +101,16 @@ export async function convertHTMLToPDF(
     debug('Content loaded.')
 
     const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions)
+
+    // Fix "format" issue
+    if (pdfOptions.format !== undefined) {
+      const sizeInMM = paperSize.getSize(pdfOptions.format)
+      if (sizeInMM !== undefined) {
+        delete pdfOptions.format
+        pdfOptions.width = `${sizeInMM[0]}mm`
+        pdfOptions.height = `${sizeInMM[1]}mm`
+      }
+    }
 
     debug('Converting to PDF...')
     isRunningPdfGeneration = true
