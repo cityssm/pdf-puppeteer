@@ -159,7 +159,9 @@ export async function closeCachedBrowser(): Promise<void> {
   if (cachedBrowser !== undefined) {
     try {
       await cachedBrowser.close()
-    } catch {}
+    } catch {
+      // ignore
+    }
     cachedBrowser = undefined
   }
 }

@@ -95,7 +95,8 @@ export async function closeCachedBrowser() {
         try {
             await cachedBrowser.close();
         }
-        catch { }
+        catch {
+        }
         cachedBrowser = undefined;
     }
 }
