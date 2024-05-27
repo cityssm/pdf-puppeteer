@@ -54,7 +54,7 @@ await describe('pdf-puppeteer', async () => {
   await it('Converts HTML to PDF with Puppeteer options', async () => {
     const pdf = await pdfPuppeteer.convertHTMLToPDF(
       html,
-      { format: 'A4' },
+      { format: 'Letter' },
       {
         cacheBrowser: true
       }
@@ -66,7 +66,9 @@ await describe('pdf-puppeteer', async () => {
   await it('Converts a website to PDF', async () => {
     const pdf = await pdfPuppeteer.convertHTMLToPDF(
       'https://cityssm.github.io/',
-      undefined,
+      {
+        format: 'Letter'
+      },
       {
         cacheBrowser: true,
         remoteContent: false,

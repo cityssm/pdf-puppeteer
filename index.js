@@ -1,7 +1,7 @@
+import { getPaperSize } from '@cityssm/paper-sizes';
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
 import exitHook from 'exit-hook';
-import paperSize from 'paper-size';
 import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
 const debug = Debug('pdf-puppeteer:index');
 let cachedBrowser;
@@ -54,11 +54,11 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
         debug('Content loaded.');
         const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions);
         if (pdfOptions.format !== undefined) {
-            const sizeInMM = paperSize.getSize(pdfOptions.format);
-            if (sizeInMM !== undefined) {
+            const size = getPaperSize(pdfOptions.format);
+            if (size !== undefined) {
                 delete pdfOptions.format;
-                pdfOptions.width = `${sizeInMM[0]}mm`;
-                pdfOptions.height = `${sizeInMM[1]}mm`;
+                pdfOptions.width = `${size.width}${size.unit}`;
+                pdfOptions.height = `${size.height}${size.unit}`;
             }
         }
         debug('Converting to PDF...');

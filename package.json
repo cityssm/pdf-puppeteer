@@ -23,12 +23,9 @@
     "html-to-pdf",
     "pdf-from-html",
     "chrome",
+    "firefox",
     "pdf-generator",
-    "node",
-    "nodejs",
     "pdf-creator",
-    "generate",
-    "generator",
     "pdf-puppeteer",
     "puppeteer-pdf"
   ],
@@ -65,15 +62,15 @@
   },
   "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
   "dependencies": {
+    "@cityssm/paper-sizes": "^0.1.1",
     "@cityssm/puppeteer-launch": "^2.1.0",
     "debug": "^4.3.4",
-    "exit-hook": "^4.0.0",
-    "paper-size": "^1.1.0"
+    "exit-hook": "^4.0.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
     "cross-env": "^7.0.3",
-    "eslint-config-cityssm": "^2.1.0",
+    "eslint-config-cityssm": "^3.2.0",
     "is-pdf": "^1.0.0"
   }
 }

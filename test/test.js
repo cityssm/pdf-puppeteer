@@ -34,13 +34,15 @@ await describe('pdf-puppeteer', async () => {
         assert.ok(isPdf(pdf));
     });
     await it('Converts HTML to PDF with Puppeteer options', async () => {
-        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'A4' }, {
+        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'Letter' }, {
             cacheBrowser: true
         });
         assert.ok(isPdf(pdf));
     });
     await it('Converts a website to PDF', async () => {
-        const pdf = await pdfPuppeteer.convertHTMLToPDF('https://cityssm.github.io/', undefined, {
+        const pdf = await pdfPuppeteer.convertHTMLToPDF('https://cityssm.github.io/', {
+            format: 'Letter'
+        }, {
             cacheBrowser: true,
             remoteContent: false,
             htmlIsUrl: true
