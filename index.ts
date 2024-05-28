@@ -1,4 +1,4 @@
-import { type PaperType, getPaperSize } from '@cityssm/paper-sizes'
+import { getPaperSize } from '@cityssm/paper-sizes'
 import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
@@ -105,7 +105,7 @@ export async function convertHTMLToPDF(
     // Fix "format" issue
     if (pdfOptions.format !== undefined) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      const size = getPaperSize(pdfOptions.format as PaperType)
+      const size = getPaperSize(pdfOptions.format)
       if (size !== undefined) {
         delete pdfOptions.format
         pdfOptions.width = `${size.width}${size.unit}`
