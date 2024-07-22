@@ -4,9 +4,9 @@ test/
 
 .codeclimate.yml
 .deepsource.toml
-.eslintrc.json
+.eslintignore
 .gitignore
 .prettierignore
-.prettierrc.json
 eslint.config.*
+prettier.config.*
 tsconfig.json
