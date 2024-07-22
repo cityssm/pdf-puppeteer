@@ -63,14 +63,15 @@
   "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
   "dependencies": {
     "@cityssm/paper-sizes": "^0.2.0",
-    "@cityssm/puppeteer-launch": "^2.1.0",
-    "debug": "^4.3.4",
+    "@cityssm/puppeteer-launch": "^2.1.1",
+    "debug": "^4.3.5",
     "exit-hook": "^4.0.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
     "cross-env": "^7.0.3",
-    "eslint-config-cityssm": "^3.2.0",
-    "is-pdf": "^1.0.0"
+    "eslint-config-cityssm": "^5.0.1",
+    "is-pdf": "^1.0.0",
+    "prettier-config-cityssm": "^1.0.0"
   }
 }
