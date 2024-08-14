@@ -1,3 +1,6 @@
+// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 import assert from 'node:assert'
 import fs from 'node:fs/promises'
 import { after, describe, it } from 'node:test'

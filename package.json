@@ -1,6 +1,6 @@
 {
   "name": "@cityssm/pdf-puppeteer",
-  "version": "4.2.1",
+  "version": "4.3.0",
   "description": "A simple NPM package to convert html to pdf for Node applications by using Puppeteer",
   "type": "module",
   "exports": "./index.js",
@@ -63,14 +63,14 @@
   "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
   "dependencies": {
     "@cityssm/paper-sizes": "^0.2.0",
-    "@cityssm/puppeteer-launch": "^2.1.1",
-    "debug": "^4.3.5",
+    "@cityssm/puppeteer-launch": "^3.0.0",
+    "debug": "^4.3.6",
     "exit-hook": "^4.0.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.12",
     "cross-env": "^7.0.3",
-    "eslint-config-cityssm": "^5.0.1",
+    "eslint-config-cityssm": "^6.0.0",
     "is-pdf": "^1.0.0",
     "prettier-config-cityssm": "^1.0.0"
   }

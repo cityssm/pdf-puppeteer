@@ -42,7 +42,7 @@ export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
 
 export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
   timeout: 30_000,
-  product: 'chrome'
+  browser: 'chrome'
 }
 
 export const htmlNavigationTimeoutMillis = 60_000

@@ -18,16 +18,16 @@ let cachedBrowser: puppeteer.Browser | undefined
 
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
- * @param {string} html - An HTML string, or a URL.
- * @param {puppeteer.PDFOptions} instancePdfOptions - PDF options for Puppeteer.
- * @param {Partial<PDFPuppeteerOptions>} instancePdfPuppeteerOptions - pdf-puppeteer options.
- * @returns {Promise<Buffer>} - A Buffer of PDF data.
+ * @param html - An HTML string, or a URL.
+ * @param instancePdfOptions - PDF options for Puppeteer.
+ * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
+ * @returns - A Buffer of PDF data.
  */
 export async function convertHTMLToPDF(
   html: string,
   instancePdfOptions: puppeteer.PDFOptions = {},
   instancePdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {}
-): Promise<Buffer> {
+): Promise<Uint8Array> {
   if (typeof html !== 'string') {
     throw new TypeError(
       'Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.'
@@ -131,13 +131,13 @@ export async function convertHTMLToPDF(
   } catch (error) {
     if (
       isRunningPdfGeneration &&
-      defaultPuppeteerOptions.product === 'chrome'
+      defaultPuppeteerOptions.browser === 'chrome'
     ) {
       if (!doCloseBrowser) {
         await closeCachedBrowser()
       }
 
-      defaultPuppeteerOptions.product = 'firefox'
+      defaultPuppeteerOptions.browser = 'firefox'
 
       debug('Trying again with Firefox.')
 
@@ -147,6 +147,7 @@ export async function convertHTMLToPDF(
         instancePdfPuppeteerOptions
       )
     } else {
+      // eslint-disable-next-line @typescript-eslint/only-throw-error
       throw error
     }
   } finally {

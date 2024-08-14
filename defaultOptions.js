@@ -9,7 +9,7 @@ export const defaultPdfPuppeteerOptions = {
 };
 export const defaultPuppeteerOptions = {
     timeout: 30_000,
-    product: 'chrome'
+    browser: 'chrome'
 };
 export const htmlNavigationTimeoutMillis = 60_000;
 export const urlNavigationTimeoutMillis = htmlNavigationTimeoutMillis * 2;

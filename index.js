@@ -74,11 +74,11 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     }
     catch (error) {
         if (isRunningPdfGeneration &&
-            defaultPuppeteerOptions.product === 'chrome') {
+            defaultPuppeteerOptions.browser === 'chrome') {
             if (!doCloseBrowser) {
                 await closeCachedBrowser();
             }
-            defaultPuppeteerOptions.product = 'firefox';
+            defaultPuppeteerOptions.browser = 'firefox';
             debug('Trying again with Firefox.');
             return await convertHTMLToPDF(html, instancePdfOptions, instancePdfPuppeteerOptions);
         }
