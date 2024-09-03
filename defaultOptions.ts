@@ -1,4 +1,4 @@
-import { type puppeteer } from '@cityssm/puppeteer-launch'
+import type { puppeteer } from '@cityssm/puppeteer-launch'
 
 /*
  * PDF Options
