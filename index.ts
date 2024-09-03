@@ -34,11 +34,10 @@ export async function convertHTMLToPDF(
     )
   }
 
-  const pdfPuppeteerOptions = Object.assign(
-    {},
-    defaultPdfPuppeteerOptions,
-    instancePdfPuppeteerOptions
-  )
+  const pdfPuppeteerOptions = {
+    ...defaultPdfPuppeteerOptions,
+    ...instancePdfPuppeteerOptions
+  }
 
   /*
    * Initialize browser
@@ -100,12 +99,12 @@ export async function convertHTMLToPDF(
 
     debug('Content loaded.')
 
-    const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions)
+    const pdfOptions = { ...defaultPdfOptions, ...instancePdfOptions }
 
     // Fix "format" issue
     if (pdfOptions.format !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const size = getPaperSize(pdfOptions.format)
+      // eslint-disable-next-line sonarjs/different-types-comparison
       if (size !== undefined) {
         delete pdfOptions.format
         pdfOptions.width = `${size.width}${size.unit}`

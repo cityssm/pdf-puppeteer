@@ -9,7 +9,10 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     if (typeof html !== 'string') {
         throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
     }
-    const pdfPuppeteerOptions = Object.assign({}, defaultPdfPuppeteerOptions, instancePdfPuppeteerOptions);
+    const pdfPuppeteerOptions = {
+        ...defaultPdfPuppeteerOptions,
+        ...instancePdfPuppeteerOptions
+    };
     let browser;
     let doCloseBrowser = false;
     let isRunningPdfGeneration = false;
@@ -52,7 +55,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
             });
         }
         debug('Content loaded.');
-        const pdfOptions = Object.assign({}, defaultPdfOptions, instancePdfOptions);
+        const pdfOptions = { ...defaultPdfOptions, ...instancePdfOptions };
         if (pdfOptions.format !== undefined) {
             const size = getPaperSize(pdfOptions.format);
             if (size !== undefined) {
