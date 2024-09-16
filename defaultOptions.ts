@@ -40,9 +40,10 @@ export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
   htmlIsUrl: false
 } as const
 
-export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
+export const defaultPuppeteerOptions: puppeteer.PuppeteerLaunchOptions = {
   timeout: 30_000,
-  browser: 'chrome'
+  browser: 'chrome',
+  headless: true
 }
 
 export const htmlNavigationTimeoutMillis = 60_000
