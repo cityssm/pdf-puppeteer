@@ -180,7 +180,7 @@ export async function closeCachedBrowser(): Promise<void> {
 
 /**
  * Checks for any cached browser instance.
- * @returns {boolean} - True is a cached browser instance exists.
+ * @returns True is a cached browser instance exists.
  */
 export function hasCachedBrowser(): boolean {
   return cachedBrowser !== undefined
