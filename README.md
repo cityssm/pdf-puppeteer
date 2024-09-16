@@ -4,6 +4,7 @@
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability/cityssm/pdf-puppeteer)](https://codeclimate.com/github/cityssm/pdf-puppeteer)
 [![codecov](https://codecov.io/gh/cityssm/pdf-puppeteer/graph/badge.svg?token=306EDSL6BF)](https://codecov.io/gh/cityssm/pdf-puppeteer)
 [![DeepSource](https://app.deepsource.com/gh/cityssm/pdf-puppeteer.svg/?label=active+issues&show_trend=true&token=8YWipc8F8ZoQEwCuWK4duIuj)](https://app.deepsource.com/gh/cityssm/pdf-puppeteer/)
+[![Coverage Testing](https://github.com/cityssm/pdf-puppeteer/actions/workflows/coverage.yml/badge.svg)](https://github.com/cityssm/pdf-puppeteer/actions/workflows/coverage.yml)
 
 A simple npm package to convert HTML to PDF for Node.js applications by using Puppeteer.
 
