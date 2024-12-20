@@ -19,8 +19,6 @@ await describe('pdf-puppeteer', async () => {
     await pdfPuppeteer.closeCachedBrowser()
   })
 
-  // Loose check that this is not erroring, basically
-  // TODO find way to compare values of PDF's generated with returned array buffer
   await it('Converts HTML to PDF with a new browser', async () => {
     const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
       cacheBrowser: false,
