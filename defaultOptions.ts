@@ -45,7 +45,7 @@ export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
   timeout: secondsToMillis(30),
   browser: 'chrome',
   headless: true,
-  args: ['--disable-setuid-sandbox']
+  args: ['--no-sandbox', '--disable-setuid-sandbox']
 }
 
 export const htmlNavigationTimeoutMillis = millisecondsInOneMinute
