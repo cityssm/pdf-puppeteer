@@ -20,19 +20,19 @@ npm install @cityssm/pdf-puppeteer
 ## Usage
 
 ```js
-import { convertHTMLToPDF } from "@cityssm/pdf-puppeteer";
+import { convertHTMLToPDF } from '@cityssm/pdf-puppeteer'
 
 /**
  * Usage
  * @param html - This is the HTML to be converted to a PDF.
- * @param [pdfOptions] - Optional parameter to pass in Puppeteer PDF options.
- * @param [pdfPuppeteerOptions] - Optional parameter to pass in PDF Puppeteer options.
+ * @param pdfOptions - Optional parameter to pass options to Puppeteer's PDF generator.
+ * @param pdfPuppeteerOptions - Optional parameter to pass in PDF Puppeteer options.
  */
-const pdfBuffer = await convertHTMLToPDF(html, pdfOptions, pdfPuppeteerOptions);
+const pdfBuffer = await convertHTMLToPDF(html, pdfOptions, pdfPuppeteerOptions)
 
 // Do something with the PDF, like send it as the response.
-res.setHeader("Content-Type", "application/pdf");
-res.send(pdfBuffer);
+res.setHeader('Content-Type', 'application/pdf')
+res.send(pdfBuffer)
 ```
 
 The `convertHTMLToPDF()` function takes the three parameters detailed above.
@@ -42,8 +42,14 @@ take a look at [Puppeteer's Page PDF Options](https://pptr.dev/api/puppeteer.pdf
 
 ### PDF Puppeteer Options
 
-| Option          | Description                                                                        | Default Value |
-| --------------- | ---------------------------------------------------------------------------------- | ------------- |
-| `cacheBrowser`  | Whether or not the Puppeter browser instance should be saved between PDFs.         | `false`       |
-| `remoteContent` | Whether or not the HTML contains remote content.                                   | `true`        |
-| `htmlIsUrl`     | Whether or not the `html` parameter is actually a URL that should be navigated to. | `false`       |
+| Option           | Description                                                                        | Default Value |
+| ---------------- | ---------------------------------------------------------------------------------- | ------------- |
+| `cacheBrowser`   | Whether or not the Puppeter browser instance should be saved between PDFs.         | `false`       |
+| `remoteContent`  | Whether or not the HTML contains remote content.                                   | `true`        |
+| `htmlIsUrl`      | Whether or not the `html` parameter is actually a URL that should be navigated to. | `false`       |
+| `disableSandbox` | Whether or not the sandbox should be disabled.                                     | `false`       |
+
+## Related Project
+
+[**@cityssm/puppeteer-launch**](https://github.com/cityssm/puppeteer-launch)<br />
+Launch Puppeteer, falling back to system browsers when the cached ones aren't working or aren't available.

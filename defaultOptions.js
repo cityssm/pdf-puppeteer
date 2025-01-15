@@ -9,7 +9,8 @@ export const defaultPdfOptions = {
 export const defaultPdfPuppeteerOptions = {
     cacheBrowser: false,
     remoteContent: true,
-    htmlIsUrl: false
+    htmlIsUrl: false,
+    disableSandbox: false
 };
 export const defaultPuppeteerOptions = {
     timeout: secondsToMillis(30),

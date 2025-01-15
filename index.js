@@ -11,11 +11,10 @@ let cachedBrowser;
  * @param html - An HTML string, or a URL.
  * @param instancePdfOptions - PDF options for Puppeteer.
  * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
- * @param disableSandbox - If the Puppeteer sandbox should be disabled.
  * @returns A Buffer of PDF data.
  */
 // eslint-disable-next-line complexity
-export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePdfPuppeteerOptions = {}, disableSandbox = false) {
+export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePdfPuppeteerOptions = {}) {
     if (typeof html !== 'string') {
         throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
     }
@@ -27,7 +26,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
      * Initialize browser
      */
     const puppeteerOptions = { ...defaultPuppeteerOptions };
-    if (disableSandbox) {
+    if (pdfPuppeteerOptions.disableSandbox) {
         puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox'];
     }
     let browser;

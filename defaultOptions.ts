@@ -33,12 +33,19 @@ export interface PDFPuppeteerOptions {
    * Default: false
    */
   htmlIsUrl: boolean
+
+  /**
+   * If the sandbox should be disabled.
+   * Default: false
+  */
+  disableSandbox: boolean
 }
 
 export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
   cacheBrowser: false,
   remoteContent: true,
-  htmlIsUrl: false
+  htmlIsUrl: false,
+  disableSandbox: false
 } as const
 
 export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {

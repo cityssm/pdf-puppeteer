@@ -22,15 +22,13 @@ let cachedBrowser: puppeteer.Browser | undefined
  * @param html - An HTML string, or a URL.
  * @param instancePdfOptions - PDF options for Puppeteer.
  * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
- * @param disableSandbox - If the Puppeteer sandbox should be disabled.
  * @returns A Buffer of PDF data.
  */
 // eslint-disable-next-line complexity
 export async function convertHTMLToPDF(
   html: string,
   instancePdfOptions: puppeteer.PDFOptions = {},
-  instancePdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {},
-  disableSandbox = false
+  instancePdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {}
 ): Promise<Uint8Array> {
   if (typeof html !== 'string') {
     throw new TypeError(
@@ -49,7 +47,7 @@ export async function convertHTMLToPDF(
 
   const puppeteerOptions = { ...defaultPuppeteerOptions }
 
-  if (disableSandbox) {
+  if (pdfPuppeteerOptions.disableSandbox) {
     puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox']
   }
 

@@ -17,6 +17,11 @@ export interface PDFPuppeteerOptions {
      * Default: false
      */
     htmlIsUrl: boolean;
+    /**
+     * If the sandbox should be disabled.
+     * Default: false
+    */
+    disableSandbox: boolean;
 }
 export declare const defaultPdfPuppeteerOptions: PDFPuppeteerOptions;
 export declare const defaultPuppeteerOptions: puppeteer.LaunchOptions;

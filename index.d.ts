@@ -5,10 +5,9 @@ import { type PDFPuppeteerOptions } from './defaultOptions.js';
  * @param html - An HTML string, or a URL.
  * @param instancePdfOptions - PDF options for Puppeteer.
  * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
- * @param disableSandbox - If the Puppeteer sandbox should be disabled.
  * @returns A Buffer of PDF data.
  */
-export declare function convertHTMLToPDF(html: string, instancePdfOptions?: puppeteer.PDFOptions, instancePdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>, disableSandbox?: boolean): Promise<Uint8Array>;
+export declare function convertHTMLToPDF(html: string, instancePdfOptions?: puppeteer.PDFOptions, instancePdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>): Promise<Uint8Array>;
 export default convertHTMLToPDF;
 /**
  * Closes the cached browser instance.
