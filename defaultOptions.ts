@@ -44,7 +44,8 @@ export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
 export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
   timeout: secondsToMillis(30),
   browser: 'chrome',
-  headless: true
+  headless: true,
+  args: ['--disable-setuid-sandbox']
 }
 
 export const htmlNavigationTimeoutMillis = millisecondsInOneMinute
