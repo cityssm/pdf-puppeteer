@@ -1,6 +1,6 @@
 {
   "name": "@cityssm/pdf-puppeteer",
-  "version": "4.3.1",
+  "version": "4.4.0",
   "description": "A simple NPM package to convert html to pdf for Node applications by using Puppeteer",
   "type": "module",
   "exports": {
