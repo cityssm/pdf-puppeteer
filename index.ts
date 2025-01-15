@@ -22,13 +22,15 @@ let cachedBrowser: puppeteer.Browser | undefined
  * @param html - An HTML string, or a URL.
  * @param instancePdfOptions - PDF options for Puppeteer.
  * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
- * @returns - A Buffer of PDF data.
+ * @param disableSandbox - If the Puppeteer sandbox should be disabled.
+ * @returns A Buffer of PDF data.
  */
 // eslint-disable-next-line complexity
 export async function convertHTMLToPDF(
   html: string,
   instancePdfOptions: puppeteer.PDFOptions = {},
-  instancePdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {}
+  instancePdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {},
+  disableSandbox = false
 ): Promise<Uint8Array> {
   if (typeof html !== 'string') {
     throw new TypeError(
@@ -45,6 +47,12 @@ export async function convertHTMLToPDF(
    * Initialize browser
    */
 
+  const puppeteerOptions = { ...defaultPuppeteerOptions }
+
+  if (disableSandbox) {
+    puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox']
+  }
+
   let browser: puppeteer.Browser | undefined
   let doCloseBrowser = false
   let isRunningPdfGeneration = false
@@ -52,13 +60,13 @@ export async function convertHTMLToPDF(
   try {
     if (pdfPuppeteerOptions.cacheBrowser) {
       if (cachedBrowser === undefined) {
-        cachedBrowser = await launchPuppeteer(defaultPuppeteerOptions)
+        cachedBrowser = await launchPuppeteer(puppeteerOptions)
       }
 
       browser = cachedBrowser
     } else {
       doCloseBrowser = true
-      browser = await launchPuppeteer(defaultPuppeteerOptions)
+      browser = await launchPuppeteer(puppeteerOptions)
     }
 
     const browserVersion = await browser.version()

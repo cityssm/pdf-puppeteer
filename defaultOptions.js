@@ -14,8 +14,7 @@ export const defaultPdfPuppeteerOptions = {
 export const defaultPuppeteerOptions = {
     timeout: secondsToMillis(30),
     browser: 'chrome',
-    headless: true,
-    args: ['--no-sandbox', '--disable-setuid-sandbox']
+    headless: true
 };
 export const htmlNavigationTimeoutMillis = millisecondsInOneMinute;
 export const urlNavigationTimeoutMillis = htmlNavigationTimeoutMillis * 2;

@@ -18,28 +18,28 @@ await describe('pdf-puppeteer', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             cacheBrowser: false,
             remoteContent: false
-        });
+        }, true);
         assert.ok(Boolean(isPdf(pdf)));
     });
     await it('Converts HTML to PDF with a cached browser', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
             cacheBrowser: true,
             remoteContent: false
-        });
+        }, true);
         assert.ok(Boolean(isPdf(pdf)));
     });
     await it('Converts remote HTML to PDF with Puppeteer options', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'Legal' }, {
             cacheBrowser: true,
             remoteContent: true
-        });
+        }, true);
         await fs.writeFile('./test/output/html.pdf', pdf);
         assert.ok(Boolean(isPdf(pdf)));
     });
     await it('Converts HTML to PDF with Puppeteer options', async () => {
         const pdf = await pdfPuppeteer.convertHTMLToPDF(html, { format: 'Letter' }, {
             cacheBrowser: true
-        });
+        }, true);
         assert.ok(Boolean(isPdf(pdf)));
     });
     await it('Converts a website to PDF', async () => {
@@ -49,7 +49,7 @@ await describe('pdf-puppeteer', async () => {
             cacheBrowser: true,
             remoteContent: false,
             htmlIsUrl: true
-        });
+        }, true);
         await fs.writeFile('./test/output/url.pdf', pdf);
         assert.ok(Boolean(isPdf(pdf)));
     });
