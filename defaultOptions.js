@@ -1,3 +1,7 @@
+import { millisecondsInOneMinute, secondsToMillis } from '@cityssm/to-millis';
+/*
+ * PDF Options
+ */
 export const defaultPdfOptions = {
     format: 'Letter',
     printBackground: true
@@ -8,9 +12,9 @@ export const defaultPdfPuppeteerOptions = {
     htmlIsUrl: false
 };
 export const defaultPuppeteerOptions = {
-    timeout: 30_000,
+    timeout: secondsToMillis(30),
     browser: 'chrome',
     headless: true
 };
-export const htmlNavigationTimeoutMillis = 60_000;
+export const htmlNavigationTimeoutMillis = millisecondsInOneMinute;
 export const urlNavigationTimeoutMillis = htmlNavigationTimeoutMillis * 2;

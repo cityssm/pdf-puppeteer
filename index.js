@@ -2,9 +2,18 @@ import { getPaperSize } from '@cityssm/paper-sizes';
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
 import exitHook from 'exit-hook';
+import { DEBUG_NAMESPACE } from './debug.config.js';
 import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
-const debug = Debug('pdf-puppeteer:index');
+const debug = Debug(`${DEBUG_NAMESPACE}:index`);
 let cachedBrowser;
+/**
+ * Converts HTML or a webpage into HTML using Puppeteer.
+ * @param html - An HTML string, or a URL.
+ * @param instancePdfOptions - PDF options for Puppeteer.
+ * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
+ * @returns - A Buffer of PDF data.
+ */
+// eslint-disable-next-line complexity
 export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePdfPuppeteerOptions = {}) {
     if (typeof html !== 'string') {
         throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
@@ -13,11 +22,14 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
         ...defaultPdfPuppeteerOptions,
         ...instancePdfPuppeteerOptions
     };
+    /*
+     * Initialize browser
+     */
     let browser;
     let doCloseBrowser = false;
     let isRunningPdfGeneration = false;
     try {
-        if (pdfPuppeteerOptions.cacheBrowser ?? false) {
+        if (pdfPuppeteerOptions.cacheBrowser) {
             if (cachedBrowser === undefined) {
                 cachedBrowser = await launchPuppeteer(defaultPuppeteerOptions);
             }
@@ -30,9 +42,12 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
         const browserVersion = await browser.version();
         debug(`Browser: ${browserVersion}`);
         const browserIsFirefox = browserVersion.toLowerCase().includes('firefox');
+        /*
+         * Initialize page
+         */
         const page = await browser.newPage();
-        const remoteContent = pdfPuppeteerOptions.remoteContent ?? true;
-        if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
+        const remoteContent = pdfPuppeteerOptions.remoteContent;
+        if (pdfPuppeteerOptions.htmlIsUrl) {
             debug('Loading URL...');
             await page.goto(html, {
                 waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
@@ -49,15 +64,15 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
         else {
             debug('Loading HTML...');
             await page.setContent(html, {
-                timeout: remoteContent
-                    ? urlNavigationTimeoutMillis
-                    : htmlNavigationTimeoutMillis
+                timeout: htmlNavigationTimeoutMillis
             });
         }
         debug('Content loaded.');
         const pdfOptions = { ...defaultPdfOptions, ...instancePdfOptions };
+        // Fix "format" issue
         if (pdfOptions.format !== undefined) {
             const size = getPaperSize(pdfOptions.format);
+            // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
             if (size !== undefined) {
                 delete pdfOptions.format;
                 pdfOptions.width = `${size.width}${size.unit}`;
@@ -65,8 +80,10 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
             }
         }
         debug('Converting to PDF...');
+        // eslint-disable-next-line sonarjs/no-dead-store
         isRunningPdfGeneration = true;
         const pdfBuffer = await page.pdf(pdfOptions);
+        // eslint-disable-next-line sonarjs/no-dead-store
         isRunningPdfGeneration = false;
         debug('PDF conversion done.');
         await page.close();
@@ -86,6 +103,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
             return await convertHTMLToPDF(html, instancePdfOptions, instancePdfPuppeteerOptions);
         }
         else {
+            // eslint-disable-next-line @typescript-eslint/only-throw-error
             throw error;
         }
     }
@@ -98,20 +116,29 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
             }
         }
         catch {
+            // ignore
         }
     }
 }
 export default convertHTMLToPDF;
+/**
+ * Closes the cached browser instance.
+ */
 export async function closeCachedBrowser() {
     if (cachedBrowser !== undefined) {
         try {
             await cachedBrowser.close();
         }
         catch {
+            // ignore
         }
         cachedBrowser = undefined;
     }
 }
+/**
+ * Checks for any cached browser instance.
+ * @returns True is a cached browser instance exists.
+ */
 export function hasCachedBrowser() {
     return cachedBrowser !== undefined;
 }

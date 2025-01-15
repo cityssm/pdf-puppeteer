@@ -1,4 +1,5 @@
 import type { puppeteer } from '@cityssm/puppeteer-launch'
+import { millisecondsInOneMinute, secondsToMillis } from '@cityssm/to-millis'
 
 /*
  * PDF Options
@@ -15,20 +16,20 @@ export const defaultPdfOptions: puppeteer.PDFOptions = {
 
 export interface PDFPuppeteerOptions {
   /**
-   * Whether or not the Puppeteer browser instance should be saved between calls.
+   * If the Puppeteer browser instance should be saved between calls.
    * Default: false
    */
   cacheBrowser: boolean
 
   /**
-   * Whether or not the given HTML references remote content, like images and stylesheets.
+   * If the given HTML references remote content, like images and stylesheets.
    * Speed can be increased when set to false.
    * Default: true
    */
   remoteContent: boolean
 
   /**
-   * Whether or not the HTML parameter is actually a URL.
+   * If the HTML parameter is actually a URL.
    * Default: false
    */
   htmlIsUrl: boolean
@@ -40,11 +41,11 @@ export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
   htmlIsUrl: false
 } as const
 
-export const defaultPuppeteerOptions: puppeteer.PuppeteerLaunchOptions = {
-  timeout: 30_000,
+export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
+  timeout: secondsToMillis(30),
   browser: 'chrome',
   headless: true
 }
 
-export const htmlNavigationTimeoutMillis = 60_000
+export const htmlNavigationTimeoutMillis = millisecondsInOneMinute
 export const urlNavigationTimeoutMillis = htmlNavigationTimeoutMillis * 2

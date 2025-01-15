@@ -3,6 +3,7 @@ import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
 
+import { DEBUG_NAMESPACE } from './debug.config.js'
 import {
   type PDFPuppeteerOptions,
   defaultPdfOptions,
@@ -12,7 +13,7 @@ import {
   urlNavigationTimeoutMillis
 } from './defaultOptions.js'
 
-const debug = Debug('pdf-puppeteer:index')
+const debug = Debug(`${DEBUG_NAMESPACE}:index`)
 
 let cachedBrowser: puppeteer.Browser | undefined
 
@@ -23,6 +24,7 @@ let cachedBrowser: puppeteer.Browser | undefined
  * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
  * @returns - A Buffer of PDF data.
  */
+// eslint-disable-next-line complexity
 export async function convertHTMLToPDF(
   html: string,
   instancePdfOptions: puppeteer.PDFOptions = {},
@@ -48,7 +50,7 @@ export async function convertHTMLToPDF(
   let isRunningPdfGeneration = false
 
   try {
-    if (pdfPuppeteerOptions.cacheBrowser ?? false) {
+    if (pdfPuppeteerOptions.cacheBrowser) {
       if (cachedBrowser === undefined) {
         cachedBrowser = await launchPuppeteer(defaultPuppeteerOptions)
       }
@@ -71,9 +73,9 @@ export async function convertHTMLToPDF(
 
     const page = await browser.newPage()
 
-    const remoteContent = pdfPuppeteerOptions.remoteContent ?? true
+    const remoteContent = pdfPuppeteerOptions.remoteContent
 
-    if (pdfPuppeteerOptions.htmlIsUrl ?? false) {
+    if (pdfPuppeteerOptions.htmlIsUrl) {
       debug('Loading URL...')
       await page.goto(html, {
         waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
@@ -91,9 +93,7 @@ export async function convertHTMLToPDF(
     } else {
       debug('Loading HTML...')
       await page.setContent(html, {
-        timeout: remoteContent
-          ? urlNavigationTimeoutMillis
-          : htmlNavigationTimeoutMillis
+        timeout: htmlNavigationTimeoutMillis
       })
     }
 
@@ -104,7 +104,7 @@ export async function convertHTMLToPDF(
     // Fix "format" issue
     if (pdfOptions.format !== undefined) {
       const size = getPaperSize(pdfOptions.format)
-      // eslint-disable-next-line sonarjs/different-types-comparison
+      // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
       if (size !== undefined) {
         delete pdfOptions.format
         pdfOptions.width = `${size.width}${size.unit}`
@@ -113,11 +113,15 @@ export async function convertHTMLToPDF(
     }
 
     debug('Converting to PDF...')
+    
+    // eslint-disable-next-line sonarjs/no-dead-store
     isRunningPdfGeneration = true
 
     const pdfBuffer = await page.pdf(pdfOptions)
 
+    // eslint-disable-next-line sonarjs/no-dead-store
     isRunningPdfGeneration = false
+
     debug('PDF conversion done.')
 
     await page.close()

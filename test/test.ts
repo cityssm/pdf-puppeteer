@@ -1,13 +1,14 @@
-// eslint-disable-next-line @eslint-community/eslint-comments/disable-enable-pair
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-
 import assert from 'node:assert'
 import fs from 'node:fs/promises'
 import { after, describe, it } from 'node:test'
 
-import isPdf from 'is-pdf'
+import isPdf from '@cityssm/is-pdf'
+import Debug from 'debug'
 
+import { DEBUG_ENABLE_NAMESPACES } from '../debug.config.js'
 import * as pdfPuppeteer from '../index.js'
+
+Debug.enable(DEBUG_ENABLE_NAMESPACES)
 
 const html = `<html>
   <head><title>Test</title></head>
@@ -25,7 +26,7 @@ await describe('pdf-puppeteer', async () => {
       remoteContent: false
     })
 
-    assert.ok(isPdf(pdf))
+    assert.ok(Boolean(isPdf(pdf)))
   })
 
   await it('Converts HTML to PDF with a cached browser', async () => {
@@ -34,7 +35,7 @@ await describe('pdf-puppeteer', async () => {
       remoteContent: false
     })
 
-    assert.ok(isPdf(pdf))
+    assert.ok(Boolean(isPdf(pdf)))
   })
 
   await it('Converts remote HTML to PDF with Puppeteer options', async () => {
@@ -49,7 +50,7 @@ await describe('pdf-puppeteer', async () => {
 
     await fs.writeFile('./test/output/html.pdf', pdf)
 
-    assert.ok(isPdf(pdf))
+    assert.ok(Boolean(isPdf(pdf)))
   })
 
   await it('Converts HTML to PDF with Puppeteer options', async () => {
@@ -61,7 +62,7 @@ await describe('pdf-puppeteer', async () => {
       }
     )
 
-    assert.ok(isPdf(pdf))
+    assert.ok(Boolean(isPdf(pdf)))
   })
 
   await it('Converts a website to PDF', async () => {
@@ -79,11 +80,12 @@ await describe('pdf-puppeteer', async () => {
 
     await fs.writeFile('./test/output/url.pdf', pdf)
 
-    assert.ok(isPdf(pdf))
+    assert.ok(Boolean(isPdf(pdf)))
   })
 
   await it('Throws an error if the html parameter is not a string', async () => {
     try {
+      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
       await pdfPuppeteer.convertHTMLToPDF(123_456_789)
       assert.fail('No error thrown.')
     } catch {
