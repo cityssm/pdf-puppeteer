@@ -73,7 +73,7 @@
   "devDependencies": {
     "@cityssm/is-pdf": "^2.0.0",
     "@types/debug": "^4.1.12",
-    "eslint-config-cityssm": "^18.3.0",
+    "eslint-config-cityssm": "^21.0.0",
     "prettier-config-cityssm": "^1.0.0"
   }
 }
