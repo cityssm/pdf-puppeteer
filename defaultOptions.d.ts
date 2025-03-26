@@ -17,6 +17,7 @@ export interface PDFPuppeteerOptions {
      * Default: false
      */
     htmlIsUrl: boolean;
+    browser?: puppeteer.SupportedBrowser;
     /**
      * If the sandbox should be disabled.
      * Default: false

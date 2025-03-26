@@ -47,6 +47,10 @@ export async function convertHTMLToPDF(
 
   const puppeteerOptions = { ...defaultPuppeteerOptions }
 
+  if (pdfPuppeteerOptions.browser !== undefined) {
+    puppeteerOptions.browser = pdfPuppeteerOptions.browser
+  }
+
   if (pdfPuppeteerOptions.disableSandbox) {
     puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox']
   }
@@ -119,7 +123,7 @@ export async function convertHTMLToPDF(
     }
 
     debug('Converting to PDF...')
-    
+
     // eslint-disable-next-line sonarjs/no-dead-store
     isRunningPdfGeneration = true
 

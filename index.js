@@ -26,6 +26,9 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
      * Initialize browser
      */
     const puppeteerOptions = { ...defaultPuppeteerOptions };
+    if (pdfPuppeteerOptions.browser !== undefined) {
+        puppeteerOptions.browser = pdfPuppeteerOptions.browser;
+    }
     if (pdfPuppeteerOptions.disableSandbox) {
         puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox'];
     }

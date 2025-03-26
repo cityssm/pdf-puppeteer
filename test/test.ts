@@ -106,3 +106,18 @@ await describe('pdf-puppeteer', async () => {
     assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false)
   })
 })
+
+await describe('pdf-puppeteer', async () => {
+
+  await it('Converts HTML to PDF with a new Firefox browser', async () => {
+    const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+      cacheBrowser: false,
+      remoteContent: false,
+      browser: 'firefox',
+      disableSandbox: true
+    })
+
+    assert.ok(Boolean(isPdf(pdf)))
+  })
+
+})
