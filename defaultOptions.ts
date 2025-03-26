@@ -1,4 +1,5 @@
 import type { puppeteer } from '@cityssm/puppeteer-launch'
+
 import { millisecondsInOneMinute, secondsToMillis } from '@cityssm/to-millis'
 
 /*
@@ -34,26 +35,30 @@ export interface PDFPuppeteerOptions {
    */
   htmlIsUrl: boolean
 
+  /**
+   * The browser to use.
+   * Default: 'chrome'
+   */
   browser?: puppeteer.SupportedBrowser
 
   /**
    * If the sandbox should be disabled.
    * Default: false
-  */
+   */
   disableSandbox: boolean
 }
 
 export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
   cacheBrowser: false,
-  remoteContent: true,
+  disableSandbox: false,
   htmlIsUrl: false,
-  disableSandbox: false
+  remoteContent: true
 } as const
 
 export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
-  timeout: secondsToMillis(30),
   browser: 'chrome',
-  headless: true
+  headless: true,
+  timeout: secondsToMillis(30)
 }
 
 export const htmlNavigationTimeoutMillis = millisecondsInOneMinute

@@ -17,11 +17,15 @@ export interface PDFPuppeteerOptions {
      * Default: false
      */
     htmlIsUrl: boolean;
+    /**
+     * The browser to use.
+     * Default: 'chrome'
+     */
     browser?: puppeteer.SupportedBrowser;
     /**
      * If the sandbox should be disabled.
      * Default: false
-    */
+     */
     disableSandbox: boolean;
 }
 export declare const defaultPdfPuppeteerOptions: PDFPuppeteerOptions;

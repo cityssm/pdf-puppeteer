@@ -48,6 +48,7 @@ take a look at [Puppeteer's Page PDF Options](https://pptr.dev/api/puppeteer.pdf
 | `remoteContent`  | Whether or not the HTML contains remote content.                                   | `true`        |
 | `htmlIsUrl`      | Whether or not the `html` parameter is actually a URL that should be navigated to. | `false`       |
 | `disableSandbox` | Whether or not the sandbox should be disabled.                                     | `false`       |
+| `browser`        | The web browser to use for PDF generation, either `"chrome"` or `"firefox"`        | `"chrome"`    |
 
 ## Related Project
 

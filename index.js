@@ -26,9 +26,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
      * Initialize browser
      */
     const puppeteerOptions = { ...defaultPuppeteerOptions };
-    if (pdfPuppeteerOptions.browser !== undefined) {
-        puppeteerOptions.browser = pdfPuppeteerOptions.browser;
-    }
+    puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome';
     if (pdfPuppeteerOptions.disableSandbox) {
         puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox'];
     }
@@ -37,9 +35,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     let isRunningPdfGeneration = false;
     try {
         if (pdfPuppeteerOptions.cacheBrowser) {
-            if (cachedBrowser === undefined) {
-                cachedBrowser = await launchPuppeteer(puppeteerOptions);
-            }
+            cachedBrowser ??= await launchPuppeteer(puppeteerOptions);
             browser = cachedBrowser;
         }
         else {

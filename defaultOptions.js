@@ -8,14 +8,14 @@ export const defaultPdfOptions = {
 };
 export const defaultPdfPuppeteerOptions = {
     cacheBrowser: false,
-    remoteContent: true,
+    disableSandbox: false,
     htmlIsUrl: false,
-    disableSandbox: false
+    remoteContent: true
 };
 export const defaultPuppeteerOptions = {
-    timeout: secondsToMillis(30),
     browser: 'chrome',
-    headless: true
+    headless: true,
+    timeout: secondsToMillis(30)
 };
 export const htmlNavigationTimeoutMillis = millisecondsInOneMinute;
 export const urlNavigationTimeoutMillis = htmlNavigationTimeoutMillis * 2;
