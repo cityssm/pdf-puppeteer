@@ -7,6 +7,9 @@ import { DEBUG_NAMESPACE } from './debug.config.js';
 import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
 const debug = Debug(`${DEBUG_NAMESPACE}:index`);
 const isOldWindows = os.platform() === 'win32' && os.release().startsWith('6.');
+if (isOldWindows) {
+    debug('Older Windows detected. May not work as expected.');
+}
 let cachedBrowser;
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
