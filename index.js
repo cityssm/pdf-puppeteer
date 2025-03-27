@@ -1,10 +1,12 @@
+import os from 'node:os';
 import { getPaperSize } from '@cityssm/paper-sizes';
-import launchPuppeteer from '@cityssm/puppeteer-launch';
+import launchPuppeteer, { puppeteer } from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
 import exitHook from 'exit-hook';
 import { DEBUG_NAMESPACE } from './debug.config.js';
 import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
 const debug = Debug(`${DEBUG_NAMESPACE}:index`);
+const isOldWindows = os.platform() === 'win32' && os.release().startsWith('6.');
 let cachedBrowser;
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
@@ -27,6 +29,10 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
      */
     const puppeteerOptions = { ...defaultPuppeteerOptions };
     puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome';
+    puppeteerOptions.protocol =
+        puppeteerOptions.browser === 'firefox' && isOldWindows
+            ? 'cdp'
+            : 'webDriverBiDi';
     if (pdfPuppeteerOptions.disableSandbox) {
         puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox'];
     }
@@ -35,12 +41,16 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     let isRunningPdfGeneration = false;
     try {
         if (pdfPuppeteerOptions.cacheBrowser) {
-            cachedBrowser ??= await launchPuppeteer(puppeteerOptions);
+            cachedBrowser ??= isOldWindows
+                ? await puppeteer.launch(puppeteerOptions)
+                : await launchPuppeteer(puppeteerOptions);
             browser = cachedBrowser;
         }
         else {
             doCloseBrowser = true;
-            browser = await launchPuppeteer(puppeteerOptions);
+            browser = isOldWindows
+                ? await puppeteer.launch(puppeteerOptions)
+                : await launchPuppeteer(puppeteerOptions);
         }
         const browserVersion = await browser.version();
         debug(`Browser: ${browserVersion}`);
