@@ -1,7 +1,5 @@
-import os from 'node:os'
-
 import { getPaperSize } from '@cityssm/paper-sizes'
-import launchPuppeteer, { puppeteer } from '@cityssm/puppeteer-launch'
+import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
 
