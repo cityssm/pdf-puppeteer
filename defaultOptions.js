@@ -11,7 +11,7 @@ export const defaultPdfPuppeteerOptions = {
     disableSandbox: false,
     htmlIsUrl: false,
     remoteContent: true,
-    useLegacyPuppeteer: false
+    usePackagePuppeteer: false
 };
 export const defaultPuppeteerOptions = {
     browser: 'chrome',

@@ -48,10 +48,11 @@ export interface PDFPuppeteerOptions {
   disableSandbox: boolean
 
   /**
-   * If true, an older version of Puppeteer will be used.
+   * If true, use whatever version of Puppeteer is installed,
+   * which could be a legacy version.
    * Default: false
    */
-  useLegacyPuppeteer: boolean
+  usePackagePuppeteer: boolean
 }
 
 export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
@@ -59,7 +60,7 @@ export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
   disableSandbox: false,
   htmlIsUrl: false,
   remoteContent: true,
-  useLegacyPuppeteer: false
+  usePackagePuppeteer: false
 } as const
 
 export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {

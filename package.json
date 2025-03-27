@@ -75,8 +75,5 @@
     "@types/debug": "^4.1.12",
     "eslint-config-cityssm": "^22.2.2",
     "prettier-config-cityssm": "^1.0.0"
-  },
-  "optionalDependencies": {
-    "puppeteer": "^19.4.1"
   }
 }

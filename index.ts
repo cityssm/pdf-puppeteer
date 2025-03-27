@@ -2,7 +2,6 @@ import { getPaperSize } from '@cityssm/paper-sizes'
 import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
-import legacyPuppeteer from 'puppeteer'
 
 import { DEBUG_NAMESPACE } from './debug.config.js'
 import {
@@ -50,41 +49,32 @@ export async function convertHTMLToPDF(
 
   puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome'
 
-  puppeteerOptions.protocol =
-    puppeteerOptions.browser === 'firefox' &&
-    pdfPuppeteerOptions.useLegacyPuppeteer
-      ? 'cdp'
-      : 'webDriverBiDi'
-
   if (pdfPuppeteerOptions.disableSandbox) {
     puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox']
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-  let browser: legacyPuppeteer.Browser | puppeteer.Browser | undefined
+  let browser: puppeteer.Browser | undefined
   let doCloseBrowser = false
   let isRunningPdfGeneration = false
 
   try {
-    if (
-      pdfPuppeteerOptions.cacheBrowser &&
-      !pdfPuppeteerOptions.useLegacyPuppeteer
-    ) {
-      cachedBrowser ??= await launchPuppeteer(puppeteerOptions)
+    let puppeteerLaunchFunction = launchPuppeteer
+
+    if (pdfPuppeteerOptions.usePackagePuppeteer) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const puppeteerPackage = await import('puppeteer')
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      puppeteerLaunchFunction = puppeteerPackage.launch
+    }
+
+    if (pdfPuppeteerOptions.cacheBrowser) {
+      cachedBrowser ??= await puppeteerLaunchFunction(puppeteerOptions)
 
       browser = cachedBrowser
     } else {
       doCloseBrowser = true
-      browser = pdfPuppeteerOptions.useLegacyPuppeteer
-        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-          await legacyPuppeteer.launch({
-            ...puppeteerOptions,
-            headless:
-              puppeteerOptions.headless === 'shell'
-                ? 'new'
-                : puppeteerOptions.headless
-          } as unknown as legacyPuppeteer.LaunchOptions)
-        : await launchPuppeteer(puppeteerOptions)
+      browser = await puppeteerLaunchFunction(puppeteerOptions)
     }
 
     const browserVersion = await browser.version()
