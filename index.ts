@@ -1,7 +1,7 @@
 import os from 'node:os'
 
 import { getPaperSize } from '@cityssm/paper-sizes'
-import launchPuppeteer, { puppeteer } from '@cityssm/puppeteer-launch'
+import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
 import legacyPuppeteer from 'puppeteer'
@@ -59,7 +59,7 @@ export async function convertHTMLToPDF(
   puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome'
 
   puppeteerOptions.protocol =
-    puppeteerOptions.browser === 'firefox' && isOldWindows
+    puppeteerOptions.browser === 'firefox' && (isOldWindows || pdfPuppeteerOptions.useLegacyPuppeteer)
       ? 'cdp'
       : 'webDriverBiDi'
 
@@ -68,7 +68,7 @@ export async function convertHTMLToPDF(
   }
 
   // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
-  let browser: puppeteer.Browser | legacyPuppeteer.Browser | undefined
+  let browser: legacyPuppeteer.Browser | puppeteer.Browser | undefined
   let doCloseBrowser = false
   let isRunningPdfGeneration = false
 
@@ -79,7 +79,8 @@ export async function convertHTMLToPDF(
       browser = cachedBrowser
     } else {
       doCloseBrowser = true
-      browser = isOldWindows
+      browser = isOldWindows || pdfPuppeteerOptions.useLegacyPuppeteer
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
         ? await legacyPuppeteer.launch({
             ...puppeteerOptions,
             headless: puppeteerOptions.headless === 'shell' ? 'new' : puppeteerOptions.headless

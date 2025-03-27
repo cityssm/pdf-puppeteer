@@ -34,7 +34,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     const puppeteerOptions = { ...defaultPuppeteerOptions };
     puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome';
     puppeteerOptions.protocol =
-        puppeteerOptions.browser === 'firefox' && isOldWindows
+        puppeteerOptions.browser === 'firefox' && (isOldWindows || pdfPuppeteerOptions.useLegacyPuppeteer)
             ? 'cdp'
             : 'webDriverBiDi';
     if (pdfPuppeteerOptions.disableSandbox) {
@@ -51,7 +51,8 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
         }
         else {
             doCloseBrowser = true;
-            browser = isOldWindows
+            browser = isOldWindows || pdfPuppeteerOptions.useLegacyPuppeteer
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
                 ? await legacyPuppeteer.launch({
                     ...puppeteerOptions,
                     headless: puppeteerOptions.headless === 'shell' ? 'new' : puppeteerOptions.headless

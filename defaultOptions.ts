@@ -46,13 +46,20 @@ export interface PDFPuppeteerOptions {
    * Default: false
    */
   disableSandbox: boolean
+
+  /**
+   * If true, an older version of Puppeteer will be used.
+   * Default: false
+   */
+  useLegacyPuppeteer: boolean
 }
 
 export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
   cacheBrowser: false,
   disableSandbox: false,
   htmlIsUrl: false,
-  remoteContent: true
+  remoteContent: true,
+  useLegacyPuppeteer: false
 } as const
 
 export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {

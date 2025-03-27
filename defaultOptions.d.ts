@@ -27,6 +27,11 @@ export interface PDFPuppeteerOptions {
      * Default: false
      */
     disableSandbox: boolean;
+    /**
+     * If true, an older version of Puppeteer will be used.
+     * Default: false
+     */
+    useLegacyPuppeteer: boolean;
 }
 export declare const defaultPdfPuppeteerOptions: PDFPuppeteerOptions;
 export declare const defaultPuppeteerOptions: puppeteer.LaunchOptions;
