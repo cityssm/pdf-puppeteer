@@ -1,4 +1,4 @@
-import { type puppeteer } from '@cityssm/puppeteer-launch';
+import { puppeteer } from '@cityssm/puppeteer-launch';
 import { type PDFPuppeteerOptions } from './defaultOptions.js';
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
