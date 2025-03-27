@@ -4,6 +4,7 @@ import { getPaperSize } from '@cityssm/paper-sizes'
 import launchPuppeteer, { puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 import exitHook from 'exit-hook'
+import legacyPuppeteer from 'puppeteer'
 
 import { DEBUG_NAMESPACE } from './debug.config.js'
 import {
@@ -66,21 +67,23 @@ export async function convertHTMLToPDF(
     puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox']
   }
 
-  let browser: puppeteer.Browser | undefined
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-type-constituents
+  let browser: puppeteer.Browser | legacyPuppeteer.Browser | undefined
   let doCloseBrowser = false
   let isRunningPdfGeneration = false
 
   try {
-    if (pdfPuppeteerOptions.cacheBrowser) {
-      cachedBrowser ??= isOldWindows
-        ? await puppeteer.launch(puppeteerOptions)
-        : await launchPuppeteer(puppeteerOptions)
+    if (pdfPuppeteerOptions.cacheBrowser && !isOldWindows) {
+      cachedBrowser ??= await launchPuppeteer(puppeteerOptions)
 
       browser = cachedBrowser
     } else {
       doCloseBrowser = true
       browser = isOldWindows
-        ? await puppeteer.launch(puppeteerOptions)
+        ? await legacyPuppeteer.launch({
+            ...puppeteerOptions,
+            headless: puppeteerOptions.headless === 'shell' ? 'new' : puppeteerOptions.headless
+          } as unknown as legacyPuppeteer.LaunchOptions)
         : await launchPuppeteer(puppeteerOptions)
     }
 
