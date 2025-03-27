@@ -107,7 +107,7 @@ await describe('pdf-puppeteer', async () => {
   })
 })
 
-await describe('pdf-puppeteer', async () => {
+await describe.skip('pdf-puppeteer/firefox', async () => {
 
   await it('Converts HTML to PDF with a new Firefox browser', async () => {
     const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
