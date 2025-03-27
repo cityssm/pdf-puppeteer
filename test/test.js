@@ -79,25 +79,27 @@ await describe('pdf-puppeteer', async () => {
         assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false);
     });
 });
-await describe.skip('pdf-puppeteer/firefox', async () => {
-    await it('Converts HTML to PDF with a new Firefox browser', async () => {
-        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-            browser: 'firefox',
-            cacheBrowser: false,
-            disableSandbox: true,
-            remoteContent: false
+if (os.platform() === 'win32') {
+    await describe('pdf-puppeteer/firefox', async () => {
+        await it('Converts HTML to PDF with a new Firefox browser', async () => {
+            const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+                browser: 'firefox',
+                cacheBrowser: false,
+                disableSandbox: true,
+                remoteContent: false
+            });
+            assert.ok(Boolean(isPdf(pdf)));
         });
-        assert.ok(Boolean(isPdf(pdf)));
     });
-});
-await describe('pdf-puppeteer/legacy', async () => {
-    await it('Converts HTML to PDF with legacy Puppeteer', async () => {
-        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-            cacheBrowser: false,
-            disableSandbox: true,
-            remoteContent: false,
-            useLegacyPuppeteer: true
+    await describe('pdf-puppeteer/legacy', async () => {
+        await it('Converts HTML to PDF with legacy Puppeteer', async () => {
+            const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+                cacheBrowser: false,
+                disableSandbox: true,
+                remoteContent: false,
+                useLegacyPuppeteer: true
+            });
+            assert.ok(Boolean(isPdf(pdf)));
         });
-        assert.ok(Boolean(isPdf(pdf)));
     });
-});
+}
