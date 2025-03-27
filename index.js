@@ -36,9 +36,7 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     try {
         let puppeteerLaunchFunction = launchPuppeteer;
         if (pdfPuppeteerOptions.usePackagePuppeteer) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const puppeteerPackage = await import('puppeteer');
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             puppeteerLaunchFunction = puppeteerPackage.launch;
         }
         if (pdfPuppeteerOptions.cacheBrowser) {
