@@ -1,4 +1,3 @@
-import os from 'node:os';
 import { getPaperSize } from '@cityssm/paper-sizes';
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
@@ -7,10 +6,6 @@ import legacyPuppeteer from 'puppeteer';
 import { DEBUG_NAMESPACE } from './debug.config.js';
 import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
 const debug = Debug(`${DEBUG_NAMESPACE}:index`);
-const isOldWindows = os.platform() === 'win32' && os.release().startsWith('6.');
-if (isOldWindows) {
-    debug('Older Windows detected. May not work as expected.');
-}
 let cachedBrowser;
 /**
  * Converts HTML or a webpage into HTML using Puppeteer.
@@ -34,7 +29,8 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     const puppeteerOptions = { ...defaultPuppeteerOptions };
     puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome';
     puppeteerOptions.protocol =
-        puppeteerOptions.browser === 'firefox' && (isOldWindows || pdfPuppeteerOptions.useLegacyPuppeteer)
+        puppeteerOptions.browser === 'firefox' &&
+            pdfPuppeteerOptions.useLegacyPuppeteer
             ? 'cdp'
             : 'webDriverBiDi';
     if (pdfPuppeteerOptions.disableSandbox) {
@@ -45,18 +41,21 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     let doCloseBrowser = false;
     let isRunningPdfGeneration = false;
     try {
-        if (pdfPuppeteerOptions.cacheBrowser && !isOldWindows) {
+        if (pdfPuppeteerOptions.cacheBrowser &&
+            !pdfPuppeteerOptions.useLegacyPuppeteer) {
             cachedBrowser ??= await launchPuppeteer(puppeteerOptions);
             browser = cachedBrowser;
         }
         else {
             doCloseBrowser = true;
-            browser = isOldWindows || pdfPuppeteerOptions.useLegacyPuppeteer
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-                ? await legacyPuppeteer.launch({
-                    ...puppeteerOptions,
-                    headless: puppeteerOptions.headless === 'shell' ? 'new' : puppeteerOptions.headless
-                })
+            browser = pdfPuppeteerOptions.useLegacyPuppeteer
+                ? // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+                    await legacyPuppeteer.launch({
+                        ...puppeteerOptions,
+                        headless: puppeteerOptions.headless === 'shell'
+                            ? 'new'
+                            : puppeteerOptions.headless
+                    })
                 : await launchPuppeteer(puppeteerOptions);
         }
         const browserVersion = await browser.version();

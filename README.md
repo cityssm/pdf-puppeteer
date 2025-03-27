@@ -44,7 +44,7 @@ take a look at [Puppeteer's Page PDF Options](https://pptr.dev/api/puppeteer.pdf
 
 | Option           | Description                                                                        | Default Value |
 | ---------------- | ---------------------------------------------------------------------------------- | ------------- |
-| `cacheBrowser`   | Whether or not the Puppeter browser instance should be saved between PDFs.         | `false`       |
+| `cacheBrowser`   | Whether or not the Puppeteer browser instance should be saved between PDFs.        | `false`       |
 | `remoteContent`  | Whether or not the HTML contains remote content.                                   | `true`        |
 | `htmlIsUrl`      | Whether or not the `html` parameter is actually a URL that should be navigated to. | `false`       |
 | `disableSandbox` | Whether or not the sandbox should be disabled.                                     | `false`       |

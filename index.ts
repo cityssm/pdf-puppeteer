@@ -1,5 +1,3 @@
-import os from 'node:os'
-
 import { getPaperSize } from '@cityssm/paper-sizes'
 import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
@@ -17,12 +15,6 @@ import {
 } from './defaultOptions.js'
 
 const debug = Debug(`${DEBUG_NAMESPACE}:index`)
-
-const isOldWindows = os.platform() === 'win32' && os.release().startsWith('6.')
-
-if (isOldWindows) {
-  debug('Older Windows detected. May not work as expected.')
-}
 
 let cachedBrowser: puppeteer.Browser | undefined
 
@@ -59,7 +51,8 @@ export async function convertHTMLToPDF(
   puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome'
 
   puppeteerOptions.protocol =
-    puppeteerOptions.browser === 'firefox' && (isOldWindows || pdfPuppeteerOptions.useLegacyPuppeteer)
+    puppeteerOptions.browser === 'firefox' &&
+    pdfPuppeteerOptions.useLegacyPuppeteer
       ? 'cdp'
       : 'webDriverBiDi'
 
@@ -73,17 +66,23 @@ export async function convertHTMLToPDF(
   let isRunningPdfGeneration = false
 
   try {
-    if (pdfPuppeteerOptions.cacheBrowser && !isOldWindows) {
+    if (
+      pdfPuppeteerOptions.cacheBrowser &&
+      !pdfPuppeteerOptions.useLegacyPuppeteer
+    ) {
       cachedBrowser ??= await launchPuppeteer(puppeteerOptions)
 
       browser = cachedBrowser
     } else {
       doCloseBrowser = true
-      browser = isOldWindows || pdfPuppeteerOptions.useLegacyPuppeteer
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-        ? await legacyPuppeteer.launch({
+      browser = pdfPuppeteerOptions.useLegacyPuppeteer
+        ? // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+          await legacyPuppeteer.launch({
             ...puppeteerOptions,
-            headless: puppeteerOptions.headless === 'shell' ? 'new' : puppeteerOptions.headless
+            headless:
+              puppeteerOptions.headless === 'shell'
+                ? 'new'
+                : puppeteerOptions.headless
           } as unknown as legacyPuppeteer.LaunchOptions)
         : await launchPuppeteer(puppeteerOptions)
     }
