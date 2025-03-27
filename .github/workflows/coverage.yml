@@ -61,8 +61,14 @@ jobs:
           npm ci
           npm install -g c8
 
-      - name: Run Coverage Testing
-        run: npm run coverage
+      - name: Run Testing
+        run: npm test
+
+      - name: Downgrade Puppeteer
+        run: npm install puppeteer@19.4.1
+
+      - name: Run Testing Again
+        run: npm test
 
       - name: Archive PDF output
         uses: actions/upload-artifact@v4

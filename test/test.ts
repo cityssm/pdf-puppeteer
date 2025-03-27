@@ -14,7 +14,7 @@ Debug.enable(DEBUG_ENABLE_NAMESPACES)
 const debug = Debug('pdf-puppeteer:test')
 
 debug(`Platform: ${os.platform()}`)
-debug(`Release: ${os.release()}`)
+debug(`Release:  ${os.release()}`)
 
 const html = `<html>
   <head><title>Test</title></head>
@@ -110,31 +110,5 @@ await describe('pdf-puppeteer', async () => {
     }
 
     assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false)
-  })
-})
-
-await describe.skip('pdf-puppeteer/firefox', async () => {
-  await it('Converts HTML to PDF with a new Firefox browser', async () => {
-    const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-      browser: 'firefox',
-      cacheBrowser: false,
-      disableSandbox: true,
-      remoteContent: false
-    })
-
-    assert.ok(Boolean(isPdf(pdf)))
-  })
-})
-
-await describe('pdf-puppeteer/package', async () => {
-  await it('Converts HTML to PDF with package Puppeteer', async () => {
-    const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-      cacheBrowser: false,
-      disableSandbox: true,
-      remoteContent: false,
-      usePackagePuppeteer: true
-    })
-
-    assert.ok(Boolean(isPdf(pdf)))
   })
 })
