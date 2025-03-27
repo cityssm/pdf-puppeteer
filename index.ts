@@ -47,17 +47,9 @@ export async function convertHTMLToPDF(
    * Initialize browser
    */
 
-  const isOldWindows =
-    os.platform() === 'win32' && os.release().startsWith('6.')
-
   const puppeteerOptions = { ...defaultPuppeteerOptions }
 
   puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome'
-
-  puppeteerOptions.protocol =
-    puppeteerOptions.browser === 'firefox' && isOldWindows
-      ? 'cdp'
-      : 'webDriverBiDi'
 
   if (pdfPuppeteerOptions.disableSandbox) {
     puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox']

@@ -1,4 +1,3 @@
-import os from 'node:os';
 import { getPaperSize } from '@cityssm/paper-sizes';
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
@@ -26,13 +25,8 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
     /*
      * Initialize browser
      */
-    const isOldWindows = os.platform() === 'win32' && os.release().startsWith('6.');
     const puppeteerOptions = { ...defaultPuppeteerOptions };
     puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome';
-    puppeteerOptions.protocol =
-        puppeteerOptions.browser === 'firefox' && isOldWindows
-            ? 'cdp'
-            : 'webDriverBiDi';
     if (pdfPuppeteerOptions.disableSandbox) {
         puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox'];
     }
