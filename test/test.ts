@@ -127,3 +127,18 @@ await describe.skip('pdf-puppeteer/firefox', async () => {
   })
 
 })
+
+await describe('pdf-puppeteer/legacy', async () => {
+
+  await it('Converts HTML to PDF with legacy Puppeteer', async () => {
+    const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
+      cacheBrowser: false,
+      disableSandbox: true,
+      remoteContent: false,
+      useLegacyPuppeteer: true
+    })
+
+    assert.ok(Boolean(isPdf(pdf)))
+  })
+
+})
