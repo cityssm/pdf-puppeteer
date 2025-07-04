@@ -72,6 +72,7 @@ jobs:
 
       - name: Install Firefox Puppeteer Browser
         run: npx puppeteer browsers install firefox
+        continue-on-error: true
 
       - name: Run Testing
         run: npm test
