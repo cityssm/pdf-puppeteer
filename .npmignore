@@ -1,12 +1,15 @@
 .github/
+.sonarlint
+.vscode/
+
 coverage/
 test/
 
 .codeclimate.yml
 .deepsource.toml
-.eslintignore
 .gitignore
 .prettierignore
+
 eslint.config.*
 prettier.config.*
 tsconfig.json
