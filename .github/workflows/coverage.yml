@@ -21,8 +21,12 @@ jobs:
         run: |
           npm ci
           npm install -g c8
-          npx puppeteer browsers install chrome
-          npx puppeteer browsers install firefox
+
+      - name: Install Chrome Puppeteer Browser
+        run: npx puppeteer browsers install chrome
+
+      - name: Install Firefox Puppeteer Browser
+        run: npx puppeteer browsers install firefox
 
       - name: Run Coverage Testing
         run: npm run coverage
@@ -62,8 +66,12 @@ jobs:
         run: |
           npm ci
           npm install -g c8
-          npx puppeteer browsers install chrome
-          npx puppeteer browsers install firefox
+      
+      - name: Install Chrome Puppeteer Browser
+        run: npx puppeteer browsers install chrome
+
+      - name: Install Firefox Puppeteer Browser
+        run: npx puppeteer browsers install firefox
 
       - name: Run Testing
         run: npm test
@@ -93,8 +101,12 @@ jobs:
         run: |
           npm ci
           npm install -g c8
-          npx puppeteer browsers install chrome
-          npx puppeteer browsers install firefox
+      
+      - name: Install Chrome Puppeteer Browser
+        run: npx puppeteer browsers install chrome
+
+      - name: Install Firefox Puppeteer Browser
+        run: npx puppeteer browsers install firefox
 
       - name: Run Coverage Testing
         run: npm run coverage
