@@ -26,20 +26,19 @@ const html = `<html>
 await describe('pdf-puppeteer', async () => {
   await it('Converts HTML to PDF', async () => {
     let isValidPdf = false
-    let pdfPuppeteer: PdfPuppeteer | undefined
+
+    const pdfPuppeteer = new PdfPuppeteer({
+      disableSandbox: true
+    })
 
     try {
-      pdfPuppeteer = new PdfPuppeteer({
-        disableSandbox: true
-      })
-
       const pdf = await pdfPuppeteer.fromHtml(html)
 
       await fs.writeFile('./test/output/html.pdf', pdf)
 
       isValidPdf = isPdf(pdf)
     } finally {
-      await pdfPuppeteer?.closeBrowser()
+      await pdfPuppeteer.closeBrowser()
     }
 
     assert.ok(isValidPdf, validMessage)
@@ -47,13 +46,12 @@ await describe('pdf-puppeteer', async () => {
 
   await it('Converts remote HTML to PDF with Puppeteer options', async () => {
     let isValidPdf = false
-    let pdfPuppeteer: PdfPuppeteer | undefined
+
+    const pdfPuppeteer = new PdfPuppeteer({
+      disableSandbox: true
+    })
 
     try {
-      pdfPuppeteer = new PdfPuppeteer({
-        disableSandbox: true
-      })
-
       const pdf = await pdfPuppeteer.fromHtml(
         html,
         {
@@ -64,7 +62,7 @@ await describe('pdf-puppeteer', async () => {
 
       isValidPdf = isPdf(pdf)
     } finally {
-      await pdfPuppeteer?.closeBrowser()
+      await pdfPuppeteer.closeBrowser()
     }
 
     assert.ok(isValidPdf, validMessage)
@@ -72,13 +70,12 @@ await describe('pdf-puppeteer', async () => {
 
   await it('Converts a website to PDF', async () => {
     let isValidPdf = false
-    let pdfPuppeteer: PdfPuppeteer | undefined
+
+    const pdfPuppeteer = new PdfPuppeteer({
+      disableSandbox: true
+    })
 
     try {
-      pdfPuppeteer = new PdfPuppeteer({
-        disableSandbox: true
-      })
-
       const pdf = await pdfPuppeteer.fromUrl('https://cityssm.github.io/', {
         format: 'Letter'
       })
@@ -87,7 +84,7 @@ await describe('pdf-puppeteer', async () => {
 
       isValidPdf = isPdf(pdf)
     } finally {
-      await pdfPuppeteer?.closeBrowser()
+      await pdfPuppeteer.closeBrowser()
     }
 
     assert.ok(isValidPdf, validMessage)

@@ -16,17 +16,16 @@ const html = `<html>
 await describe('pdf-puppeteer/package', async () => {
     await it('Converts HTML to PDF with package Puppeteer', async () => {
         let isValidPdf = false;
-        let pdfPuppeteer;
+        const pdfPuppeteer = new PdfPuppeteer({
+            disableSandbox: true,
+            usePackagePuppeteer: true
+        });
         try {
-            pdfPuppeteer = new PdfPuppeteer({
-                disableSandbox: true,
-                usePackagePuppeteer: true
-            });
             const pdf = await pdfPuppeteer.fromHtml(html);
             isValidPdf = isPdf(pdf);
         }
         finally {
-            await pdfPuppeteer?.closeBrowser();
+            await pdfPuppeteer.closeBrowser();
         }
         assert.ok(isValidPdf, 'PDF should be valid');
     });

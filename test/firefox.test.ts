@@ -26,21 +26,20 @@ const html = `<html>
 await describe('pdf-puppeteer/firefox', async () => {
   await it('Converts HTML to PDF with a Firefox browser', async () => {
     let isValidPdf = false
-    let pdfPuppeteer: PdfPuppeteer | undefined
+
+    const pdfPuppeteer = new PdfPuppeteer({
+      browser: 'firefox',
+      disableSandbox: true
+    })
 
     try {
-      pdfPuppeteer = new PdfPuppeteer({
-        browser: 'firefox',
-        disableSandbox: true
-      })
-
       const pdf = await pdfPuppeteer.fromHtml(html)
 
       await fs.writeFile('./test/output/htmlFirefox.pdf', pdf)
 
       isValidPdf = isPdf(pdf)
     } finally {
-      await pdfPuppeteer?.closeBrowser()
+      await pdfPuppeteer.closeBrowser()
     }
 
     assert.ok(isValidPdf, validMessage)
@@ -48,14 +47,13 @@ await describe('pdf-puppeteer/firefox', async () => {
 
   await it('Converts a website to PDF with a Firefox browser', async () => {
     let isValidPdf = false
-    let pdfPuppeteer: PdfPuppeteer | undefined
+
+    const pdfPuppeteer = new PdfPuppeteer({
+      browser: 'firefox',
+      disableSandbox: true
+    })
 
     try {
-      pdfPuppeteer = new PdfPuppeteer({
-        browser: 'firefox',
-        disableSandbox: true
-      })
-
       const pdf = await pdfPuppeteer.fromUrl('https://cityssm.github.io/', {
         format: 'Letter'
       })
@@ -64,7 +62,7 @@ await describe('pdf-puppeteer/firefox', async () => {
 
       isValidPdf = isPdf(pdf)
     } finally {
-      await pdfPuppeteer?.closeBrowser()
+      await pdfPuppeteer.closeBrowser()
     }
 
     assert.ok(isValidPdf, validMessage)
