@@ -10,6 +10,7 @@ Debug.enable(DEBUG_ENABLE_NAMESPACES);
 const debug = Debug('pdf-puppeteer:test:firefox');
 debug(`Platform: ${os.platform()}`);
 debug(`Release:  ${os.release()}`);
+const validMessage = 'PDF should be valid';
 const html = `<html>
   <head><title>Test</title></head>
   <body><h1>Hello World</h1></body>
@@ -30,6 +31,25 @@ await describe('pdf-puppeteer/firefox', async () => {
         finally {
             await pdfPuppeteer?.close();
         }
-        assert.ok(isValidPdf, 'PDF should be valid');
+        assert.ok(isValidPdf, validMessage);
+    });
+    await it('Converts a website to PDF with a Firefox browser', async () => {
+        let isValidPdf = false;
+        let pdfPuppeteer;
+        try {
+            pdfPuppeteer = new PdfPuppeteer({
+                browser: 'firefox',
+                disableSandbox: true
+            });
+            const pdf = await pdfPuppeteer.fromUrl('https://cityssm.github.io/', {
+                format: 'Letter'
+            });
+            await fs.writeFile('./test/output/urlFirefox.pdf', pdf);
+            isValidPdf = isPdf(pdf);
+        }
+        finally {
+            await pdfPuppeteer?.close();
+        }
+        assert.ok(isValidPdf, validMessage);
     });
 });
