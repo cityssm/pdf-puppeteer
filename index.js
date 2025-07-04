@@ -23,7 +23,12 @@ export class PdfPuppeteer {
     }
     #clearBrowserCloseTimeout() {
         if (this.#browserTimeout !== undefined) {
-            clearTimeout(this.#browserTimeout);
+            try {
+                clearTimeout(this.#browserTimeout);
+            }
+            catch (error) {
+                debug('Error clearing browser close timeout:', error);
+            }
             this.#browserTimeout = undefined;
         }
     }
