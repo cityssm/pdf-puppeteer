@@ -6,7 +6,7 @@ import isPdf from '@cityssm/is-pdf'
 import Debug from 'debug'
 
 import { DEBUG_ENABLE_NAMESPACES } from '../debug.config.js'
-import * as pdfPuppeteer from '../index.js'
+import PdfPuppeteer from '../index.js'
 
 Debug.enable(DEBUG_ENABLE_NAMESPACES)
 
@@ -20,16 +20,24 @@ const html = `<html>
   <body><h1>Hello World</h1></body>
   </html>`
 
-await describe.skip('pdf-puppeteer/firefox', async () => {
-  await it('Converts HTML to PDF with a new Firefox browser', async () => {
-    const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-      browser: 'firefox',
-      cacheBrowser: false,
-      disableSandbox: true,
-      remoteContent: false
-    })
+await describe('pdf-puppeteer/firefox', async () => {
+  await it('Converts HTML to PDF with a Firefox browser', async () => {
+    let isValidPdf = false
+    let pdfPuppeteer: PdfPuppeteer | undefined
 
-    assert.ok(Boolean(isPdf(pdf)))
+    try {
+      pdfPuppeteer = new PdfPuppeteer({
+        browser: 'firefox',
+        disableSandbox: true
+      })
+
+      const pdf = await pdfPuppeteer.fromHtml(html)
+
+      isValidPdf = isPdf(pdf)
+    } finally {
+      await pdfPuppeteer?.close()
+    }
+
+    assert.ok(isValidPdf, 'PDF should be valid')
   })
 })
-

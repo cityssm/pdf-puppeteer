@@ -2,22 +2,6 @@
   "name": "@cityssm/pdf-puppeteer",
   "version": "5.0.0",
   "description": "A simple NPM package to convert html to pdf for Node applications by using Puppeteer",
-  "type": "module",
-  "exports": {
-    ".": "./index.js",
-    "./debug": "./debug.config.js"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "scripts": {
-    "test": "node --test",
-    "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary node --test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cityssm/pdf-puppeteer.git"
-  },
   "keywords": [
     "pdf",
     "puppeteer",
@@ -31,6 +15,16 @@
     "pdf-puppeteer",
     "puppeteer-pdf"
   ],
+  "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
+  "bugs": {
+    "url": "https://github.com/cityssm/pdf-puppeteer/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cityssm/pdf-puppeteer.git"
+  },
+  "license": "MIT",
+  "author": "The Corporation of the City of Sault Ste. Marie",
   "contributors": [
     {
       "name": "Joe Higgs",
@@ -57,23 +51,29 @@
       "url": "https://github.com/chuongtrh"
     }
   ],
-  "author": "The Corporation of the City of Sault Ste. Marie",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/cityssm/pdf-puppeteer/issues"
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./debug": "./debug.config.js"
   },
-  "homepage": "https://github.com/cityssm/pdf-puppeteer#readme",
+  "scripts": {
+    "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary node --test",
+    "test": "node --test"
+  },
   "dependencies": {
     "@cityssm/paper-sizes": "^1.0.1",
     "@cityssm/puppeteer-launch": "^4.0.0",
     "@cityssm/to-millis": "^1.0.0",
-    "debug": "^4.4.0",
+    "debug": "^4.4.1",
     "exit-hook": "^4.0.0"
   },
   "devDependencies": {
     "@cityssm/is-pdf": "^2.0.0",
     "@types/debug": "^4.1.12",
-    "eslint-config-cityssm": "^22.2.2",
+    "eslint-config-cityssm": "^26.0.0",
     "prettier-config-cityssm": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

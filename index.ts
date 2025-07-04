@@ -1,106 +1,87 @@
-import { getPaperSize } from '@cityssm/paper-sizes'
 import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
-import exitHook from 'exit-hook'
 
 import { DEBUG_NAMESPACE } from './debug.config.js'
 import {
   type PDFPuppeteerOptions,
-  defaultPdfOptions,
   defaultPdfPuppeteerOptions,
   defaultPuppeteerOptions,
   htmlNavigationTimeoutMillis,
   urlNavigationTimeoutMillis
 } from './defaultOptions.js'
+import pageToPdf from './pageToPdf.js'
 
 const debug = Debug(`${DEBUG_NAMESPACE}:index`)
 
-let cachedBrowser: puppeteer.Browser | undefined
+export class PdfPuppeteer {
+  #browser: puppeteer.Browser | undefined
+  #puppeteerOptions: puppeteer.LaunchOptions
 
-/**
- * Converts HTML or a webpage into HTML using Puppeteer.
- * @param html - An HTML string, or a URL.
- * @param instancePdfOptions - PDF options for Puppeteer.
- * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
- * @returns A Buffer of PDF data.
- */
-// eslint-disable-next-line complexity
-export async function convertHTMLToPDF(
-  html: string,
-  instancePdfOptions: puppeteer.PDFOptions = {},
-  instancePdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {}
-): Promise<Uint8Array> {
-  if (typeof html !== 'string') {
-    throw new TypeError(
-      'Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.'
-    )
+  readonly #pdfPuppeteerOptions: Partial<PDFPuppeteerOptions>
+
+  constructor(pdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {}) {
+    this.#pdfPuppeteerOptions = {
+      ...defaultPdfPuppeteerOptions,
+      ...pdfPuppeteerOptions
+    }
   }
 
-  const pdfPuppeteerOptions = {
-    ...defaultPdfPuppeteerOptions,
-    ...instancePdfPuppeteerOptions
-  }
+  async #initializePage(): Promise<puppeteer.Page> {
+    if (this.#browser === undefined || !this.#browser.connected) {
+      this.#puppeteerOptions = {
+        ...defaultPuppeteerOptions,
+        browser: this.#pdfPuppeteerOptions.browser ?? 'chrome'
+      }
 
-  /*
-   * Initialize browser
-   */
+      if (
+        this.#pdfPuppeteerOptions.disableSandbox ??
+        defaultPdfPuppeteerOptions.disableSandbox
+      ) {
+        this.#puppeteerOptions.args = [
+          '--no-sandbox',
+          '--disable-setuid-sandbox'
+        ]
+      }
 
-  const puppeteerOptions = { ...defaultPuppeteerOptions }
+      let puppeteerLaunchFunction = launchPuppeteer
 
-  puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome'
+      if (
+        this.#pdfPuppeteerOptions.usePackagePuppeteer ??
+        defaultPdfPuppeteerOptions.usePackagePuppeteer
+      ) {
+        const puppeteerPackage = await import('puppeteer')
+        puppeteerLaunchFunction = puppeteerPackage.launch
+      }
 
-  if (pdfPuppeteerOptions.disableSandbox) {
-    puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox']
-  }
-
-  let browser: puppeteer.Browser | undefined
-  let doCloseBrowser = false
-  let isRunningPdfGeneration = false
-
-  try {
-    let puppeteerLaunchFunction = launchPuppeteer
-
-    if (pdfPuppeteerOptions.usePackagePuppeteer) {
-      const puppeteerPackage = await import('puppeteer')
-      puppeteerLaunchFunction = puppeteerPackage.launch
+      this.#browser = await puppeteerLaunchFunction(this.#puppeteerOptions)
     }
 
-    if (pdfPuppeteerOptions.cacheBrowser) {
-      cachedBrowser ??= await puppeteerLaunchFunction(puppeteerOptions)
+    return await this.#browser.newPage()
+  }
 
-      browser = cachedBrowser
-    } else {
-      doCloseBrowser = true
-      browser = await puppeteerLaunchFunction(puppeteerOptions)
+  async fromHtml(
+    html: string,
+    pdfOptions: puppeteer.PDFOptions = {},
+    hasRemoteContent = true
+  ): Promise<Uint8Array> {
+    if (typeof html !== 'string') {
+      throw new TypeError(
+        'Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.'
+      )
     }
 
-    const browserVersion = await browser.version()
+    const page = await this.#initializePage()
 
-    debug(`Browser: ${browserVersion}`)
-
-    const browserIsFirefox = browserVersion.toLowerCase().includes('firefox')
-
-    /*
-     * Initialize page
-     */
-
-    const page = await browser.newPage()
-
-    const remoteContent = pdfPuppeteerOptions.remoteContent
-
-    if (pdfPuppeteerOptions.htmlIsUrl) {
-      debug('Loading URL...')
-      await page.goto(html, {
-        waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
-        timeout: urlNavigationTimeoutMillis
-      })
-    } else if (remoteContent) {
+    if (hasRemoteContent) {
       debug('Loading HTML with remote content...')
       await page.goto(
         `data:text/html;base64,${Buffer.from(html).toString('base64')}`,
         {
-          waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
-          timeout: urlNavigationTimeoutMillis
+          timeout: urlNavigationTimeoutMillis,
+          waitUntil:
+            this.#puppeteerOptions.browser === 'firefox'
+              ? 'domcontentloaded'
+              : 'networkidle0'
         }
       )
     } else {
@@ -112,104 +93,51 @@ export async function convertHTMLToPDF(
 
     debug('Content loaded.')
 
-    const pdfOptions = { ...defaultPdfOptions, ...instancePdfOptions }
-
-    // Fix "format" issue
-    if (pdfOptions.format !== undefined) {
-      const size = getPaperSize(pdfOptions.format)
-      // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
-      if (size !== undefined) {
-        delete pdfOptions.format
-        pdfOptions.width = `${size.width}${size.unit}`
-        pdfOptions.height = `${size.height}${size.unit}`
-      }
-    }
-
-    debug('Converting to PDF...')
-
-    // eslint-disable-next-line sonarjs/no-dead-store
-    isRunningPdfGeneration = true
-
-    const pdfBuffer = await page.pdf(pdfOptions)
-
-    // eslint-disable-next-line sonarjs/no-dead-store
-    isRunningPdfGeneration = false
-
-    debug('PDF conversion done.')
+    const pdf = await pageToPdf(page, pdfOptions)
 
     await page.close()
 
-    if (!pdfPuppeteerOptions.cacheBrowser || cachedBrowser !== browser) {
-      await browser.close()
-    }
+    return pdf
+  }
 
-    return pdfBuffer
-  } catch (error) {
-    if (
-      isRunningPdfGeneration &&
-      defaultPuppeteerOptions.browser === 'chrome'
-    ) {
-      if (!doCloseBrowser) {
-        await closeCachedBrowser()
-      }
-
-      defaultPuppeteerOptions.browser = 'firefox'
-
-      debug('Trying again with Firefox.')
-
-      return await convertHTMLToPDF(
-        html,
-        instancePdfOptions,
-        instancePdfPuppeteerOptions
+  async fromUrl(
+    url: string,
+    pdfOptions: puppeteer.PDFOptions = {}
+  ): Promise<Uint8Array> {
+    if (typeof url !== 'string') {
+      throw new TypeError(
+        'Invalid Argument: URL expected as type of string and received a value of a different type. Check your request body and request headers.'
       )
-    } else {
-      // eslint-disable-next-line @typescript-eslint/only-throw-error
-      throw error
     }
-  } finally {
-    try {
-      if (doCloseBrowser && browser !== undefined) {
-        debug('Closing browser...')
-        await browser.close()
-        debug('Browser closed.')
-      }
-    } catch {
-      // ignore
+
+    const page = await this.#initializePage()
+
+    debug('Loading URL...')
+
+    await page.goto(url, {
+      timeout: urlNavigationTimeoutMillis,
+      waitUntil:
+        this.#puppeteerOptions.browser === 'firefox'
+          ? 'domcontentloaded'
+          : 'networkidle0'
+    })
+
+    debug('Content loaded.')
+
+    const pdf = await pageToPdf(page, pdfOptions)
+
+    await page.close()
+
+    return pdf
+  }
+
+  async close(): Promise<void> {
+    if (this.#browser !== undefined && this.#browser.connected) {
+      debug('Closing browser...')
+      await this.#browser.close()
+      this.#browser = undefined
     }
   }
 }
 
-export default convertHTMLToPDF
-
-/**
- * Closes the cached browser instance.
- */
-export async function closeCachedBrowser(): Promise<void> {
-  if (cachedBrowser !== undefined) {
-    try {
-      await cachedBrowser.close()
-    } catch {
-      // ignore
-    }
-    cachedBrowser = undefined
-  }
-}
-
-/**
- * Checks for any cached browser instance.
- * @returns True is a cached browser instance exists.
- */
-export function hasCachedBrowser(): boolean {
-  return cachedBrowser !== undefined
-}
-
-export {
-  type PDFPuppeteerOptions,
-  defaultPdfOptions,
-  defaultPdfPuppeteerOptions
-} from './defaultOptions.js'
-
-exitHook(() => {
-  debug('Running exit hook.')
-  void closeCachedBrowser()
-})
+export default PdfPuppeteer

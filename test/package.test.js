@@ -4,7 +4,7 @@ import { describe, it } from 'node:test';
 import isPdf from '@cityssm/is-pdf';
 import Debug from 'debug';
 import { DEBUG_ENABLE_NAMESPACES } from '../debug.config.js';
-import * as pdfPuppeteer from '../index.js';
+import PdfPuppeteer from '../index.js';
 Debug.enable(DEBUG_ENABLE_NAMESPACES);
 const debug = Debug('pdf-puppeteer:test:package');
 debug(`Platform: ${os.platform()}`);
@@ -15,12 +15,19 @@ const html = `<html>
   </html>`;
 await describe('pdf-puppeteer/package', async () => {
     await it('Converts HTML to PDF with package Puppeteer', async () => {
-        const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-            cacheBrowser: false,
-            disableSandbox: true,
-            remoteContent: false,
-            usePackagePuppeteer: true
-        });
-        assert.ok(Boolean(isPdf(pdf)));
+        let isValidPdf = false;
+        let pdfPuppeteer;
+        try {
+            pdfPuppeteer = new PdfPuppeteer({
+                disableSandbox: true,
+                usePackagePuppeteer: true
+            });
+            const pdf = await pdfPuppeteer.fromHtml(html);
+            isValidPdf = isPdf(pdf);
+        }
+        finally {
+            await pdfPuppeteer?.close();
+        }
+        assert.ok(isValidPdf, 'PDF should be valid');
     });
 });

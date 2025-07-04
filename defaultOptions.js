@@ -7,10 +7,8 @@ export const defaultPdfOptions = {
     printBackground: true
 };
 export const defaultPdfPuppeteerOptions = {
-    cacheBrowser: false,
+    browser: 'chrome',
     disableSandbox: false,
-    htmlIsUrl: false,
-    remoteContent: true,
     usePackagePuppeteer: false
 };
 export const defaultPuppeteerOptions = {

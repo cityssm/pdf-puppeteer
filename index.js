@@ -1,72 +1,54 @@
-import { getPaperSize } from '@cityssm/paper-sizes';
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
-import exitHook from 'exit-hook';
 import { DEBUG_NAMESPACE } from './debug.config.js';
-import { defaultPdfOptions, defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
+import { defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
+import pageToPdf from './pageToPdf.js';
 const debug = Debug(`${DEBUG_NAMESPACE}:index`);
-let cachedBrowser;
-/**
- * Converts HTML or a webpage into HTML using Puppeteer.
- * @param html - An HTML string, or a URL.
- * @param instancePdfOptions - PDF options for Puppeteer.
- * @param instancePdfPuppeteerOptions - pdf-puppeteer options.
- * @returns A Buffer of PDF data.
- */
-// eslint-disable-next-line complexity
-export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePdfPuppeteerOptions = {}) {
-    if (typeof html !== 'string') {
-        throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
+export class PdfPuppeteer {
+    #browser;
+    #puppeteerOptions;
+    #pdfPuppeteerOptions;
+    constructor(pdfPuppeteerOptions = {}) {
+        this.#pdfPuppeteerOptions = {
+            ...defaultPdfPuppeteerOptions,
+            ...pdfPuppeteerOptions
+        };
     }
-    const pdfPuppeteerOptions = {
-        ...defaultPdfPuppeteerOptions,
-        ...instancePdfPuppeteerOptions
-    };
-    /*
-     * Initialize browser
-     */
-    const puppeteerOptions = { ...defaultPuppeteerOptions };
-    puppeteerOptions.browser = pdfPuppeteerOptions.browser ?? 'chrome';
-    if (pdfPuppeteerOptions.disableSandbox) {
-        puppeteerOptions.args = ['--no-sandbox', '--disable-setuid-sandbox'];
+    async #initializePage() {
+        if (this.#browser === undefined || !this.#browser.connected) {
+            this.#puppeteerOptions = {
+                ...defaultPuppeteerOptions,
+                browser: this.#pdfPuppeteerOptions.browser ?? 'chrome'
+            };
+            if (this.#pdfPuppeteerOptions.disableSandbox ??
+                defaultPdfPuppeteerOptions.disableSandbox) {
+                this.#puppeteerOptions.args = [
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox'
+                ];
+            }
+            let puppeteerLaunchFunction = launchPuppeteer;
+            if (this.#pdfPuppeteerOptions.usePackagePuppeteer ??
+                defaultPdfPuppeteerOptions.usePackagePuppeteer) {
+                const puppeteerPackage = await import('puppeteer');
+                puppeteerLaunchFunction = puppeteerPackage.launch;
+            }
+            this.#browser = await puppeteerLaunchFunction(this.#puppeteerOptions);
+        }
+        return await this.#browser.newPage();
     }
-    let browser;
-    let doCloseBrowser = false;
-    let isRunningPdfGeneration = false;
-    try {
-        let puppeteerLaunchFunction = launchPuppeteer;
-        if (pdfPuppeteerOptions.usePackagePuppeteer) {
-            const puppeteerPackage = await import('puppeteer');
-            puppeteerLaunchFunction = puppeteerPackage.launch;
+    async fromHtml(html, pdfOptions = {}, hasRemoteContent = true) {
+        if (typeof html !== 'string') {
+            throw new TypeError('Invalid Argument: HTML expected as type of string and received a value of a different type. Check your request body and request headers.');
         }
-        if (pdfPuppeteerOptions.cacheBrowser) {
-            cachedBrowser ??= await puppeteerLaunchFunction(puppeteerOptions);
-            browser = cachedBrowser;
-        }
-        else {
-            doCloseBrowser = true;
-            browser = await puppeteerLaunchFunction(puppeteerOptions);
-        }
-        const browserVersion = await browser.version();
-        debug(`Browser: ${browserVersion}`);
-        const browserIsFirefox = browserVersion.toLowerCase().includes('firefox');
-        /*
-         * Initialize page
-         */
-        const page = await browser.newPage();
-        const remoteContent = pdfPuppeteerOptions.remoteContent;
-        if (pdfPuppeteerOptions.htmlIsUrl) {
-            debug('Loading URL...');
-            await page.goto(html, {
-                waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
-                timeout: urlNavigationTimeoutMillis
-            });
-        }
-        else if (remoteContent) {
+        const page = await this.#initializePage();
+        if (hasRemoteContent) {
             debug('Loading HTML with remote content...');
             await page.goto(`data:text/html;base64,${Buffer.from(html).toString('base64')}`, {
-                waitUntil: browserIsFirefox ? 'domcontentloaded' : 'networkidle0',
-                timeout: urlNavigationTimeoutMillis
+                timeout: urlNavigationTimeoutMillis,
+                waitUntil: this.#puppeteerOptions.browser === 'firefox'
+                    ? 'domcontentloaded'
+                    : 'networkidle0'
             });
         }
         else {
@@ -76,82 +58,33 @@ export async function convertHTMLToPDF(html, instancePdfOptions = {}, instancePd
             });
         }
         debug('Content loaded.');
-        const pdfOptions = { ...defaultPdfOptions, ...instancePdfOptions };
-        // Fix "format" issue
-        if (pdfOptions.format !== undefined) {
-            const size = getPaperSize(pdfOptions.format);
-            // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
-            if (size !== undefined) {
-                delete pdfOptions.format;
-                pdfOptions.width = `${size.width}${size.unit}`;
-                pdfOptions.height = `${size.height}${size.unit}`;
-            }
-        }
-        debug('Converting to PDF...');
-        // eslint-disable-next-line sonarjs/no-dead-store
-        isRunningPdfGeneration = true;
-        const pdfBuffer = await page.pdf(pdfOptions);
-        // eslint-disable-next-line sonarjs/no-dead-store
-        isRunningPdfGeneration = false;
-        debug('PDF conversion done.');
+        const pdf = await pageToPdf(page, pdfOptions);
         await page.close();
-        if (!pdfPuppeteerOptions.cacheBrowser || cachedBrowser !== browser) {
-            await browser.close();
-        }
-        return pdfBuffer;
+        return pdf;
     }
-    catch (error) {
-        if (isRunningPdfGeneration &&
-            defaultPuppeteerOptions.browser === 'chrome') {
-            if (!doCloseBrowser) {
-                await closeCachedBrowser();
-            }
-            defaultPuppeteerOptions.browser = 'firefox';
-            debug('Trying again with Firefox.');
-            return await convertHTMLToPDF(html, instancePdfOptions, instancePdfPuppeteerOptions);
+    async fromUrl(url, pdfOptions = {}) {
+        if (typeof url !== 'string') {
+            throw new TypeError('Invalid Argument: URL expected as type of string and received a value of a different type. Check your request body and request headers.');
         }
-        else {
-            // eslint-disable-next-line @typescript-eslint/only-throw-error
-            throw error;
-        }
+        const page = await this.#initializePage();
+        debug('Loading URL...');
+        await page.goto(url, {
+            timeout: urlNavigationTimeoutMillis,
+            waitUntil: this.#puppeteerOptions.browser === 'firefox'
+                ? 'domcontentloaded'
+                : 'networkidle0'
+        });
+        debug('Content loaded.');
+        const pdf = await pageToPdf(page, pdfOptions);
+        await page.close();
+        return pdf;
     }
-    finally {
-        try {
-            if (doCloseBrowser && browser !== undefined) {
-                debug('Closing browser...');
-                await browser.close();
-                debug('Browser closed.');
-            }
-        }
-        catch {
-            // ignore
+    async close() {
+        if (this.#browser !== undefined && this.#browser.connected) {
+            debug('Closing browser...');
+            await this.#browser.close();
+            this.#browser = undefined;
         }
     }
 }
-export default convertHTMLToPDF;
-/**
- * Closes the cached browser instance.
- */
-export async function closeCachedBrowser() {
-    if (cachedBrowser !== undefined) {
-        try {
-            await cachedBrowser.close();
-        }
-        catch {
-            // ignore
-        }
-        cachedBrowser = undefined;
-    }
-}
-/**
- * Checks for any cached browser instance.
- * @returns True is a cached browser instance exists.
- */
-export function hasCachedBrowser() {
-    return cachedBrowser !== undefined;
-}
-export { defaultPdfOptions, defaultPdfPuppeteerOptions } from './defaultOptions.js';
-exitHook(() => {
-    debug('Running exit hook.');
-    void closeCachedBrowser();
-});
+export default PdfPuppeteer;

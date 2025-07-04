@@ -1,13 +1,12 @@
 import assert from 'node:assert'
-import fs from 'node:fs/promises'
 import os from 'node:os'
-import { after, describe, it } from 'node:test'
+import { describe, it } from 'node:test'
 
 import isPdf from '@cityssm/is-pdf'
 import Debug from 'debug'
 
 import { DEBUG_ENABLE_NAMESPACES } from '../debug.config.js'
-import * as pdfPuppeteer from '../index.js'
+import PdfPuppeteer from '../index.js'
 
 Debug.enable(DEBUG_ENABLE_NAMESPACES)
 
@@ -22,93 +21,68 @@ const html = `<html>
   </html>`
 
 await describe('pdf-puppeteer', async () => {
-  after(async () => {
-    await pdfPuppeteer.closeCachedBrowser()
-  })
+  await it('Converts HTML to PDF', async () => {
+    let isValidPdf = false
+    let pdfPuppeteer: PdfPuppeteer | undefined
 
-  await it('Converts HTML to PDF with a new browser', async () => {
-    const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-      cacheBrowser: false,
-      remoteContent: false,
-      disableSandbox: true
-    })
+    try {
+      pdfPuppeteer = new PdfPuppeteer({
+        disableSandbox: true
+      })
 
-    assert.ok(Boolean(isPdf(pdf)))
-  })
+      const pdf = await pdfPuppeteer.fromHtml(html)
 
-  await it('Converts HTML to PDF with a cached browser', async () => {
-    const pdf = await pdfPuppeteer.convertHTMLToPDF(html, undefined, {
-      cacheBrowser: true,
-      remoteContent: false,
-      disableSandbox: true
-    })
+      isValidPdf = isPdf(pdf)
+    } finally {
+      await pdfPuppeteer?.close()
+    }
 
-    assert.ok(Boolean(isPdf(pdf)))
+    assert.ok(isValidPdf, 'PDF should be valid')
   })
 
   await it('Converts remote HTML to PDF with Puppeteer options', async () => {
-    const pdf = await pdfPuppeteer.convertHTMLToPDF(
-      html,
-      { format: 'Legal' },
-      {
-        cacheBrowser: true,
-        remoteContent: true,
+    let isValidPdf = false
+    let pdfPuppeteer: PdfPuppeteer | undefined
+
+    try {
+      pdfPuppeteer = new PdfPuppeteer({
         disableSandbox: true
-      }
-    )
+      })
 
-    await fs.writeFile('./test/output/html.pdf', pdf)
+      const pdf = await pdfPuppeteer.fromHtml(
+        html,
+        {
+          format: 'Legal'
+        },
+        true
+      )
 
-    assert.ok(Boolean(isPdf(pdf)))
-  })
+      isValidPdf = isPdf(pdf)
+    } finally {
+      await pdfPuppeteer?.close()
+    }
 
-  await it('Converts HTML to PDF with Puppeteer options', async () => {
-    const pdf = await pdfPuppeteer.convertHTMLToPDF(
-      html,
-      { format: 'Letter' },
-      {
-        cacheBrowser: true,
-        disableSandbox: true
-      }
-    )
-
-    assert.ok(Boolean(isPdf(pdf)))
+    assert.ok(isValidPdf, 'PDF should be valid')
   })
 
   await it('Converts a website to PDF', async () => {
-    const pdf = await pdfPuppeteer.convertHTMLToPDF(
-      'https://cityssm.github.io/',
-      {
-        format: 'Letter'
-      },
-      {
-        cacheBrowser: true,
-        remoteContent: false,
-        htmlIsUrl: true,
-        disableSandbox: true
-      }
-    )
+    let isValidPdf = false
+    let pdfPuppeteer: PdfPuppeteer | undefined
 
-    await fs.writeFile('./test/output/url.pdf', pdf)
-
-    assert.ok(Boolean(isPdf(pdf)))
-  })
-
-  await it('Throws an error if the html parameter is not a string', async () => {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-      await pdfPuppeteer.convertHTMLToPDF(123_456_789)
-      assert.fail('No error thrown.')
-    } catch {
-      assert.ok('Error thrown')
-    }
-  })
+      pdfPuppeteer = new PdfPuppeteer({
+        disableSandbox: true
+      })
 
-  await it('Closes cached browsers', async () => {
-    if (pdfPuppeteer.hasCachedBrowser()) {
-      await pdfPuppeteer.closeCachedBrowser()
+      const pdf = await pdfPuppeteer.fromUrl('https://cityssm.github.io/', {
+        format: 'Letter'
+      })
+
+      isValidPdf = isPdf(pdf)
+    } finally {
+      await pdfPuppeteer?.close()
     }
 
-    assert.strictEqual(pdfPuppeteer.hasCachedBrowser(), false)
+    assert.ok(isValidPdf, 'PDF should be valid')
   })
 })
