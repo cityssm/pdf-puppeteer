@@ -19,35 +19,31 @@ npm install @cityssm/pdf-puppeteer
 ## Usage
 
 ```js
-import { convertHTMLToPDF } from '@cityssm/pdf-puppeteer'
+import PdfPuppeteer from '@cityssm/pdf-puppeteer'
 
-/**
- * Usage
- * @param html - This is the HTML to be converted to a PDF.
- * @param pdfOptions - Optional parameter to pass options to Puppeteer's PDF generator.
- * @param pdfPuppeteerOptions - Optional parameter to pass in PDF Puppeteer options.
- */
-const pdfBuffer = await convertHTMLToPDF(html, pdfOptions, pdfPuppeteerOptions)
+// Initialize PDF Puppeteer.
+const pdfPuppeteer = new PdfPuppeteer(pdfPuppeteerOptions)
+
+// Convert a website to a PDF.
+const pdfBufferFromUrl = await pdfPuppeteer.fromUrl(url, pdfOptions)
+
+// Convert HTML to a PDF.
+const pdfBufferFromHTML = await pdfPuppeteer.fromHtml(html, pdfOptions)
 
 // Do something with the PDF, like send it as the response.
 res.setHeader('Content-Type', 'application/pdf')
-res.send(pdfBuffer)
+res.send(pdfBufferFromHTML)
 ```
 
-The `convertHTMLToPDF()` function takes the three parameters detailed above.
-
-For more information on the available Puppeteer options for PDFs,
+For more information on the available Puppeteer options for PDFs (`pdfOptions`),
 take a look at [Puppeteer's Page PDF Options](https://pptr.dev/api/puppeteer.pdfoptions).
 
 ### PDF Puppeteer Options
 
 | Option                | Description                                                                                    | Default Value |
 | --------------------- | ---------------------------------------------------------------------------------------------- | ------------- |
-| `cacheBrowser`        | Whether or not the Puppeteer browser instance should be saved between PDFs.                    | `false`       |
-| `remoteContent`       | Whether or not the HTML contains remote content.                                               | `true`        |
-| `htmlIsUrl`           | Whether or not the `html` parameter is actually a URL that should be navigated to.             | `false`       |
-| `disableSandbox`      | Whether or not the sandbox should be disabled.                                                 | `false`       |
 | `browser`             | The web browser to use for PDF generation, either `"chrome"` or `"firefox"`                    | `"chrome"`    |
+| `disableSandbox`      | Required in some secure environments.                                                          | `false`       |
 | `usePackagePuppeteer` | Use the version of Puppeteer installed in the package rather than `@cityssm/puppeteer-launch`. | `false`       |
 
 ## Related Project
