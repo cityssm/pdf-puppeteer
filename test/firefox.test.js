@@ -29,7 +29,7 @@ await describe('pdf-puppeteer/firefox', async () => {
             isValidPdf = isPdf(pdf);
         }
         finally {
-            await pdfPuppeteer?.close();
+            await pdfPuppeteer?.closeBrowser();
         }
         assert.ok(isValidPdf, validMessage);
     });
@@ -48,7 +48,7 @@ await describe('pdf-puppeteer/firefox', async () => {
             isValidPdf = isPdf(pdf);
         }
         finally {
-            await pdfPuppeteer?.close();
+            await pdfPuppeteer?.closeBrowser();
         }
         assert.ok(isValidPdf, validMessage);
     });

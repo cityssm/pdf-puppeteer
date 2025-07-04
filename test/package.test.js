@@ -26,7 +26,7 @@ await describe('pdf-puppeteer/package', async () => {
             isValidPdf = isPdf(pdf);
         }
         finally {
-            await pdfPuppeteer?.close();
+            await pdfPuppeteer?.closeBrowser();
         }
         assert.ok(isValidPdf, 'PDF should be valid');
     });

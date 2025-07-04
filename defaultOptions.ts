@@ -44,6 +44,7 @@ export const defaultPdfPuppeteerOptions: PDFPuppeteerOptions = {
 export const defaultPuppeteerOptions: puppeteer.LaunchOptions = {
   browser: 'chrome',
   headless: true,
+  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
   timeout: secondsToMillis(30)
 }
 

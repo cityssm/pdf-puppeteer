@@ -14,6 +14,7 @@ export const defaultPdfPuppeteerOptions = {
 export const defaultPuppeteerOptions = {
     browser: 'chrome',
     headless: true,
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     timeout: secondsToMillis(30)
 };
 export const htmlNavigationTimeoutMillis = millisecondsInOneMinute;

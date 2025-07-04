@@ -28,7 +28,7 @@ await describe('pdf-puppeteer', async () => {
             isValidPdf = isPdf(pdf);
         }
         finally {
-            await pdfPuppeteer?.close();
+            await pdfPuppeteer?.closeBrowser();
         }
         assert.ok(isValidPdf, validMessage);
     });
@@ -45,7 +45,7 @@ await describe('pdf-puppeteer', async () => {
             isValidPdf = isPdf(pdf);
         }
         finally {
-            await pdfPuppeteer?.close();
+            await pdfPuppeteer?.closeBrowser();
         }
         assert.ok(isValidPdf, validMessage);
     });
@@ -63,7 +63,7 @@ await describe('pdf-puppeteer', async () => {
             isValidPdf = isPdf(pdf);
         }
         finally {
-            await pdfPuppeteer?.close();
+            await pdfPuppeteer?.closeBrowser();
         }
         assert.ok(isValidPdf, validMessage);
     });

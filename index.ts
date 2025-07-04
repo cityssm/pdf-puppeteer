@@ -1,5 +1,6 @@
 import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
+import exitHook from 'exit-hook'
 
 import { DEBUG_NAMESPACE } from './debug.config.js'
 import {
@@ -24,6 +25,11 @@ export class PdfPuppeteer {
       ...defaultPdfPuppeteerOptions,
       ...pdfPuppeteerOptions
     }
+
+    exitHook(() => {
+      debug('Exit hook triggered. Closing browser...')
+      void this.closeBrowser()
+    })
   }
 
   async #initializePage(): Promise<puppeteer.Page> {
@@ -131,7 +137,7 @@ export class PdfPuppeteer {
     return pdf
   }
 
-  async close(): Promise<void> {
+  async closeBrowser(): Promise<void> {
     if (this.#browser !== undefined && this.#browser.connected) {
       debug('Closing browser...')
       await this.#browser.close()

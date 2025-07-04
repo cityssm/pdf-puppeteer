@@ -1,5 +1,6 @@
 import launchPuppeteer from '@cityssm/puppeteer-launch';
 import Debug from 'debug';
+import exitHook from 'exit-hook';
 import { DEBUG_NAMESPACE } from './debug.config.js';
 import { defaultPdfPuppeteerOptions, defaultPuppeteerOptions, htmlNavigationTimeoutMillis, urlNavigationTimeoutMillis } from './defaultOptions.js';
 import pageToPdf from './pageToPdf.js';
@@ -13,6 +14,10 @@ export class PdfPuppeteer {
             ...defaultPdfPuppeteerOptions,
             ...pdfPuppeteerOptions
         };
+        exitHook(() => {
+            debug('Exit hook triggered. Closing browser...');
+            void this.closeBrowser();
+        });
     }
     async #initializePage() {
         if (this.#browser === undefined || !this.#browser.connected) {
@@ -79,7 +84,7 @@ export class PdfPuppeteer {
         await page.close();
         return pdf;
     }
-    async close() {
+    async closeBrowser() {
         if (this.#browser !== undefined && this.#browser.connected) {
             debug('Closing browser...');
             await this.#browser.close();

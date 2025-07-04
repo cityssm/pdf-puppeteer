@@ -5,6 +5,6 @@ export declare class PdfPuppeteer {
     constructor(pdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>);
     fromHtml(html: string, pdfOptions?: puppeteer.PDFOptions, hasRemoteContent?: boolean): Promise<Uint8Array>;
     fromUrl(url: string, pdfOptions?: puppeteer.PDFOptions): Promise<Uint8Array>;
-    close(): Promise<void>;
+    closeBrowser(): Promise<void>;
 }
 export default PdfPuppeteer;
