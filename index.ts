@@ -4,6 +4,7 @@ import exitHook from 'exit-hook'
 
 import { DEBUG_NAMESPACE } from './debug.config.js'
 import {
+  type PDFOptions,
   type PDFPuppeteerOptions,
   defaultPdfPuppeteerOptions,
   defaultPuppeteerOptions,
@@ -82,7 +83,7 @@ export class PdfPuppeteer {
    */
   async fromHtml(
     html: string,
-    pdfOptions: puppeteer.PDFOptions = {}
+    pdfOptions: PDFOptions = {}
   ): Promise<Uint8Array> {
     if (typeof html !== 'string') {
       throw new TypeError(
@@ -127,7 +128,7 @@ export class PdfPuppeteer {
    */
   async fromUrl(
     url: string,
-    pdfOptions: puppeteer.PDFOptions = {}
+    pdfOptions: PDFOptions = {}
   ): Promise<Uint8Array> {
     if (typeof url !== 'string') {
       throw new TypeError(

@@ -40,7 +40,7 @@ await describe('pdf-puppeteer', async () => {
         });
         try {
             const pdf = await pdfPuppeteer.fromUrl('https://cityssm.github.io/', {
-                format: 'Letter'
+                format: 'ANSI C'
             });
             await fs.writeFile('./test/output/url.pdf', pdf);
             isValidPdf = isPdf(pdf);

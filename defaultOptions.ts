@@ -1,3 +1,4 @@
+import type { PaperType } from '@cityssm/paper-sizes'
 import type { puppeteer } from '@cityssm/puppeteer-launch'
 import { millisecondsInOneMinute, secondsToMillis } from '@cityssm/to-millis'
 
@@ -5,7 +6,11 @@ import { millisecondsInOneMinute, secondsToMillis } from '@cityssm/to-millis'
  * PDF Options
  */
 
-export const defaultPdfOptions: puppeteer.PDFOptions = {
+export type PDFOptions = Omit<puppeteer.PDFOptions, 'format'> & {
+  format?: PaperType | puppeteer.PaperFormat
+}
+
+export const defaultPdfOptions: PDFOptions = {
   format: 'Letter',
   printBackground: true
 } as const

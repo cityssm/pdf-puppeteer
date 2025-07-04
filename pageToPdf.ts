@@ -3,7 +3,7 @@ import type { puppeteer } from '@cityssm/puppeteer-launch'
 import Debug from 'debug'
 
 import { DEBUG_NAMESPACE } from './debug.config.js'
-import { defaultPdfOptions } from './defaultOptions.js'
+import { type PDFOptions, defaultPdfOptions } from './defaultOptions.js'
 
 const debug = Debug(`${DEBUG_NAMESPACE}:pageToPdf`)
 
@@ -18,17 +18,18 @@ const debug = Debug(`${DEBUG_NAMESPACE}:pageToPdf`)
  */
 export default async function pageToPdf(
   page: puppeteer.Page,
-  instancePdfOptions: puppeteer.PDFOptions = {}
+  instancePdfOptions: PDFOptions = {}
 ): Promise<Uint8Array> {
   debug('Generating PDF...')
 
-  const pdfOptions: puppeteer.PDFOptions = {
+  const pdfOptions = {
     ...defaultPdfOptions,
     ...instancePdfOptions
   }
 
   if (pdfOptions.format !== undefined) {
     const size = getPaperSize(pdfOptions.format)
+
     // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
     if (size !== undefined) {
       delete pdfOptions.format
@@ -39,7 +40,8 @@ export default async function pageToPdf(
 
   debug('Converting to PDF...')
 
-  const pdfBuffer = await page.pdf(pdfOptions)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+  const pdfBuffer = await page.pdf(pdfOptions as puppeteer.PDFOptions)
 
   debug('PDF conversion done.')
   debug(`PDF size: ${pdfBuffer.length} bytes`)

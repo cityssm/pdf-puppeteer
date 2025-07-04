@@ -1,4 +1,5 @@
 import type { puppeteer } from '@cityssm/puppeteer-launch';
+import { type PDFOptions } from './defaultOptions.js';
 /**
  * Converts a Puppeteer page to a PDF document.
  * @param page The Puppeteer page to convert to PDF.
@@ -8,4 +9,4 @@ import type { puppeteer } from '@cityssm/puppeteer-launch';
  * - `width` and `height`: Custom dimensions for the PDF.
  * @returns A Promise that resolves to a Uint8Array containing the PDF data.
  */
-export default function pageToPdf(page: puppeteer.Page, instancePdfOptions?: puppeteer.PDFOptions): Promise<Uint8Array>;
+export default function pageToPdf(page: puppeteer.Page, instancePdfOptions?: PDFOptions): Promise<Uint8Array>;

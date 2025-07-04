@@ -1,5 +1,4 @@
-import { type puppeteer } from '@cityssm/puppeteer-launch';
-import { type PDFPuppeteerOptions } from './defaultOptions.js';
+import { type PDFOptions, type PDFPuppeteerOptions } from './defaultOptions.js';
 export declare class PdfPuppeteer {
     #private;
     constructor(pdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>);
@@ -18,7 +17,7 @@ export declare class PdfPuppeteer {
      * @throws {TypeError} If the `html` parameter is not a string.
      * @throws {Error} If there is an issue with loading the HTML or generating the PDF.
      */
-    fromHtml(html: string, pdfOptions?: puppeteer.PDFOptions): Promise<Uint8Array>;
+    fromHtml(html: string, pdfOptions?: PDFOptions): Promise<Uint8Array>;
     /**
      * Converts a URL to a PDF document.
      * This method loads the content of the URL and generates a PDF from it.
@@ -32,7 +31,7 @@ export declare class PdfPuppeteer {
      * @throws {Error} If there is an issue with loading the URL or generating the PDF.
      * @returns A Promise that resolves to a Uint8Array containing the PDF data.
      */
-    fromUrl(url: string, pdfOptions?: puppeteer.PDFOptions): Promise<Uint8Array>;
+    fromUrl(url: string, pdfOptions?: PDFOptions): Promise<Uint8Array>;
     /**
      * Closes the Puppeteer browser instance.
      * This method ensures that the browser is closed properly.

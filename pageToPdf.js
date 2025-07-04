@@ -28,6 +28,7 @@ export default async function pageToPdf(page, instancePdfOptions = {}) {
         }
     }
     debug('Converting to PDF...');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     const pdfBuffer = await page.pdf(pdfOptions);
     debug('PDF conversion done.');
     debug(`PDF size: ${pdfBuffer.length} bytes`);

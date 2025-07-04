@@ -1,7 +1,4 @@
 import { millisecondsInOneMinute, secondsToMillis } from '@cityssm/to-millis';
-/*
- * PDF Options
- */
 export const defaultPdfOptions = {
     format: 'Letter',
     printBackground: true

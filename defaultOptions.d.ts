@@ -1,5 +1,9 @@
+import type { PaperType } from '@cityssm/paper-sizes';
 import type { puppeteer } from '@cityssm/puppeteer-launch';
-export declare const defaultPdfOptions: puppeteer.PDFOptions;
+export type PDFOptions = Omit<puppeteer.PDFOptions, 'format'> & {
+    format?: PaperType | puppeteer.PaperFormat;
+};
+export declare const defaultPdfOptions: PDFOptions;
 export interface PDFPuppeteerOptions {
     /**
      * The browser to use.
