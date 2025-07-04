@@ -3,10 +3,10 @@ import os from 'node:os';
 import { describe, it } from 'node:test';
 import isPdf from '@cityssm/is-pdf';
 import Debug from 'debug';
-import { DEBUG_ENABLE_NAMESPACES } from '../debug.config.js';
+import { DEBUG_ENABLE_NAMESPACES, DEBUG_NAMESPACE } from '../debug.config.js';
 import PdfPuppeteer from '../index.js';
 Debug.enable(DEBUG_ENABLE_NAMESPACES);
-const debug = Debug('pdf-puppeteer:test:package');
+const debug = Debug(`${DEBUG_NAMESPACE}:test:package`);
 debug(`Platform: ${os.platform()}`);
 debug(`Release:  ${os.release()}`);
 const html = `<html>

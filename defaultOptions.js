@@ -5,6 +5,7 @@ export const defaultPdfOptions = {
 };
 export const defaultPdfPuppeteerOptions = {
     browser: 'chrome',
+    browserCloseTimeoutMillis: millisecondsInOneMinute,
     disableSandbox: false,
     usePackagePuppeteer: false
 };

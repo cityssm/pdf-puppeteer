@@ -17,9 +17,11 @@ const debug = Debug(`${DEBUG_NAMESPACE}:index`)
 
 export class PdfPuppeteer {
   #browser: puppeteer.Browser | undefined
+  #browserTimeout: NodeJS.Timeout | undefined
+
   #puppeteerOptions: puppeteer.LaunchOptions
 
-  readonly #pdfPuppeteerOptions: Partial<PDFPuppeteerOptions>
+  readonly #pdfPuppeteerOptions: PDFPuppeteerOptions
 
   constructor(pdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {}) {
     this.#pdfPuppeteerOptions = {
@@ -29,21 +31,39 @@ export class PdfPuppeteer {
 
     exitHook(() => {
       debug('Exit hook triggered. Closing browser...')
+      this.#clearBrowserCloseTimeout()
       void this.closeBrowser()
     })
   }
 
+  #clearBrowserCloseTimeout(): void {
+    if (this.#browserTimeout !== undefined) {
+      clearTimeout(this.#browserTimeout)
+      this.#browserTimeout = undefined
+    }
+  }
+
+  #setBrowserCloseTimeout(): void {
+    this.#clearBrowserCloseTimeout()
+
+    if (this.#pdfPuppeteerOptions.browserCloseTimeoutMillis > 0) {
+      this.#browserTimeout = setTimeout(() => {
+        debug('Browser timeout reached. Closing browser...')
+        void this.closeBrowser()
+      }, this.#pdfPuppeteerOptions.browserCloseTimeoutMillis)
+    }
+  }
+
   async #initializePage(): Promise<puppeteer.Page> {
+    this.#clearBrowserCloseTimeout()
+
     if (this.#browser === undefined || !this.#browser.connected) {
       this.#puppeteerOptions = {
         ...defaultPuppeteerOptions,
-        browser: this.#pdfPuppeteerOptions.browser ?? 'chrome'
+        browser: this.#pdfPuppeteerOptions.browser
       }
 
-      if (
-        this.#pdfPuppeteerOptions.disableSandbox ??
-        defaultPdfPuppeteerOptions.disableSandbox
-      ) {
+      if (this.#pdfPuppeteerOptions.disableSandbox) {
         this.#puppeteerOptions.args = [
           '--no-sandbox',
           '--disable-setuid-sandbox'
@@ -52,10 +72,7 @@ export class PdfPuppeteer {
 
       let puppeteerLaunchFunction = launchPuppeteer
 
-      if (
-        this.#pdfPuppeteerOptions.usePackagePuppeteer ??
-        defaultPdfPuppeteerOptions.usePackagePuppeteer
-      ) {
+      if (this.#pdfPuppeteerOptions.usePackagePuppeteer) {
         const puppeteerPackage = await import('puppeteer')
         puppeteerLaunchFunction = puppeteerPackage.launch
       }
@@ -110,6 +127,18 @@ export class PdfPuppeteer {
 
     await page.close()
 
+    const remainingPages = await this.#browser?.pages()
+
+    if (
+      this.#pdfPuppeteerOptions.browserCloseTimeoutMillis === 0 &&
+      (remainingPages?.length ?? 0) <= 1
+    ) {
+      debug('Browser close timeout is set to 0. Closing browser immediately.')
+      await this.closeBrowser()
+    } else {
+      this.#setBrowserCloseTimeout()
+    }
+
     return pdf
   }
 
@@ -126,10 +155,7 @@ export class PdfPuppeteer {
    * @throws {Error} If there is an issue with loading the URL or generating the PDF.
    * @returns A Promise that resolves to a Uint8Array containing the PDF data.
    */
-  async fromUrl(
-    url: string,
-    pdfOptions: PDFOptions = {}
-  ): Promise<Uint8Array> {
+  async fromUrl(url: string, pdfOptions: PDFOptions = {}): Promise<Uint8Array> {
     if (typeof url !== 'string') {
       throw new TypeError(
         'Invalid Argument: URL expected as type of string and received a value of a different type. Check your request body and request headers.'
@@ -154,6 +180,18 @@ export class PdfPuppeteer {
 
     await page.close()
 
+    const remainingPages = await this.#browser?.pages()
+
+    if (
+      this.#pdfPuppeteerOptions.browserCloseTimeoutMillis === 0 &&
+      (remainingPages?.length ?? 0) <= 1
+    ) {
+      debug('Browser close timeout is set to 0. Closing browser immediately.')
+      await this.closeBrowser()
+    } else {
+      this.#setBrowserCloseTimeout()
+    }
+
     return pdf
   }
 
@@ -164,6 +202,8 @@ export class PdfPuppeteer {
   async closeBrowser(): Promise<void> {
     if (this.#browser !== undefined) {
       debug('Closing browser...')
+
+      this.#clearBrowserCloseTimeout()
 
       try {
         await this.#browser.close()

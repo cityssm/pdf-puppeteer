@@ -21,6 +21,15 @@ export interface PDFPuppeteerOptions {
      * Default: false
      */
     usePackagePuppeteer: boolean;
+    /**
+     * The timeout in milliseconds for closing the browser.
+     * If the browser is not used for this amount of time,
+     * it will be closed automatically.
+     * Set to `-1` to disable the timeout.
+     * Set to `0` to close the browser after use.
+     * Default: `60000` (1 minute)
+     */
+    browserCloseTimeoutMillis: number;
 }
 export declare const defaultPdfPuppeteerOptions: PDFPuppeteerOptions;
 export declare const defaultPuppeteerOptions: puppeteer.LaunchOptions;
