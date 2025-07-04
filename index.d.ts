@@ -13,13 +13,12 @@ export declare class PdfPuppeteer {
      * The options can include:
      * - `format`: The paper format (e.g., 'Letter', 'A4').
      * - `width` and `height`: Custom dimensions for the PDF.
-     * @param hasRemoteContent - If the HTML contains remote content (like images or stylesheets).
      * If `false`, the HTML will be loaded without fetching remote resources.
      * @returns A Promise that resolves to a Uint8Array containing the PDF data.
      * @throws {TypeError} If the `html` parameter is not a string.
      * @throws {Error} If there is an issue with loading the HTML or generating the PDF.
      */
-    fromHtml(html: string, pdfOptions?: puppeteer.PDFOptions, hasRemoteContent?: boolean): Promise<Uint8Array>;
+    fromHtml(html: string, pdfOptions?: puppeteer.PDFOptions): Promise<Uint8Array>;
     /**
      * Converts a URL to a PDF document.
      * This method loads the content of the URL and generates a PDF from it.

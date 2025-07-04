@@ -32,33 +32,11 @@ await describe('pdf-puppeteer', async () => {
     })
 
     try {
-      const pdf = await pdfPuppeteer.fromHtml(html)
+      const pdf = await pdfPuppeteer.fromHtml(html, {
+          format: 'Legal'
+        })
 
       await fs.writeFile('./test/output/html.pdf', pdf)
-
-      isValidPdf = isPdf(pdf)
-    } finally {
-      await pdfPuppeteer.closeBrowser()
-    }
-
-    assert.ok(isValidPdf, validMessage)
-  })
-
-  await it('Converts remote HTML to PDF with Puppeteer options', async () => {
-    let isValidPdf = false
-
-    const pdfPuppeteer = new PdfPuppeteer({
-      disableSandbox: true
-    })
-
-    try {
-      const pdf = await pdfPuppeteer.fromHtml(
-        html,
-        {
-          format: 'Legal'
-        },
-        true
-      )
 
       isValidPdf = isPdf(pdf)
     } finally {

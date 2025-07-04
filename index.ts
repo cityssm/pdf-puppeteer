@@ -75,7 +75,6 @@ export class PdfPuppeteer {
    * The options can include:
    * - `format`: The paper format (e.g., 'Letter', 'A4').
    * - `width` and `height`: Custom dimensions for the PDF.
-   * @param hasRemoteContent - If the HTML contains remote content (like images or stylesheets).
    * If `false`, the HTML will be loaded without fetching remote resources.
    * @returns A Promise that resolves to a Uint8Array containing the PDF data.
    * @throws {TypeError} If the `html` parameter is not a string.
@@ -83,8 +82,7 @@ export class PdfPuppeteer {
    */
   async fromHtml(
     html: string,
-    pdfOptions: puppeteer.PDFOptions = {},
-    hasRemoteContent = true
+    pdfOptions: puppeteer.PDFOptions = {}
   ): Promise<Uint8Array> {
     if (typeof html !== 'string') {
       throw new TypeError(
@@ -94,24 +92,16 @@ export class PdfPuppeteer {
 
     const page = await this.#initializePage()
 
-    if (hasRemoteContent) {
-      debug('Loading HTML with remote content...')
-      await page.goto(
-        `data:text/html;base64,${Buffer.from(html).toString('base64')}`,
-        {
-          timeout: urlNavigationTimeoutMillis,
-          waitUntil:
-            this.#puppeteerOptions.browser === 'firefox'
-              ? 'domcontentloaded'
-              : 'networkidle0'
-        }
-      )
-    } else {
-      debug('Loading HTML...')
-      await page.setContent(html, {
-        timeout: htmlNavigationTimeoutMillis
-      })
-    }
+    await page.goto(
+      `data:text/html;base64,${Buffer.from(html).toString('base64')}`,
+      {
+        timeout: htmlNavigationTimeoutMillis,
+        waitUntil:
+          this.#puppeteerOptions.browser === 'firefox'
+            ? 'domcontentloaded'
+            : 'networkidle0'
+      }
+    )
 
     debug('Content loaded.')
 
@@ -171,9 +161,15 @@ export class PdfPuppeteer {
    * This method ensures that the browser is closed properly.
    */
   async closeBrowser(): Promise<void> {
-    if (this.#browser !== undefined && this.#browser.connected) {
+    if (this.#browser !== undefined) {
       debug('Closing browser...')
-      await this.#browser.close()
+
+      try {
+        await this.#browser.close()
+      } catch (error) {
+        debug('Error closing browser:', error)
+      }
+
       this.#browser = undefined
     }
   }
