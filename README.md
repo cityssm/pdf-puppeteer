@@ -8,7 +8,6 @@
 A simple npm package to convert HTML to PDF for Node.js applications by using Puppeteer.
 
 **Based on the work in [westmonroe/pdf-puppeteer](https://github.com/westmonroe/pdf-puppeteer).**
-Forked to manage dependencies, switch to ESM, and eliminate the callback function.
 
 ## Installation
 
