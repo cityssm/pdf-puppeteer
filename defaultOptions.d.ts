@@ -5,7 +5,7 @@ export interface PDFPuppeteerOptions {
      * The browser to use.
      * Default: 'chrome'
      */
-    browser?: puppeteer.SupportedBrowser;
+    browser: puppeteer.SupportedBrowser;
     /**
      * If the sandbox should be disabled.
      * Default: false
