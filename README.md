@@ -6,7 +6,7 @@
 [![Coverage Testing](https://github.com/cityssm/pdf-puppeteer/actions/workflows/coverage.yml/badge.svg)](https://github.com/cityssm/pdf-puppeteer/actions/workflows/coverage.yml)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=cityssm_pdf-puppeteer&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=cityssm_pdf-puppeteer)
 
-A simple npm package to convert HTML to PDF for Node.js applications by using Puppeteer.
+Converts URLs and HTML to PDFs using Puppeteer.
 
 **Based on the work in [westmonroe/pdf-puppeteer](https://github.com/westmonroe/pdf-puppeteer).**
 
@@ -48,5 +48,8 @@ take a look at [Puppeteer's Page PDF Options](https://pptr.dev/api/puppeteer.pdf
 
 ## Related Project
 
+[**@cityssm/paper-sizes**](https://github.com/cityssm/node-paper-sizes)<br />
+Retrieves exact dimensions for common paper sizes, including North American (ANSI and ARCH) and ISO. 
+
 [**@cityssm/puppeteer-launch**](https://github.com/cityssm/puppeteer-launch)<br />
-Launch Puppeteer, falling back to system browsers when the cached ones aren't working or aren't available.
+Launches Puppeteer, falling back to system browsers when the cached ones aren't working or aren't available.
