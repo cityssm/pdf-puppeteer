@@ -1,4 +1,5 @@
 import assert from 'node:assert';
+import fs from 'node:fs/promises';
 import os from 'node:os';
 import { describe, it } from 'node:test';
 import isPdf from '@cityssm/is-pdf';
@@ -23,6 +24,7 @@ await describe('pdf-puppeteer/firefox', async () => {
                 disableSandbox: true
             });
             const pdf = await pdfPuppeteer.fromHtml(html);
+            await fs.writeFile('./test/output/htmlFirefox.pdf', pdf);
             isValidPdf = isPdf(pdf);
         }
         finally {

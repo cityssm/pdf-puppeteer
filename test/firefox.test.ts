@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import fs from 'node:fs/promises'
 import os from 'node:os'
 import { describe, it } from 'node:test'
 
@@ -32,6 +33,8 @@ await describe('pdf-puppeteer/firefox', async () => {
       })
 
       const pdf = await pdfPuppeteer.fromHtml(html)
+
+      await fs.writeFile('./test/output/htmlFirefox.pdf', pdf)
 
       isValidPdf = isPdf(pdf)
     } finally {

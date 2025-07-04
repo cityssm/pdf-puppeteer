@@ -1,4 +1,5 @@
 import assert from 'node:assert'
+import fs from 'node:fs/promises'
 import os from 'node:os'
 import { describe, it } from 'node:test'
 
@@ -14,6 +15,8 @@ const debug = Debug('pdf-puppeteer:test')
 
 debug(`Platform: ${os.platform()}`)
 debug(`Release:  ${os.release()}`)
+
+const validMessage = 'PDF should be valid'
 
 const html = `<html>
   <head><title>Test</title></head>
@@ -32,12 +35,14 @@ await describe('pdf-puppeteer', async () => {
 
       const pdf = await pdfPuppeteer.fromHtml(html)
 
+      await fs.writeFile('./test/output/html.pdf', pdf)
+
       isValidPdf = isPdf(pdf)
     } finally {
       await pdfPuppeteer?.close()
     }
 
-    assert.ok(isValidPdf, 'PDF should be valid')
+    assert.ok(isValidPdf, validMessage)
   })
 
   await it('Converts remote HTML to PDF with Puppeteer options', async () => {
@@ -62,7 +67,7 @@ await describe('pdf-puppeteer', async () => {
       await pdfPuppeteer?.close()
     }
 
-    assert.ok(isValidPdf, 'PDF should be valid')
+    assert.ok(isValidPdf, validMessage)
   })
 
   await it('Converts a website to PDF', async () => {
@@ -78,11 +83,13 @@ await describe('pdf-puppeteer', async () => {
         format: 'Letter'
       })
 
+      await fs.writeFile('./test/output/url.pdf', pdf)
+
       isValidPdf = isPdf(pdf)
     } finally {
       await pdfPuppeteer?.close()
     }
 
-    assert.ok(isValidPdf, 'PDF should be valid')
+    assert.ok(isValidPdf, validMessage)
   })
 })
