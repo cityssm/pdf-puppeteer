@@ -60,11 +60,12 @@
   },
   "scripts": {
     "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary node --test",
+    "postinstall": "npx --silent puppeteer browsers install || exit 0",
     "test": "node --test"
   },
   "dependencies": {
     "@cityssm/paper-sizes": "^1.0.1",
-    "@cityssm/puppeteer-launch": "^4.1.1",
+    "@cityssm/puppeteer-launch": "^4.1.2",
     "@cityssm/to-millis": "^1.0.1",
     "debug": "^4.4.1",
     "exit-hook": "^4.0.0"
