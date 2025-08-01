@@ -60,19 +60,20 @@
   },
   "scripts": {
     "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary node --test",
+    "postinstall": "npx puppeteer browsers install",
     "test": "node --test"
   },
   "dependencies": {
     "@cityssm/paper-sizes": "^1.0.1",
-    "@cityssm/puppeteer-launch": "^4.0.0",
-    "@cityssm/to-millis": "^1.0.0",
+    "@cityssm/puppeteer-launch": "^4.1.1",
+    "@cityssm/to-millis": "^1.0.1",
     "debug": "^4.4.1",
     "exit-hook": "^4.0.0"
   },
   "devDependencies": {
     "@cityssm/is-pdf": "^2.0.0",
     "@types/debug": "^4.1.12",
-    "eslint-config-cityssm": "^26.0.0",
+    "eslint-config-cityssm": "^27.1.0",
     "prettier-config-cityssm": "^1.0.0"
   },
   "engines": {
