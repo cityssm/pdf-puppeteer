@@ -166,3 +166,4 @@ export class PdfPuppeteer {
     }
 }
 export default PdfPuppeteer;
+export { installChromeBrowser, installFirefoxBrowser } from '@cityssm/puppeteer-launch';
