@@ -19,7 +19,10 @@ export class PdfPuppeteer {
   #browser: puppeteer.Browser | undefined
   #browserTimeout: NodeJS.Timeout | undefined
 
-  #puppeteerOptions: puppeteer.LaunchOptions
+  #puppeteerOptions: Exclude<Parameters<typeof launchPuppeteer>[0], undefined> =
+    {
+      ...defaultPuppeteerOptions
+    }
 
   readonly #pdfPuppeteerOptions: PDFPuppeteerOptions
 
@@ -65,7 +68,11 @@ export class PdfPuppeteer {
     if (this.#browser === undefined || !this.#browser.connected) {
       this.#puppeteerOptions = {
         ...defaultPuppeteerOptions,
-        browser: this.#pdfPuppeteerOptions.browser
+        browser: this.#pdfPuppeteerOptions.browser,
+        browserOrder:
+          this.#pdfPuppeteerOptions.browser === 'chrome'
+            ? ['chrome', 'firefox', 'chrome-user', 'firefox-user']
+            : ['firefox', 'chrome', 'firefox-user', 'chrome-user']
       }
 
       if (this.#pdfPuppeteerOptions.disableSandbox) {

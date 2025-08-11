@@ -8,7 +8,9 @@ const debug = Debug(`${DEBUG_NAMESPACE}:index`);
 export class PdfPuppeteer {
     #browser;
     #browserTimeout;
-    #puppeteerOptions;
+    #puppeteerOptions = {
+        ...defaultPuppeteerOptions
+    };
     #pdfPuppeteerOptions;
     constructor(pdfPuppeteerOptions = {}) {
         this.#pdfPuppeteerOptions = {
@@ -46,7 +48,10 @@ export class PdfPuppeteer {
         if (this.#browser === undefined || !this.#browser.connected) {
             this.#puppeteerOptions = {
                 ...defaultPuppeteerOptions,
-                browser: this.#pdfPuppeteerOptions.browser
+                browser: this.#pdfPuppeteerOptions.browser,
+                browserOrder: this.#pdfPuppeteerOptions.browser === 'chrome'
+                    ? ['chrome', 'firefox', 'chrome-user', 'firefox-user']
+                    : ['firefox', 'chrome', 'firefox-user', 'chrome-user']
             };
             if (this.#pdfPuppeteerOptions.disableSandbox) {
                 this.#puppeteerOptions.args = [

@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "@cityssm/paper-sizes": "^1.0.1",
-    "@cityssm/puppeteer-launch": "^4.1.2",
+    "@cityssm/puppeteer-launch": "^5.0.0",
     "@cityssm/to-millis": "^1.0.1",
     "debug": "^4.4.1",
     "exit-hook": "^4.0.0"
