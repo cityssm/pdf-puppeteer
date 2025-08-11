@@ -1,4 +1,4 @@
-# PDF-Puppeteer
+# PDF Puppeteer
 
 [![npm (scoped)](https://img.shields.io/npm/v/@cityssm/pdf-puppeteer)](https://www.npmjs.com/package/@cityssm/pdf-puppeteer)
 [![codecov](https://codecov.io/gh/cityssm/pdf-puppeteer/graph/badge.svg?token=306EDSL6BF)](https://codecov.io/gh/cityssm/pdf-puppeteer)
