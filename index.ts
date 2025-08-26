@@ -231,6 +231,10 @@ export class PdfPuppeteer {
 export default PdfPuppeteer
 
 export {
+  installBrowser,
   installChromeBrowser,
-  installFirefoxBrowser
+  installFirefoxBrowser,
+  testInstalledBrowser,
+  testInstalledChromeBrowser,
+  testInstalledFirefoxBrowser
 } from '@cityssm/puppeteer-launch'
