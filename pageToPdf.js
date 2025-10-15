@@ -20,7 +20,7 @@ export default async function pageToPdf(page, instancePdfOptions = {}) {
     };
     if (pdfOptions.format !== undefined) {
         const size = getPaperSize(pdfOptions.format);
-        // eslint-disable-next-line sonarjs/different-types-comparison, @typescript-eslint/no-unnecessary-condition
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (size !== undefined) {
             delete pdfOptions.format;
             pdfOptions.width = `${size.width}${size.unit}`;
