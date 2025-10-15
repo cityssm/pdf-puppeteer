@@ -9,10 +9,12 @@ Debug.enable(DEBUG_ENABLE_NAMESPACES);
 const debug = Debug(`${DEBUG_NAMESPACE}:test:package`);
 debug(`Platform: ${os.platform()}`);
 debug(`Release:  ${os.release()}`);
-const html = `<html>
-  <head><title>Test</title></head>
-  <body><h1>Hello World</h1></body>
-  </html>`;
+const html = /* html */ `
+  <html>
+    <head><title>Test</title></head>
+    <body><h1>Hello World</h1></body>
+  </html>
+`;
 await describe('pdf-puppeteer/package', async () => {
     await it('Converts HTML to PDF with package Puppeteer', async () => {
         let isValidPdf = false;
