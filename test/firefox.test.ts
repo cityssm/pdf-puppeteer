@@ -25,6 +25,7 @@ const html = `<html>
 
 await describe('pdf-puppeteer/firefox', async () => {
   await it('Converts HTML to PDF with a Firefox browser', async () => {
+    // eslint-disable-next-line no-useless-assignment
     let isValidPdf = false
 
     const pdfPuppeteer = new PdfPuppeteer({
@@ -46,6 +47,7 @@ await describe('pdf-puppeteer/firefox', async () => {
   })
 
   await it('Converts a website to PDF with a Firefox browser', async () => {
+    // eslint-disable-next-line no-useless-assignment
     let isValidPdf = false
 
     const pdfPuppeteer = new PdfPuppeteer({

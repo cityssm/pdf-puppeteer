@@ -19,12 +19,12 @@ export class PdfPuppeteer {
   #browser: puppeteer.Browser | undefined
   #browserTimeout: NodeJS.Timeout | undefined
 
+  readonly #pdfPuppeteerOptions: PDFPuppeteerOptions
+
   #puppeteerOptions: Exclude<Parameters<typeof launchPuppeteer>[0], undefined> =
     {
       ...defaultPuppeteerOptions
     }
-
-  readonly #pdfPuppeteerOptions: PDFPuppeteerOptions
 
   constructor(pdfPuppeteerOptions: Partial<PDFPuppeteerOptions> = {}) {
     this.#pdfPuppeteerOptions = {
@@ -39,60 +39,24 @@ export class PdfPuppeteer {
     })
   }
 
-  #clearBrowserCloseTimeout(): void {
-    if (this.#browserTimeout !== undefined) {
+  /**
+   * Closes the Puppeteer browser instance.
+   * This method ensures that the browser is closed properly.
+   */
+  async closeBrowser(): Promise<void> {
+    if (this.#browser !== undefined) {
+      debug('Closing browser...')
+
+      this.#clearBrowserCloseTimeout()
+
       try {
-        clearTimeout(this.#browserTimeout)
+        await this.#browser.close()
       } catch (error) {
-        debug('Error clearing browser close timeout:', error)
+        debug('Error closing browser:', error)
       }
 
-      this.#browserTimeout = undefined
+      this.#browser = undefined
     }
-  }
-
-  #setBrowserCloseTimeout(): void {
-    this.#clearBrowserCloseTimeout()
-
-    if (this.#pdfPuppeteerOptions.browserCloseTimeoutMillis > 0) {
-      this.#browserTimeout = setTimeout(() => {
-        debug('Browser timeout reached. Closing browser...')
-        void this.closeBrowser()
-      }, this.#pdfPuppeteerOptions.browserCloseTimeoutMillis)
-    }
-  }
-
-  async #initializePage(): Promise<puppeteer.Page> {
-    this.#clearBrowserCloseTimeout()
-
-    if (this.#browser === undefined || !this.#browser.connected) {
-      this.#puppeteerOptions = {
-        ...defaultPuppeteerOptions,
-        browser: this.#pdfPuppeteerOptions.browser,
-        browserOrder:
-          this.#pdfPuppeteerOptions.browser === 'chrome'
-            ? ['chrome', 'firefox', 'chrome-user', 'firefox-user']
-            : ['firefox', 'chrome', 'firefox-user', 'chrome-user']
-      }
-
-      if (this.#pdfPuppeteerOptions.disableSandbox) {
-        this.#puppeteerOptions.args = [
-          '--no-sandbox',
-          '--disable-setuid-sandbox'
-        ]
-      }
-
-      let puppeteerLaunchFunction = launchPuppeteer
-
-      if (this.#pdfPuppeteerOptions.usePackagePuppeteer) {
-        const puppeteerPackage = await import('puppeteer')
-        puppeteerLaunchFunction = puppeteerPackage.launch
-      }
-
-      this.#browser = await puppeteerLaunchFunction(this.#puppeteerOptions)
-    }
-
-    return await this.#browser.newPage()
   }
 
   /**
@@ -207,23 +171,59 @@ export class PdfPuppeteer {
     return pdf
   }
 
-  /**
-   * Closes the Puppeteer browser instance.
-   * This method ensures that the browser is closed properly.
-   */
-  async closeBrowser(): Promise<void> {
-    if (this.#browser !== undefined) {
-      debug('Closing browser...')
-
-      this.#clearBrowserCloseTimeout()
-
+  #clearBrowserCloseTimeout(): void {
+    if (this.#browserTimeout !== undefined) {
       try {
-        await this.#browser.close()
+        clearTimeout(this.#browserTimeout)
       } catch (error) {
-        debug('Error closing browser:', error)
+        debug('Error clearing browser close timeout:', error)
       }
 
-      this.#browser = undefined
+      this.#browserTimeout = undefined
+    }
+  }
+
+  async #initializePage(): Promise<puppeteer.Page> {
+    this.#clearBrowserCloseTimeout()
+
+    if (this.#browser === undefined || !this.#browser.connected) {
+      this.#puppeteerOptions = {
+        ...defaultPuppeteerOptions,
+        browser: this.#pdfPuppeteerOptions.browser,
+        browserOrder:
+          this.#pdfPuppeteerOptions.browser === 'chrome'
+            ? ['chrome', 'firefox', 'chrome-user', 'firefox-user']
+            : ['firefox', 'chrome', 'firefox-user', 'chrome-user']
+      }
+
+      if (this.#pdfPuppeteerOptions.disableSandbox) {
+        this.#puppeteerOptions.args = [
+          '--no-sandbox',
+          '--disable-setuid-sandbox'
+        ]
+      }
+
+      let puppeteerLaunchFunction = launchPuppeteer
+
+      if (this.#pdfPuppeteerOptions.usePackagePuppeteer) {
+        const puppeteerPackage = await import('puppeteer')
+        puppeteerLaunchFunction = puppeteerPackage.launch
+      }
+
+      this.#browser = await puppeteerLaunchFunction(this.#puppeteerOptions)
+    }
+
+    return await this.#browser.newPage()
+  }
+
+  #setBrowserCloseTimeout(): void {
+    this.#clearBrowserCloseTimeout()
+
+    if (this.#pdfPuppeteerOptions.browserCloseTimeoutMillis > 0) {
+      this.#browserTimeout = setTimeout(() => {
+        debug('Browser timeout reached. Closing browser...')
+        void this.closeBrowser()
+      }, this.#pdfPuppeteerOptions.browserCloseTimeoutMillis)
     }
   }
 }

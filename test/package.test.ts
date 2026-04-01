@@ -24,6 +24,7 @@ const html = /* html */ `
 
 await describe('pdf-puppeteer/package', async () => {
   await it('Converts HTML to PDF with package Puppeteer', async () => {
+    // eslint-disable-next-line no-useless-assignment
     let isValidPdf = false
 
     const pdfPuppeteer = new PdfPuppeteer({

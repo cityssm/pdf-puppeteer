@@ -17,6 +17,7 @@ const html = `<html>
   </html>`;
 await describe('pdf-puppeteer/firefox', async () => {
     await it('Converts HTML to PDF with a Firefox browser', async () => {
+        // eslint-disable-next-line no-useless-assignment
         let isValidPdf = false;
         const pdfPuppeteer = new PdfPuppeteer({
             browser: 'firefox',
@@ -33,6 +34,7 @@ await describe('pdf-puppeteer/firefox', async () => {
         assert.ok(isValidPdf, validMessage);
     });
     await it('Converts a website to PDF with a Firefox browser', async () => {
+        // eslint-disable-next-line no-useless-assignment
         let isValidPdf = false;
         const pdfPuppeteer = new PdfPuppeteer({
             browser: 'firefox',

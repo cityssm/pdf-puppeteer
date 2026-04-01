@@ -3,6 +3,11 @@ export declare class PdfPuppeteer {
     #private;
     constructor(pdfPuppeteerOptions?: Partial<PDFPuppeteerOptions>);
     /**
+     * Closes the Puppeteer browser instance.
+     * This method ensures that the browser is closed properly.
+     */
+    closeBrowser(): Promise<void>;
+    /**
      * Converts HTML content to a PDF document.
      * This method can handle both local HTML content and remote resources.
      * If the HTML contains remote content, it will fetch those resources.
@@ -32,11 +37,6 @@ export declare class PdfPuppeteer {
      * @returns A Promise that resolves to a Uint8Array containing the PDF data.
      */
     fromUrl(url: string, pdfOptions?: PDFOptions): Promise<Uint8Array>;
-    /**
-     * Closes the Puppeteer browser instance.
-     * This method ensures that the browser is closed properly.
-     */
-    closeBrowser(): Promise<void>;
 }
 export default PdfPuppeteer;
 export { installBrowser, installChromeBrowser, installFirefoxBrowser, testInstalledBrowser, testInstalledChromeBrowser, testInstalledFirefoxBrowser } from '@cityssm/puppeteer-launch';
