@@ -73,7 +73,7 @@
   },
   "dependencies": {
     "@cityssm/paper-sizes": "^1.0.1",
-    "@cityssm/puppeteer-launch": "^7.0.1",
+    "@cityssm/puppeteer-launch": "^7.1.0",
     "@cityssm/to-millis": "^1.0.1",
     "debug": "^4.4.3",
     "exit-hook": "^5.1.0"
@@ -81,10 +81,16 @@
   "devDependencies": {
     "@cityssm/is-pdf": "^2.0.0",
     "@types/debug": "^4.1.13",
-    "eslint-config-cityssm": "^39.0.0",
-    "prettier-config-cityssm": "^2.1.1"
+    "@types/node": "^26.2.0",
+    "eslint-config-cityssm": "^46.0.0",
+    "prettier-config-cityssm": "^2.1.3"
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "allowScripts": {
+    "registry-js@1.16.1": true,
+    "win-version-info@6.0.1": true,
+    "puppeteer@25.7.0": true
   }
 }
