@@ -1,6 +1,6 @@
 {
   "name": "@cityssm/pdf-puppeteer",
-  "version": "6.4.1",
+  "version": "6.4.2",
   "description": "Converts URLs and HTML to PDFs using Puppeteer.",
   "keywords": [
     "pdf",
@@ -86,11 +86,11 @@
     "prettier-config-cityssm": "^2.1.3"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.12.0"
   },
   "allowScripts": {
-    "registry-js@1.16.1": true,
-    "win-version-info@6.0.1": true,
-    "puppeteer@25.7.0": true
+    "puppeteer": true,
+    "registry-js": true,
+    "win-version-info": true
   }
 }
