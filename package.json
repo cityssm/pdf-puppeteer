@@ -82,7 +82,7 @@
     "@cityssm/is-pdf": "^2.0.0",
     "@types/debug": "^4.1.13",
     "@types/node": "^26.2.0",
-    "eslint-config-cityssm": "^46.0.0",
+    "eslint-config-cityssm": "^47.0.0",
     "prettier-config-cityssm": "^2.1.3"
   },
   "engines": {
