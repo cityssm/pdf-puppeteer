@@ -120,15 +120,16 @@ export class PdfPuppeteer {
         return pdf;
     }
     #clearBrowserCloseTimeout() {
-        if (this.#browserTimeout !== undefined) {
-            try {
-                clearTimeout(this.#browserTimeout);
-            }
-            catch (error) {
-                debug('Error clearing browser close timeout:', error);
-            }
-            this.#browserTimeout = undefined;
+        if (this.#browserTimeout === undefined) {
+            return;
         }
+        try {
+            clearTimeout(this.#browserTimeout);
+        }
+        catch (error) {
+            debug('Error clearing browser close timeout:', error);
+        }
+        this.#browserTimeout = undefined;
     }
     async #initializePage() {
         this.#clearBrowserCloseTimeout();

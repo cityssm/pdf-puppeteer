@@ -172,15 +172,17 @@ export class PdfPuppeteer {
   }
 
   #clearBrowserCloseTimeout(): void {
-    if (this.#browserTimeout !== undefined) {
-      try {
-        clearTimeout(this.#browserTimeout)
-      } catch (error) {
-        debug('Error clearing browser close timeout:', error)
-      }
-
-      this.#browserTimeout = undefined
+    if (this.#browserTimeout === undefined) {
+      return
     }
+
+    try {
+      clearTimeout(this.#browserTimeout)
+    } catch (error) {
+      debug('Error clearing browser close timeout:', error)
+    }
+
+    this.#browserTimeout = undefined
   }
 
   async #initializePage(): Promise<puppeteer.Page> {
