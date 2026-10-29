@@ -167,4 +167,5 @@ export class PdfPuppeteer {
     }
 }
 export default PdfPuppeteer;
+export { DEBUG_NAMESPACE } from './debug.config.js';
 export { installBrowser, installChromeBrowser, installFirefoxBrowser, testInstalledBrowser, testInstalledChromeBrowser, testInstalledFirefoxBrowser } from '@cityssm/puppeteer-launch';

@@ -233,6 +233,8 @@ export class PdfPuppeteer {
 
 export default PdfPuppeteer
 
+export { DEBUG_NAMESPACE } from './debug.config.js'
+
 export {
   installBrowser,
   installChromeBrowser,

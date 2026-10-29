@@ -1,11 +1,12 @@
+import { debuglog } from 'node:util'
+
 import { getPaperSize } from '@cityssm/paper-sizes'
 import type { puppeteer } from '@cityssm/puppeteer-launch'
-import Debug from 'debug'
 
 import { DEBUG_NAMESPACE } from './debug.config.js'
 import { type PDFOptions, defaultPdfOptions } from './defaultOptions.js'
 
-const debug = Debug(`${DEBUG_NAMESPACE}:pageToPdf`)
+const debug = debuglog(`${DEBUG_NAMESPACE}:pageToPdf`)
 
 /**
  * Converts a Puppeteer page to a PDF document.
