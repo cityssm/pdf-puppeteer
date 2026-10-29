@@ -1,5 +1,6 @@
+import { debuglog } from 'node:util'
+
 import launchPuppeteer, { type puppeteer } from '@cityssm/puppeteer-launch'
-import Debug from 'debug'
 import exitHook from 'exit-hook'
 
 import { DEBUG_NAMESPACE } from './debug.config.js'
@@ -13,7 +14,7 @@ import {
 } from './defaultOptions.js'
 import pageToPdf from './pageToPdf.js'
 
-const debug = Debug(`${DEBUG_NAMESPACE}:index`)
+const debug = debuglog(`${DEBUG_NAMESPACE}:index`)
 
 export class PdfPuppeteer {
   #browser: puppeteer.Browser | undefined

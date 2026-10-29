@@ -67,22 +67,20 @@
     "postinstall.*"
   ],
   "scripts": {
-    "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary node --test",
+    "coverage": "c8 --reporter=lcov --reporter=text --reporter=text-summary node --env-file=\".dev.env\" --test \"test/*.test.js\"",
     "postinstall": "node ./postinstall.js",
-    "test": "node --test"
+    "test": "node --env-file=\".dev.env\" --test \"test/*.test.js\""
   },
   "dependencies": {
     "@cityssm/paper-sizes": "^1.0.2",
-    "@cityssm/puppeteer-launch": "^8.0.0",
+    "@cityssm/puppeteer-launch": "^9.0.0",
     "@cityssm/to-millis": "^1.0.1",
-    "debug": "^4.4.3",
     "exit-hook": "^5.1.0"
   },
   "devDependencies": {
     "@cityssm/is-pdf": "^2.0.0",
-    "@types/debug": "^4.1.13",
-    "@types/node": "^26.2.0",
-    "eslint-config-cityssm": "^51.0.0",
+    "@types/node": "^26.6.6",
+    "eslint-config-cityssm": "^58.2.0",
     "prettier-config-cityssm": "^2.2.0"
   },
   "engines": {

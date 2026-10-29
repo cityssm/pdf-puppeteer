@@ -2,16 +2,14 @@ import assert from 'node:assert'
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import { describe, it } from 'node:test'
+import { debuglog } from 'node:util'
 
 import isPdf from '@cityssm/is-pdf'
-import Debug from 'debug'
 
-import { DEBUG_ENABLE_NAMESPACES, DEBUG_NAMESPACE } from '../debug.config.js'
+import { DEBUG_NAMESPACE } from '../debug.config.js'
 import PdfPuppeteer from '../index.js'
 
-Debug.enable(DEBUG_ENABLE_NAMESPACES)
-
-const debug = Debug(`${DEBUG_NAMESPACE}:test`)
+const debug = debuglog(`${DEBUG_NAMESPACE}:test`)
 
 debug(`Platform: ${os.platform()}`)
 debug(`Release:  ${os.release()}`)
@@ -33,8 +31,8 @@ await describe('pdf-puppeteer', async () => {
 
     try {
       const pdf = await pdfPuppeteer.fromHtml(html, {
-          format: 'Legal'
-        })
+        format: 'Legal'
+      })
 
       await fs.writeFile('./test/output/html.pdf', pdf)
 
